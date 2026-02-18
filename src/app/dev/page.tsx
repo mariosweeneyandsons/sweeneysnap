@@ -34,6 +34,36 @@ const themes = [
     subtitle: "Brutalist Precision",
     colors: ["#ffffff", "#000000", "#ff0000"],
   },
+  {
+    number: 6,
+    name: "Greenhouse",
+    subtitle: "Organic Dashboard",
+    colors: ["#f7f3eb", "#4a7c59", "#d4845a"],
+  },
+  {
+    number: 7,
+    name: "Mainframe",
+    subtitle: "Retro Terminal",
+    colors: ["#1a1200", "#ffb000", "#ff8c00"],
+  },
+  {
+    number: 8,
+    name: "Blueprint",
+    subtitle: "Technical Drafting",
+    colors: ["#1a2744", "#4a7ab5", "#ff6b4a"],
+  },
+  {
+    number: 9,
+    name: "Confetti",
+    subtitle: "Playful Chaos",
+    colors: ["#fff5f5", "#f472b6", "#8b5cf6"],
+  },
+  {
+    number: 10,
+    name: "Darkroom",
+    subtitle: "Moody Minimal",
+    colors: ["#111111", "#c45a5a", "#999999"],
+  },
 ];
 
 export default function DevIndex() {
@@ -42,7 +72,7 @@ export default function DevIndex() {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">Event Settings Themes</h1>
         <p className="text-white/50 mb-10">
-          5 visual concepts for the event configuration page
+          10 visual concepts for the event configuration page
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
