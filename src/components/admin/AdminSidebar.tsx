@@ -29,7 +29,7 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white/5 border-r border-white/10 flex flex-col p-4">
       <div className="mb-8">
-        <h2 className="text-lg font-bold">Selfie Wall</h2>
+        <h2 className="text-lg font-bold">SweeneySnap</h2>
         <p className="text-white/50 text-sm">Admin Panel</p>
       </div>
 

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Selfie Wall",
+  title: "SweeneySnap",
   description: "Live event selfie wall — upload, display, celebrate",
 };
 

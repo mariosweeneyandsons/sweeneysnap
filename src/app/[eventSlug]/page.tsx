@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
   const event = data as { name: string } | null;
 
   return {
-    title: event ? `${event.name} — Selfie Wall` : "Event Not Found",
+    title: event ? `${event.name} — SweeneySnap` : "Event Not Found",
   };
 }
 
