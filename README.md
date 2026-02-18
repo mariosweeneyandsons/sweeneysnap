@@ -47,4 +47,4 @@ Approved selfies flow onto the display wall in real time — a dynamic, ever-gro
 
 ---
 
-Built by **Sweeney and Sons**
+Built by **[Sweeney and Sons](https://sweeneyandsons.tv)**
