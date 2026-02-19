@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 /* ============================================================
-   SWEENEYSNAP BRAND KIT — /dev/tokens
+   SWEENEYSNAP BRAND KIT — /dev/brand-kit
    Comprehensive style guide rendered in the Blueprint aesthetic
    ============================================================ */
 
@@ -726,7 +726,7 @@ export default function BrandKitPage() {
                       readOnly
                       value="Share your best moments! Snap a photo and add it to the wall."
                       rows={2}
-                      className="w-full bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text resize-none"
+                      className="w-full bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text resize-none"
                     />
                   </div>
                   <div>
@@ -735,7 +735,7 @@ export default function BrandKitPage() {
                       type="text"
                       readOnly
                       value="Upload Snap"
-                      className="w-full bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text"
+                      className="w-full bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text"
                     />
                   </div>
                   <div className="flex gap-6">
@@ -752,7 +752,7 @@ export default function BrandKitPage() {
                           type="number"
                           readOnly
                           value={10}
-                          className="w-20 bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text"
+                          className="w-20 bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text"
                         />
                         <span className="text-[10px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                           mb
@@ -774,13 +774,13 @@ export default function BrandKitPage() {
                     type="text"
                     readOnly
                     value="Annual Company Gala"
-                    className="w-full bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text focus:outline-none focus:border-border-focus transition"
+                    className="w-full bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text focus:outline-none focus:border-border-focus transition"
                   />
                 </div>
                 <div>
                   <label className="text-label-caps block mb-1">select input</label>
                   <select
-                    className="w-full bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text appearance-none"
+                    className="w-full bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text appearance-none"
                     defaultValue="fade"
                   >
                     <option value="fade">Fade</option>
@@ -794,7 +794,7 @@ export default function BrandKitPage() {
                     type="datetime-local"
                     readOnly
                     value="2026-03-15T18:00"
-                    className="w-full bg-input-bg border border-input-border rounded-xs px-3 py-2 text-sm text-input-text [color-scheme:dark]"
+                    className="w-full bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-sm text-input-text [color-scheme:dark]"
                   />
                 </div>
               </div>
@@ -840,7 +840,7 @@ export default function BrandKitPage() {
                   type="text"
                   readOnly
                   value="#ff6b4a"
-                  className="w-24 bg-input-bg border border-input-border rounded-xs px-2 py-1.5 text-xs font-mono text-input-text"
+                  className="w-24 bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-2 py-1.5 text-xs font-mono text-input-text"
                 />
                 <span className="text-[10px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                   dimension lines indicate measurement
@@ -908,7 +908,7 @@ function CopyLinkDemo() {
         type="text"
         value={url}
         readOnly
-        className="flex-1 bg-input-bg border border-input-border rounded-xs px-3 py-2 text-xs font-mono text-line"
+        className="flex-1 bg-input-bg backdrop-blur-md border border-input-border rounded-xs px-3 py-2 text-xs font-mono text-line"
       />
       <button
         type="button"

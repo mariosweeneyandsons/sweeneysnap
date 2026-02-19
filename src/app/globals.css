@@ -108,9 +108,9 @@
   --grid-line: color-mix(in srgb, var(--bp-line-500) 5%, transparent);
 
   /* Components */
-  --input-bg: var(--bp-navy-900);
-  --input-border: color-mix(in srgb, var(--bp-line-500) 50%, transparent);
-  --input-text: var(--bp-text-100);
+  --input-bg: color-mix(in srgb, var(--bp-navy-800) 55%, transparent);
+  --input-border: color-mix(in srgb, var(--bp-line-500) 40%, transparent);
+  --input-text: var(--bp-text-50);
   --card-bg: var(--bp-navy-800);
   --card-border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
   --label-color: var(--bp-line-500);
