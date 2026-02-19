@@ -1,21 +1,229 @@
 @import "tailwindcss";
 
+/* ============================================================
+   SWEENEYSNAP DESIGN TOKEN SYSTEM
+   Blueprint Brand Theme — 3-Layer Pipeline
+   ============================================================
+   Layer 1: Primitives (--bp-*)     — Raw palette values
+   Layer 2: Semantic Roles          — UI role mappings
+   Layer 3: @theme inline           — Tailwind utility registration
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   LAYER 1: PRIMITIVES (--bp-* namespace)
+   Internal raw values — not exposed to Tailwind directly
+   ------------------------------------------------------------ */
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  /* Colors — Navy scale */
+  --bp-navy-950: #111d35;
+  --bp-navy-900: #1a2744;
+  --bp-navy-800: #1e2f52;
+  --bp-navy-700: #253a63;
+  --bp-navy-600: #2d4574;
+
+  /* Colors — Line blues */
+  --bp-line-500: #4a7ab5;
+  --bp-line-400: #6b9ad0;
+
+  /* Colors — Text */
+  --bp-text-100: #e8f0ff;
+  --bp-text-50: #ffffff;
+
+  /* Colors — Status */
+  --bp-alert-500: #ff6b4a;
+  --bp-alert-400: #ff8a6f;
+  --bp-success-500: #4ade80;
+  --bp-warning-500: #facc15;
+
+  /* Radii */
+  --bp-radius-xs: 2px;
+  --bp-radius-sm: 4px;
+  --bp-radius-md: 8px;
+  --bp-radius-lg: 12px;
+  --bp-radius-full: 9999px;
+
+  /* Typography — Tracking */
+  --bp-tracking-tight: 0.01em;
+  --bp-tracking-normal: 0.02em;
+  --bp-tracking-label: 0.05em;
+  --bp-tracking-heading: 0.08em;
+
+  /* Borders */
+  --bp-border-thin: 1px;
+  --bp-border-medium: 2px;
+
+  /* Transitions */
+  --bp-duration-fast: 150ms;
+  --bp-duration-normal: 250ms;
+  --bp-duration-slow: 600ms;
+
+  /* --------------------------------------------------------
+     LAYER 2: SEMANTIC ROLES
+     Maps primitives to UI roles
+     -------------------------------------------------------- */
+
+  /* Backgrounds */
+  --background: var(--bp-navy-900);
+  --background-elevated: var(--bp-navy-950);
+  --surface: var(--bp-navy-800);
+  --surface-hover: var(--bp-navy-700);
+  --surface-active: var(--bp-navy-600);
+  --surface-overlay: color-mix(in srgb, var(--bp-navy-900) 95%, transparent);
+
+  /* Foreground */
+  --foreground: var(--bp-text-100);
+  --foreground-emphasis: var(--bp-text-50);
+  --foreground-muted: color-mix(in srgb, var(--bp-text-100) 60%, transparent);
+  --foreground-faint: color-mix(in srgb, var(--bp-text-100) 35%, transparent);
+
+  /* Borders */
+  --border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
+  --border-strong: color-mix(in srgb, var(--bp-line-500) 50%, transparent);
+  --border-focus: var(--bp-text-50);
+  --border-separator: color-mix(in srgb, var(--bp-line-500) 20%, transparent);
+
+  /* Primary */
+  --primary: var(--bp-line-500);
+  --primary-foreground: var(--bp-text-50);
+  --primary-hover: var(--bp-line-400);
+  --primary-active: color-mix(in srgb, var(--bp-line-500) 80%, var(--bp-navy-900));
+
+  /* Secondary */
+  --secondary: color-mix(in srgb, var(--bp-text-50) 10%, transparent);
+  --secondary-foreground: var(--bp-text-100);
+  --secondary-hover: color-mix(in srgb, var(--bp-text-50) 15%, transparent);
+
+  /* Status */
+  --destructive: var(--bp-alert-500);
+  --destructive-foreground: var(--bp-text-50);
+  --success: var(--bp-success-500);
+  --success-bg: color-mix(in srgb, var(--bp-success-500) 10%, var(--bp-navy-900));
+  --warning: var(--bp-warning-500);
+  --warning-bg: color-mix(in srgb, var(--bp-warning-500) 10%, var(--bp-navy-900));
+
+  /* Blueprint-specific */
+  --line: var(--bp-line-500);
+  --line-muted: color-mix(in srgb, var(--bp-line-500) 60%, transparent);
+  --line-faint: color-mix(in srgb, var(--bp-line-500) 20%, transparent);
+  --grid-line: color-mix(in srgb, var(--bp-line-500) 5%, transparent);
+
+  /* Components */
+  --input-bg: var(--bp-navy-900);
+  --input-border: color-mix(in srgb, var(--bp-line-500) 50%, transparent);
+  --input-text: var(--bp-text-100);
+  --card-bg: var(--bp-navy-800);
+  --card-border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
+  --label-color: var(--bp-line-500);
 }
 
+/* ------------------------------------------------------------
+   LAYER 3: @theme inline REGISTRATION
+   Maps semantic tokens → Tailwind utility classes
+   ------------------------------------------------------------ */
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-surface-overlay: var(--surface-overlay);
+
   --color-foreground: var(--foreground);
+  --color-foreground-emphasis: var(--foreground-emphasis);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-faint: var(--foreground-faint);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-focus: var(--border-focus);
+  --color-border-separator: var(--border-separator);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+
+  --color-line: var(--line);
+  --color-line-muted: var(--line-muted);
+  --color-line-faint: var(--line-faint);
+  --color-grid-line: var(--grid-line);
+
+  --color-input-bg: var(--input-bg);
+  --color-input-border: var(--input-border);
+  --color-input-text: var(--input-text);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-label: var(--label-color);
+
+  /* Radii */
+  --radius-xs: var(--bp-radius-xs);
+  --radius-sm: var(--bp-radius-sm);
+  --radius-md: var(--bp-radius-md);
+  --radius-lg: var(--bp-radius-lg);
+  --radius-full: var(--bp-radius-full);
+
+  /* Tracking */
+  --tracking-tight: var(--bp-tracking-tight);
+  --tracking-normal: var(--bp-tracking-normal);
+  --tracking-label: var(--bp-tracking-label);
+  --tracking-heading: var(--bp-tracking-heading);
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ------------------------------------------------------------
+   BASE STYLES
+   ------------------------------------------------------------ */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   UTILITY CLASSES
+   ------------------------------------------------------------ */
+
+/* Blueprint grid-paper background — 40px intervals */
+.bp-grid {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      var(--grid-line) 39px,
+      var(--grid-line) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      var(--grid-line) 39px,
+      var(--grid-line) 40px
+    );
+  background-size: 40px 40px;
+}
+
+/* Blueprint small-caps label style */
+.text-label-caps {
+  font-variant: small-caps;
+  letter-spacing: var(--bp-tracking-label);
+  font-size: 11px;
+  color: var(--label-color);
 }
 
 /* Hide scrollbar on display wall */
