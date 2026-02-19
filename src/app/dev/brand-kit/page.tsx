@@ -63,6 +63,7 @@ const colorGroups = [
       { name: "--line-muted", tw: "border-line-muted", hex: "#4a7ab5/60%" },
       { name: "--line-faint", tw: "border-line-faint", hex: "#4a7ab5/20%" },
       { name: "--grid-line", tw: "bg-grid-line", hex: "#4a7ab5/5%" },
+      { name: "--label-color", tw: "text-label", hex: "#a0c8e8" },
     ],
   },
 ];

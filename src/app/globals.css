@@ -24,6 +24,7 @@
   /* Colors — Line blues */
   --bp-line-500: #4a7ab5;
   --bp-line-400: #6b9ad0;
+  --bp-label-ice: #a0c8e8;
 
   /* Colors — Text */
   --bp-text-100: #e8f0ff;
@@ -113,7 +114,7 @@
   --input-text: var(--bp-text-50);
   --card-bg: var(--bp-navy-800);
   --card-border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
-  --label-color: var(--bp-line-500);
+  --label-color: var(--bp-label-ice);
 }
 
 /* ------------------------------------------------------------
