@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { AdminProfile } from "@/types/database";
 
 interface AdminSidebarProps {
@@ -18,12 +18,11 @@ const navItems = [
 export function AdminSidebar({ profile }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { signOut } = useAuthActions();
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOut();
     router.push("/admin/login");
-    router.refresh();
   };
 
   return (
@@ -56,7 +55,7 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
       </nav>
 
       <div className="border-t border-white/10 pt-4 mt-4">
-        <p className="text-sm text-white/70 mb-2">{profile.display_name}</p>
+        <p className="text-sm text-white/70 mb-2">{profile.displayName}</p>
         <button
           onClick={handleLogout}
           className="text-sm text-white/40 hover:text-white/70 transition-colors"

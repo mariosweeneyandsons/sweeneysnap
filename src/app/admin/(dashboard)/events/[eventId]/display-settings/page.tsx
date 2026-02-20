@@ -1,26 +1,22 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { DisplaySettingsForm } from "@/components/admin/DisplaySettingsForm";
-import { Event } from "@/types/database";
 import Link from "next/link";
 
-interface Props {
-  params: Promise<{ eventId: string }>;
-}
+export default function AdminDisplaySettingsPage() {
+  const { eventId } = useParams<{ eventId: string }>();
+  const event = useQuery(api.events.getById, { id: eventId as Id<"events"> });
 
-export default async function AdminDisplaySettingsPage({ params }: Props) {
-  const { eventId } = await params;
-  const supabase = await createClient();
-
-  const { data: row } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", eventId)
-    .single();
-
-  if (!row) notFound();
-
-  const event = row as unknown as Event;
+  if (event === undefined) {
+    return <div className="text-center py-12 text-white/50">Loading...</div>;
+  }
+  if (!event) {
+    return <div className="text-center py-12 text-white/50">Event not found</div>;
+  }
 
   return (
     <div>

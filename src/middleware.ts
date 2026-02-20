@@ -1,19 +1,9 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+// Convex Auth handles sessions client-side via the ConvexReactClient.
+// Admin route protection is handled in the admin layout component.
+// No server-side middleware needed for auth.
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request);
-}
+export { default } from "next/dist/client/components/noop-head";
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public assets
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: [],
 };

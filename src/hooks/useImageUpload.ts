@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { compressImage } from "@/lib/compression";
-import { uploadSelfie } from "@/lib/storage";
+import { Id } from "../../convex/_generated/dataModel";
 
 type UploadState = "idle" | "compressing" | "uploading" | "saving" | "done" | "error";
 
@@ -11,7 +12,7 @@ interface UseImageUploadReturn {
   state: UploadState;
   progress: string;
   error: string | null;
-  upload: (file: File, eventSlug: string, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
+  upload: (file: File, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -20,9 +21,11 @@ export function useImageUpload(): UseImageUploadReturn {
   const [progress, setProgress] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  const generateUploadUrl = useMutation(api.selfies.generateUploadUrl);
+  const createSelfie = useMutation(api.selfies.create);
+
   const upload = async (
     file: File,
-    eventSlug: string,
     eventId: string,
     displayName?: string,
     message?: string,
@@ -36,15 +39,17 @@ export function useImageUpload(): UseImageUploadReturn {
       setProgress("Compressing image...");
       const compressed = await compressImage(file);
 
-      // Upload to storage
+      // Upload to Convex storage
       setState("uploading");
       setProgress("Uploading...");
-      const supabase = createClient();
-      const { imagePath, imageUrl, fileSizeBytes } = await uploadSelfie(
-        supabase,
-        eventSlug,
-        compressed
-      );
+      const uploadUrl = await generateUploadUrl();
+      const result = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": compressed.type },
+        body: compressed,
+      });
+      if (!result.ok) throw new Error("Upload failed");
+      const { storageId } = await result.json();
 
       // Save to database
       setState("saving");
@@ -60,18 +65,15 @@ export function useImageUpload(): UseImageUploadReturn {
             })())
           : undefined;
 
-      const { error: dbError } = await supabase.from("selfies").insert({
-        event_id: eventId,
-        image_path: imagePath,
-        image_url: imageUrl,
-        display_name: displayName || null,
-        message: message || null,
+      await createSelfie({
+        eventId: eventId as Id<"events">,
+        storageId,
+        displayName: displayName || undefined,
+        message: message || undefined,
         status: moderationEnabled ? "pending" : "approved",
-        file_size_bytes: fileSizeBytes,
-        session_id: sessionId,
+        fileSizeBytes: compressed.size,
+        sessionId,
       });
-
-      if (dbError) throw new Error(dbError.message);
 
       setState("done");
       setProgress("Done!");

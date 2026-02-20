@@ -1,147 +1,28 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+// Application types matching the Convex schema (camelCase)
+// These will be replaced with Doc<"tableName"> once `npx convex dev` generates types
 
-export interface Database {
-  public: {
-    Tables: {
-      presets: {
-        Row: {
-          id: string;
-          name: string;
-          created_by: string | null;
-          upload_config: Json;
-          display_config: Json;
-          logo_url: string | null;
-          primary_color: string;
-          font_family: string;
-          assets: Json;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          created_by?: string | null;
-          upload_config?: Json;
-          display_config?: Json;
-          logo_url?: string | null;
-          primary_color?: string;
-          font_family?: string;
-          assets?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["presets"]["Insert"]>;
-      };
-      events: {
-        Row: {
-          id: string;
-          slug: string;
-          name: string;
-          description: string | null;
-          is_active: boolean;
-          created_by: string | null;
-          preset_id: string | null;
-          crew_token: string;
-          upload_config: Json;
-          display_config: Json;
-          logo_url: string | null;
-          primary_color: string;
-          moderation_enabled: boolean;
-          created_at: string;
-          updated_at: string;
-          starts_at: string | null;
-          ends_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          slug: string;
-          name: string;
-          description?: string | null;
-          is_active?: boolean;
-          created_by?: string | null;
-          preset_id?: string | null;
-          crew_token?: string;
-          upload_config?: Json;
-          display_config?: Json;
-          logo_url?: string | null;
-          primary_color?: string;
-          moderation_enabled?: boolean;
-          created_at?: string;
-          updated_at?: string;
-          starts_at?: string | null;
-          ends_at?: string | null;
-        };
-        Update: Partial<Database["public"]["Tables"]["events"]["Insert"]>;
-      };
-      selfies: {
-        Row: {
-          id: string;
-          event_id: string;
-          image_path: string;
-          image_url: string;
-          display_name: string | null;
-          message: string | null;
-          status: string;
-          session_id: string | null;
-          file_size_bytes: number | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          event_id: string;
-          image_path: string;
-          image_url: string;
-          display_name?: string | null;
-          message?: string | null;
-          status?: string;
-          session_id?: string | null;
-          file_size_bytes?: number | null;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["selfies"]["Insert"]>;
-      };
-      admin_profiles: {
-        Row: {
-          id: string;
-          display_name: string;
-          role: string;
-          created_at: string;
-        };
-        Insert: {
-          id: string;
-          display_name: string;
-          role?: string;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["admin_profiles"]["Insert"]>;
-      };
-    };
-  };
-}
-
-// Application-level types (cast from DB rows)
 export type SelfieStatus = "pending" | "approved" | "rejected";
 
 export interface UploadConfig {
-  max_file_size_mb?: number;
-  allow_gallery?: boolean;
-  require_name?: boolean;
-  require_message?: boolean;
-  welcome_text?: string;
-  button_text?: string;
-  success_text?: string;
+  maxFileSizeMb?: number;
+  allowGallery?: boolean;
+  requireName?: boolean;
+  requireMessage?: boolean;
+  welcomeText?: string;
+  buttonText?: string;
+  successText?: string;
 }
 
 export interface DisplayConfig {
-  grid_columns?: number;
-  swap_interval?: number;
+  gridColumns?: number;
+  swapInterval?: number;
   transition?: "fade" | "slide" | "zoom";
-  background_color?: string;
-  show_names?: boolean;
-  show_messages?: boolean;
-  overlay_opacity?: number;
-  frame_border_color?: string;
-  frame_border_width?: number;
+  backgroundColor?: string;
+  showNames?: boolean;
+  showMessages?: boolean;
+  overlayOpacity?: number;
+  frameBorderColor?: string;
+  frameBorderWidth?: number;
 }
 
 export interface BrandAsset {
@@ -150,26 +31,55 @@ export interface BrandAsset {
   name: string;
 }
 
-// Convenience aliases for DB row types
-export type PresetRow = Database["public"]["Tables"]["presets"]["Row"];
-export type EventRow = Database["public"]["Tables"]["events"]["Row"];
-export type SelfieRow = Database["public"]["Tables"]["selfies"]["Row"];
-export type AdminProfileRow = Database["public"]["Tables"]["admin_profiles"]["Row"];
+interface ConvexDocument {
+  _id: string;
+  _creationTime: number;
+}
 
-// Application types with proper JSONB typing
-export interface Preset extends Omit<PresetRow, "upload_config" | "display_config" | "assets"> {
-  upload_config: UploadConfig;
-  display_config: DisplayConfig;
+export interface AdminProfile extends ConvexDocument {
+  userId?: string;
+  email: string;
+  displayName: string;
+  role: string;
+}
+
+export interface Preset extends ConvexDocument {
+  name: string;
+  createdBy?: string;
+  uploadConfig: UploadConfig;
+  displayConfig: DisplayConfig;
+  logoUrl?: string;
+  primaryColor: string;
+  fontFamily: string;
   assets: BrandAsset[];
+  updatedAt: number;
 }
 
-export interface Event extends Omit<EventRow, "upload_config" | "display_config"> {
-  upload_config: UploadConfig;
-  display_config: DisplayConfig;
+export interface Event extends ConvexDocument {
+  slug: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  createdBy?: string;
+  presetId?: string;
+  crewToken: string;
+  uploadConfig: UploadConfig;
+  displayConfig: DisplayConfig;
+  logoUrl?: string;
+  primaryColor: string;
+  moderationEnabled: boolean;
+  startsAt?: number;
+  endsAt?: number;
+  updatedAt: number;
 }
 
-export interface Selfie extends Omit<SelfieRow, "status"> {
+export interface Selfie extends ConvexDocument {
+  eventId: string;
+  storageId: string;
+  imageUrl: string | null;
+  displayName?: string;
+  message?: string;
   status: SelfieStatus;
+  sessionId?: string;
+  fileSizeBytes?: number;
 }
-
-export type AdminProfile = AdminProfileRow;

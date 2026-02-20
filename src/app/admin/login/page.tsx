@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { Button } from "@/components/ui/Button";
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -15,16 +15,11 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const errorCode = searchParams.get("error");
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] || "An error occurred." : null;
+  const { signIn } = useAuthActions();
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    await signIn("google");
   };
 
   return (

@@ -1,39 +1,34 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { QRCodeDisplay } from "@/components/admin/QRCodeDisplay";
 import { CopyButton } from "@/components/admin/CopyButton";
 import { EventForm } from "@/components/admin/EventForm";
-import { Event } from "@/types/database";
 
-interface Props {
-  params: Promise<{ eventId: string }>;
-}
+export default function EventDetailPage() {
+  const { eventId } = useParams<{ eventId: string }>();
+  const event = useQuery(api.events.getById, { id: eventId as Id<"events"> });
+  const selfieCount = useQuery(
+    api.selfies.countByEvent,
+    event ? { eventId: event._id } : "skip"
+  );
 
-export default async function EventDetailPage({ params }: Props) {
-  const { eventId } = await params;
-  const supabase = await createClient();
-
-  const { data: row } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", eventId)
-    .single();
-
-  if (!row) notFound();
-
-  const event = row as unknown as Event;
-
-  const { count: selfieCount } = await supabase
-    .from("selfies")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", event.id);
+  if (event === undefined) {
+    return <div className="text-center py-12 text-white/50">Loading...</div>;
+  }
+  if (!event) {
+    return <div className="text-center py-12 text-white/50">Event not found</div>;
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const uploadUrl = `${siteUrl}/${event.slug}`;
   const displayUrl = `${siteUrl}/display/${event.slug}`;
-  const crewUrl = `${siteUrl}/crew/${event.crew_token}`;
+  const crewUrl = `${siteUrl}/crew/${event.crewToken}`;
 
   return (
     <div className="space-y-8">
@@ -44,13 +39,13 @@ export default async function EventDetailPage({ params }: Props) {
         </div>
         <div className="flex gap-3">
           <Link
-            href={`/admin/events/${event.id}/moderate`}
+            href={`/admin/events/${event._id}/moderate`}
             className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
           >
-            Moderate ({selfieCount || 0})
+            Moderate ({selfieCount ?? 0})
           </Link>
           <Link
-            href={`/admin/events/${event.id}/display-settings`}
+            href={`/admin/events/${event._id}/display-settings`}
             className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
           >
             Display Settings

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Event, DisplayConfig } from "@/types/database";
+import { Event } from "@/types/database";
 
 interface DisplaySettingsFormProps {
   event: Event;
@@ -14,15 +16,16 @@ interface DisplaySettingsFormProps {
 
 export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProps) {
   const router = useRouter();
-  const config = event.display_config as DisplayConfig;
+  const config = event.displayConfig;
+  const updateDisplayConfig = useMutation(api.events.updateDisplayConfig);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [gridColumns, setGridColumns] = useState(config.grid_columns ?? 3);
-  const [swapInterval, setSwapInterval] = useState(config.swap_interval ?? 6);
-  const [backgroundColor, setBackgroundColor] = useState(config.background_color || "#000000");
-  const [showNames, setShowNames] = useState(config.show_names ?? true);
-  const [showMessages, setShowMessages] = useState(config.show_messages ?? false);
+  const [gridColumns, setGridColumns] = useState(config.gridColumns ?? 3);
+  const [swapInterval, setSwapInterval] = useState(config.swapInterval ?? 6);
+  const [backgroundColor, setBackgroundColor] = useState(config.backgroundColor || "#000000");
+  const [showNames, setShowNames] = useState(config.showNames ?? true);
+  const [showMessages, setShowMessages] = useState(config.showMessages ?? false);
   const [transition, setTransition] = useState<"fade" | "slide" | "zoom">(config.transition || "fade");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,30 +33,27 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const displayConfig: DisplayConfig = {
+    const displayConfig = {
       ...config,
-      grid_columns: gridColumns,
-      swap_interval: swapInterval,
-      background_color: backgroundColor,
-      show_names: showNames,
-      show_messages: showMessages,
+      gridColumns,
+      swapInterval,
+      backgroundColor,
+      showNames,
+      showMessages,
       transition,
     };
 
-    const { error: updateError } = await supabase
-      .from("events")
-      .update({ display_config: displayConfig })
-      .eq("id", event.id);
-
-    if (updateError) {
-      setError(updateError.message);
+    try {
+      await updateDisplayConfig({
+        id: event._id as Id<"events">,
+        displayConfig,
+      });
+      router.push(backHref);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push(backHref);
-    router.refresh();
   };
 
   return (

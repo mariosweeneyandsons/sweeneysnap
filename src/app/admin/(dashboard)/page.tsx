@@ -1,26 +1,12 @@
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
 import Link from "next/link";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 import { Card } from "@/components/ui/Card";
-import { Event } from "@/types/database";
 
-export default async function AdminDashboard() {
-  const supabase = await createClient();
-
-  const { data: rows } = await supabase
-    .from("events")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const events = (rows || []) as unknown as Event[];
-
-  const selfieCounts: Record<string, number> = {};
-  for (const event of events) {
-    const { count } = await supabase
-      .from("selfies")
-      .select("*", { count: "exact", head: true })
-      .eq("event_id", event.id);
-    selfieCounts[event.id] = count || 0;
-  }
+export default function AdminDashboard() {
+  const events = useQuery(api.events.list);
 
   return (
     <div>
@@ -37,7 +23,9 @@ export default async function AdminDashboard() {
         </Link>
       </div>
 
-      {events.length === 0 ? (
+      {!events ? (
+        <div className="text-center py-12 text-white/50">Loading...</div>
+      ) : events.length === 0 ? (
         <Card className="text-center py-12">
           <p className="text-white/50 mb-4">No events yet</p>
           <Link href="/admin/events/new" className="text-white underline hover:no-underline">
@@ -47,7 +35,7 @@ export default async function AdminDashboard() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
-            <Link key={event.id} href={`/admin/events/${event.id}`}>
+            <Link key={event._id} href={`/admin/events/${event._id}`}>
               <Card className="hover:bg-white/10 transition-colors cursor-pointer">
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -56,18 +44,17 @@ export default async function AdminDashboard() {
                   </div>
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                      event.is_active
+                      event.isActive
                         ? "bg-green-500/20 text-green-400"
                         : "bg-white/10 text-white/50"
                     }`}
                   >
-                    {event.is_active ? "Active" : "Inactive"}
+                    {event.isActive ? "Active" : "Inactive"}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-sm text-white/50">
-                  <span>{selfieCounts[event.id] || 0} selfies</span>
-                  {event.starts_at && (
-                    <span>{new Date(event.starts_at).toLocaleDateString()}</span>
+                  {event.startsAt && (
+                    <span>{new Date(event.startsAt).toLocaleDateString()}</span>
                   )}
                 </div>
               </Card>

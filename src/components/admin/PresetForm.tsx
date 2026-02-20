@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
-import { Preset, DisplayConfig } from "@/types/database";
+import { Preset } from "@/types/database";
 
 interface PresetFormProps {
   preset?: Preset;
@@ -14,71 +16,56 @@ interface PresetFormProps {
 
 export function PresetForm({ preset }: PresetFormProps) {
   const router = useRouter();
+  const createPreset = useMutation(api.presets.create);
+  const updatePreset = useMutation(api.presets.update);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [name, setName] = useState(preset?.name || "");
-  const [primaryColor, setPrimaryColor] = useState(preset?.primary_color || "#ffffff");
-  const [fontFamily, setFontFamily] = useState(preset?.font_family || "Inter");
-  const [logoUrl, setLogoUrl] = useState(preset?.logo_url || "");
-  const [gridColumns, setGridColumns] = useState(
-    (preset?.display_config as DisplayConfig)?.grid_columns ?? 3
-  );
-  const [swapInterval, setSwapInterval] = useState(
-    (preset?.display_config as DisplayConfig)?.swap_interval ?? 6
-  );
+  const [primaryColor, setPrimaryColor] = useState(preset?.primaryColor || "#ffffff");
+  const [fontFamily, setFontFamily] = useState(preset?.fontFamily || "Inter");
+  const [logoUrl, setLogoUrl] = useState(preset?.logoUrl || "");
+  const [gridColumns, setGridColumns] = useState(preset?.displayConfig.gridColumns ?? 3);
+  const [swapInterval, setSwapInterval] = useState(preset?.displayConfig.swapInterval ?? 6);
   const [backgroundColor, setBackgroundColor] = useState(
-    (preset?.display_config as DisplayConfig)?.background_color || "#000000"
+    preset?.displayConfig.backgroundColor || "#000000"
   );
-  const [showNames, setShowNames] = useState(
-    (preset?.display_config as DisplayConfig)?.show_names ?? true
-  );
+  const [showNames, setShowNames] = useState(preset?.displayConfig.showNames ?? true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const displayConfig: DisplayConfig = {
-      grid_columns: gridColumns,
-      swap_interval: swapInterval,
-      background_color: backgroundColor,
-      show_names: showNames,
-      transition: "fade",
+    const displayConfig = {
+      gridColumns,
+      swapInterval,
+      backgroundColor,
+      showNames,
+      transition: "fade" as const,
     };
 
     const payload = {
       name,
-      primary_color: primaryColor,
-      font_family: fontFamily,
-      logo_url: logoUrl || null,
-      display_config: displayConfig,
+      primaryColor,
+      fontFamily,
+      logoUrl: logoUrl || undefined,
+      displayConfig,
+      uploadConfig: {},
     };
 
-    if (preset) {
-      const { error: updateError } = await supabase
-        .from("presets")
-        .update(payload)
-        .eq("id", preset.id);
-      if (updateError) {
-        setError(updateError.message);
-        setLoading(false);
-        return;
+    try {
+      if (preset) {
+        await updatePreset({ id: preset._id as Id<"presets">, ...payload });
+      } else {
+        await createPreset(payload);
       }
-    } else {
-      const { error: insertError } = await supabase
-        .from("presets")
-        .insert(payload);
-      if (insertError) {
-        setError(insertError.message);
-        setLoading(false);
-        return;
-      }
+      router.push("/admin/presets");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-
-    router.push("/admin/presets");
-    router.refresh();
   };
 
   return (

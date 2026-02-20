@@ -1,28 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 import { PresetForm } from "@/components/admin/PresetForm";
-import { Preset } from "@/types/database";
 
-interface Props {
-  params: Promise<{ presetId: string }>;
-}
+export default function EditPresetPage() {
+  const { presetId } = useParams<{ presetId: string }>();
+  const preset = useQuery(api.presets.getById, { id: presetId as Id<"presets"> });
 
-export default async function EditPresetPage({ params }: Props) {
-  const { presetId } = await params;
-  const supabase = await createClient();
-
-  const { data: row } = await supabase
-    .from("presets")
-    .select("*")
-    .eq("id", presetId)
-    .single();
-
-  if (!row) notFound();
+  if (preset === undefined) {
+    return <div className="text-center py-12 text-white/50">Loading...</div>;
+  }
+  if (!preset) {
+    return <div className="text-center py-12 text-white/50">Preset not found</div>;
+  }
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-8">Edit Preset</h1>
-      <PresetForm preset={row as unknown as Preset} />
+      <PresetForm preset={preset} />
     </div>
   );
 }

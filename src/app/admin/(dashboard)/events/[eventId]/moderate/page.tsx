@@ -1,25 +1,22 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { ModerationGrid } from "@/components/admin/ModerationGrid";
 import Link from "next/link";
 
-interface Props {
-  params: Promise<{ eventId: string }>;
-}
+export default function AdminModeratePage() {
+  const { eventId } = useParams<{ eventId: string }>();
+  const event = useQuery(api.events.getById, { id: eventId as Id<"events"> });
 
-export default async function AdminModeratePage({ params }: Props) {
-  const { eventId } = await params;
-  const supabase = await createClient();
-
-  const { data } = await supabase
-    .from("events")
-    .select("id, name")
-    .eq("id", eventId)
-    .single();
-
-  if (!data) notFound();
-
-  const event = data as unknown as { id: string; name: string };
+  if (event === undefined) {
+    return <div className="text-center py-12 text-white/50">Loading...</div>;
+  }
+  if (!event) {
+    return <div className="text-center py-12 text-white/50">Event not found</div>;
+  }
 
   return (
     <div>
@@ -31,7 +28,7 @@ export default async function AdminModeratePage({ params }: Props) {
         </Link>
         <h1 className="text-2xl font-bold">Moderate: {event.name}</h1>
       </div>
-      <ModerationGrid eventId={event.id} mode="admin" />
+      <ModerationGrid eventId={event._id} mode="admin" />
     </div>
   );
 }

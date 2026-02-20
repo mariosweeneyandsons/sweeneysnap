@@ -1,19 +1,17 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 
 export function DeletePresetButton({ presetId }: { presetId: string }) {
-  const router = useRouter();
+  const removePreset = useMutation(api.presets.remove);
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!confirm("Delete this preset?")) return;
-
-    const supabase = createClient();
-    await supabase.from("presets").delete().eq("id", presetId);
-    router.refresh();
+    await removePreset({ id: presetId as Id<"presets"> });
   };
 
   return (

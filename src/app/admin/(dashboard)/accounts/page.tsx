@@ -1,59 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { AdminProfile } from "@/types/database";
+import { useState } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 
 export default function AccountsPage() {
-  const [profiles, setProfiles] = useState<AdminProfile[]>([]);
+  const profiles = useQuery(api.adminProfiles.list);
+  const createAdmin = useMutation(api.adminProfiles.create);
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient();
-
-  const fetchProfiles = async () => {
-    const { data } = await supabase
-      .from("admin_profiles")
-      .select("*")
-      .order("created_at", { ascending: true });
-    setProfiles(data || []);
-  };
-
-  useEffect(() => {
-    fetchProfiles();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Create user via admin API (requires service role — we'll call a server action)
-    const res = await fetch("/api/admin/create-account", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, displayName }),
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Failed to create account");
+    try {
+      await createAdmin({ email, displayName });
+      setShowModal(false);
+      setEmail("");
+      setDisplayName("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create account");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setShowModal(false);
-    setEmail("");
-    setDisplayName("");
-    setLoading(false);
-    fetchProfiles();
   };
 
   return (
@@ -64,14 +42,14 @@ export default function AccountsPage() {
       </div>
 
       <div className="grid gap-4">
-        {profiles.map((profile) => (
-          <Card key={profile.id} className="flex items-center justify-between">
+        {(profiles || []).map((profile) => (
+          <Card key={profile._id} className="flex items-center justify-between">
             <div>
-              <p className="font-medium">{profile.display_name}</p>
+              <p className="font-medium">{profile.displayName}</p>
               <p className="text-white/50 text-sm">{profile.role}</p>
             </div>
             <p className="text-white/30 text-sm">
-              {new Date(profile.created_at).toLocaleDateString()}
+              {new Date(profile._creationTime).toLocaleDateString()}
             </p>
           </Card>
         ))}
