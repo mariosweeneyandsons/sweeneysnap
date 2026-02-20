@@ -181,6 +181,11 @@
   --tracking-label: var(--bp-tracking-label);
   --tracking-heading: var(--bp-tracking-heading);
 
+  /* Durations */
+  --duration-fast: var(--bp-duration-fast);
+  --duration-normal: var(--bp-duration-normal);
+  --duration-slow: var(--bp-duration-slow);
+
   /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -225,6 +230,12 @@ body {
   letter-spacing: var(--bp-tracking-label);
   font-size: 11px;
   color: var(--label-color);
+}
+
+/* Brand kit fade-scale animation */
+@keyframes brandkitFadeScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* Hide scrollbar on display wall */

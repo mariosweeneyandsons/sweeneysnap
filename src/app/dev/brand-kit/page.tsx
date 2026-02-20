@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/Spinner";
 
 /* ============================================================
    SWEENEYSNAP BRAND KIT — /dev/brand-kit
@@ -156,6 +157,51 @@ const sampleCopy = [
   },
 ];
 
+const frostedGlassPatterns = [
+  {
+    label: "Sticky Header",
+    description: "Top navigation bar with frosted background for depth separation.",
+    classes: "bg-background/95 backdrop-blur-sm",
+    position: "top" as const,
+  },
+  {
+    label: "Form Inputs",
+    description: "Text inputs with semi-transparent background and subtle blur.",
+    classes: "bg-input-bg backdrop-blur-md",
+    position: "middle" as const,
+  },
+  {
+    label: "Surface Overlay",
+    description: "Full-card overlay for modals, drawers, and elevated panels.",
+    classes: "bg-surface-overlay backdrop-blur-lg",
+    position: "full" as const,
+  },
+];
+
+const durationTokens = [
+  {
+    label: "fast",
+    value: "150ms",
+    tw: "duration-fast",
+    token: "--duration-fast",
+    use: "Hover states, micro-interactions, toggles",
+  },
+  {
+    label: "normal",
+    value: "250ms",
+    tw: "duration-normal",
+    token: "--duration-normal",
+    use: "Panel transitions, dropdowns, focus rings",
+  },
+  {
+    label: "slow",
+    value: "600ms",
+    tw: "duration-slow",
+    token: "--duration-slow",
+    use: "Page entry, hero animations, fade-ins",
+  },
+];
+
 // --------------- Section Components ---------------
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -213,6 +259,7 @@ function ColorSwatch({ token }: { token: { name: string; tw: string; hex: string
 
 export default function BrandKitPage() {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [motionKey, setMotionKey] = useState(0);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -247,14 +294,14 @@ export default function BrandKitPage() {
                 <div className="text-[9px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                   rev
                 </div>
-                <div className="text-xs text-foreground-emphasis font-mono">A</div>
+                <div className="text-xs text-foreground-emphasis font-mono">B</div>
               </div>
               <div className="w-[1px] h-6 bg-border-separator" />
               <div>
                 <div className="text-[9px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                   date
                 </div>
-                <div className="text-xs text-foreground-emphasis font-mono">2026-02-19</div>
+                <div className="text-xs text-foreground-emphasis font-mono">2026-02-20</div>
               </div>
             </div>
           </div>
@@ -859,10 +906,307 @@ export default function BrandKitPage() {
           </div>
         </section>
 
+        {/* ========== 8. FROSTED GLASS & OVERLAYS ========== */}
+        <section>
+          <SectionHeading>8. Frosted Glass &amp; Overlays</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {frostedGlassPatterns.map((pattern) => (
+              <Card key={pattern.label}>
+                <Label>{pattern.label}</Label>
+                <p className="text-sm text-foreground-muted mt-2 mb-4">{pattern.description}</p>
+
+                {/* Visual demo */}
+                <div className="relative h-40 rounded-xs border border-border-separator overflow-hidden bg-background">
+                  {/* Background shapes to show blur effect */}
+                  <div className="absolute top-3 left-4 w-14 h-14 rounded-full bg-primary/60" />
+                  <div className="absolute top-8 left-12 w-20 h-10 rounded-xs bg-success/40" />
+                  <div className="absolute bottom-4 right-4 w-16 h-16 rounded-xs bg-destructive/40 rotate-12" />
+                  <div className="absolute bottom-6 left-6 w-10 h-10 rounded-full bg-warning/50" />
+
+                  {/* Frosted layer */}
+                  {pattern.position === "top" && (
+                    <div className={`absolute inset-x-0 top-0 h-12 ${pattern.classes} border-b border-border`}>
+                      <div className="px-3 py-2 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-foreground-muted" />
+                        <div className="h-2 w-20 rounded-full bg-foreground-faint" />
+                      </div>
+                    </div>
+                  )}
+                  {pattern.position === "middle" && (
+                    <div className="absolute inset-x-4 top-1/2 -translate-y-1/2">
+                      <div className={`${pattern.classes} border border-input-border rounded-xs px-3 py-2`}>
+                        <div className="h-2 w-24 rounded-full bg-foreground-faint" />
+                      </div>
+                    </div>
+                  )}
+                  {pattern.position === "full" && (
+                    <div className={`absolute inset-0 ${pattern.classes} flex items-center justify-center`}>
+                      <div className="bg-card-bg border border-card-border rounded-xs p-4 w-3/4">
+                        <div className="h-2 w-16 rounded-full bg-foreground-muted mb-2" />
+                        <div className="h-2 w-full rounded-full bg-foreground-faint" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                  Classes: <span className="text-line">{pattern.classes}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* ========== 9. MOTION & ANIMATION ========== */}
+        <section>
+          <SectionHeading>9. Motion &amp; Animation</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* Duration tokens */}
+            <Card>
+              <Label>duration tokens</Label>
+              <div className="mt-4 space-y-4">
+                {durationTokens.map((d) => (
+                  <div key={d.label}>
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <span className="text-xs font-mono text-foreground w-14">{d.label}</span>
+                      <span className="text-xs font-mono text-foreground-muted w-12">{d.value}</span>
+                      <span className="text-[10px] font-mono text-line">{d.tw}</span>
+                    </div>
+                    <div className="h-2.5 bg-background rounded-full border border-border-separator overflow-hidden">
+                      <div
+                        className="h-full bg-primary/50 rounded-full"
+                        style={{ width: d.label === "fast" ? "25%" : d.label === "normal" ? "42%" : "100%" }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-foreground-faint mt-1">{d.use}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-[10px] font-mono text-foreground-faint">
+                Token: <span className="text-line">var(--duration-fast)</span> / <span className="text-line">var(--duration-normal)</span> / <span className="text-line">var(--duration-slow)</span>
+              </div>
+            </Card>
+
+            {/* Standard entry animation */}
+            <Card>
+              <div className="flex items-center justify-between mb-1">
+                <Label>standard entry animation</Label>
+                <button
+                  type="button"
+                  onClick={() => setMotionKey((k) => k + 1)}
+                  className="text-[10px] text-line hover:text-foreground-emphasis transition border border-border rounded-xs px-2 py-0.5"
+                  style={{ fontVariant: "small-caps" }}
+                >
+                  replay
+                </button>
+              </div>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Canonical fade-scale pattern: opacity 0&rarr;1, scale 0.95&rarr;1.
+              </p>
+
+              {/* Three demo boxes at different speeds */}
+              <div className="flex gap-4 mb-4">
+                {durationTokens.map((d, i) => (
+                  <div key={`${d.label}-${motionKey}`} className="flex-1 flex flex-col items-center gap-2">
+                    <div
+                      className="w-full h-16 rounded-xs bg-primary/20 border border-primary/40"
+                      style={{
+                        animation: `brandkitFadeScale ${d.value} ease-in-out ${i * 200}ms both`,
+                      }}
+                    />
+                    <span className="text-[10px] font-mono text-foreground-faint">{d.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-background rounded-xs p-3 border border-border-separator">
+                <div className="text-[10px] text-foreground-faint mb-1" style={{ fontVariant: "small-caps" }}>
+                  motion/react snippet
+                </div>
+                <pre className="text-[10px] font-mono text-line leading-relaxed overflow-x-auto">
+{`<motion.div
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{
+    duration: 0.6,
+    ease: "easeInOut",
+  }}
+/>`}
+                </pre>
+              </div>
+            </Card>
+
+            {/* Interaction speeds — full width */}
+            <Card className="lg:col-span-2">
+              <Label>interaction speeds</Label>
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Hover — fast */}
+                <div className="bg-background rounded-xs p-4 border border-border-separator">
+                  <div className="text-[10px] text-foreground-faint mb-3" style={{ fontVariant: "small-caps" }}>
+                    hover &mdash; fast (150ms)
+                  </div>
+                  <button
+                    type="button"
+                    className="w-full bg-primary text-primary-foreground rounded-xs px-4 py-2.5 text-sm font-medium hover:bg-primary-hover transition-colors"
+                    style={{ transitionDuration: "150ms" }}
+                  >
+                    Hover me
+                  </button>
+                  <div className="text-[10px] font-mono text-foreground-faint mt-2">
+                    <span className="text-line">transition-colors duration-fast</span>
+                  </div>
+                </div>
+
+                {/* Panel — normal */}
+                <div className="bg-background rounded-xs p-4 border border-border-separator">
+                  <div className="text-[10px] text-foreground-faint mb-3" style={{ fontVariant: "small-caps" }}>
+                    panel &mdash; normal (250ms)
+                  </div>
+                  <div className="group">
+                    <div
+                      className="w-full bg-surface rounded-xs px-4 py-2.5 text-sm text-foreground border border-card-border cursor-pointer hover:bg-surface-hover hover:border-border-strong transition-all"
+                      style={{ transitionDuration: "250ms" }}
+                    >
+                      Hover to expand
+                    </div>
+                  </div>
+                  <div className="text-[10px] font-mono text-foreground-faint mt-2">
+                    <span className="text-line">transition-all duration-normal</span>
+                  </div>
+                </div>
+
+                {/* Page entry — slow */}
+                <div className="bg-background rounded-xs p-4 border border-border-separator">
+                  <div className="text-[10px] text-foreground-faint mb-3" style={{ fontVariant: "small-caps" }}>
+                    page entry &mdash; slow (600ms)
+                  </div>
+                  <div
+                    key={`page-entry-${motionKey}`}
+                    className="w-full bg-surface rounded-xs px-4 py-2.5 text-sm text-foreground border border-card-border"
+                    style={{
+                      animation: "brandkitFadeScale 600ms ease-in-out both",
+                    }}
+                  >
+                    Fade + scale in
+                  </div>
+                  <div className="text-[10px] font-mono text-foreground-faint mt-2">
+                    <span className="text-line">transition-all duration-slow</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* ========== 10. LOADING STATES ========== */}
+        <section>
+          <SectionHeading>10. Loading States</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Spinner component */}
+            <Card>
+              <Label>spinner component</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Animated SVG spinner in three sizes.
+              </p>
+              <div className="flex items-end gap-6 mb-4">
+                <div className="flex flex-col items-center gap-2">
+                  <Spinner size="sm" />
+                  <span className="text-[10px] font-mono text-foreground-faint">sm — 16px</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Spinner size="md" />
+                  <span className="text-[10px] font-mono text-foreground-faint">md — 32px</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Spinner size="lg" />
+                  <span className="text-[10px] font-mono text-foreground-faint">lg — 48px</span>
+                </div>
+              </div>
+              <div className="bg-background rounded-xs p-3 border border-border-separator">
+                <pre className="text-[10px] font-mono text-line leading-relaxed">
+{`import { Spinner } from
+  "@/components/ui/Spinner";
+
+<Spinner size="sm" />
+<Spinner size="md" />
+<Spinner size="lg" />`}
+                </pre>
+              </div>
+            </Card>
+
+            {/* Button loading state */}
+            <Card>
+              <Label>button loading states</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Inline spinner with disabled state for async actions.
+              </p>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  disabled
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xs px-4 py-2.5 text-sm font-medium opacity-70 cursor-not-allowed"
+                >
+                  <Spinner size="sm" />
+                  Uploading…
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="w-full flex items-center justify-center gap-2 bg-secondary text-secondary-foreground rounded-xs px-4 py-2.5 text-sm font-medium border border-border opacity-70 cursor-not-allowed"
+                >
+                  <Spinner size="sm" />
+                  Saving…
+                </button>
+              </div>
+              <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                Pattern: <span className="text-line">{`<Spinner size="sm" />`}</span> + <span className="text-line">disabled opacity-70</span>
+              </div>
+            </Card>
+
+            {/* Skeleton placeholders */}
+            <Card>
+              <Label>skeleton placeholders</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Pulsing placeholder blocks for content loading.
+              </p>
+              <div className="space-y-4">
+                {/* Card skeleton */}
+                <div className="bg-background rounded-xs p-4 border border-border-separator">
+                  <div className="text-[10px] text-foreground-faint mb-2" style={{ fontVariant: "small-caps" }}>
+                    card skeleton
+                  </div>
+                  <div className="space-y-3 animate-pulse">
+                    <div className="h-24 bg-surface rounded-xs" />
+                    <div className="h-3 bg-surface rounded-full w-3/4" />
+                    <div className="h-3 bg-surface rounded-full w-1/2" />
+                  </div>
+                </div>
+
+                {/* Text skeleton */}
+                <div className="bg-background rounded-xs p-4 border border-border-separator">
+                  <div className="text-[10px] text-foreground-faint mb-2" style={{ fontVariant: "small-caps" }}>
+                    text skeleton
+                  </div>
+                  <div className="space-y-2 animate-pulse">
+                    <div className="h-3 bg-surface rounded-full" />
+                    <div className="h-3 bg-surface rounded-full w-5/6" />
+                    <div className="h-3 bg-surface rounded-full w-2/3" />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                Class: <span className="text-line">animate-pulse</span> + <span className="text-line">bg-surface rounded-xs</span>
+              </div>
+            </Card>
+          </div>
+        </section>
+
         {/* Footer */}
         <div className="border-t border-border-separator pt-6 pb-10 text-center">
           <div className="text-[10px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
-            sweeneysnap brand kit &mdash; rev a &mdash; 2026-02-19
+            sweeneysnap brand kit &mdash; rev b &mdash; 2026-02-20
           </div>
           <div className="text-[10px] text-foreground-faint mt-1">
             Sweeney &amp; Sons
