@@ -10,8 +10,8 @@ interface SelfieFrameProps {
 }
 
 export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
-  const borderColor = config.frame_border_color || "rgba(255,255,255,0.1)";
-  const borderWidth = config.frame_border_width ?? 2;
+  const borderColor = config.frameBorderColor || "rgba(255,255,255,0.1)";
+  const borderWidth = config.frameBorderWidth ?? 2;
 
   return (
     <div
@@ -23,7 +23,7 @@ export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
       <AnimatePresence mode="wait">
         {selfie ? (
           <motion.div
-            key={selfie.id}
+            key={selfie._id}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
@@ -32,20 +32,20 @@ export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={selfie.image_url}
-              alt={selfie.display_name || `Selfie ${index + 1}`}
+              src={selfie.imageUrl || ""}
+              alt={selfie.displayName || `Selfie ${index + 1}`}
               className="w-full h-full object-cover"
               loading="eager"
             />
-            {(config.show_names && selfie.display_name) && (
+            {(config.showNames && selfie.displayName) && (
               <div
                 className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent"
-                style={{ opacity: config.overlay_opacity ?? 0.8 }}
+                style={{ opacity: config.overlayOpacity ?? 0.8 }}
               >
                 <p className="text-white font-medium text-sm truncate">
-                  {selfie.display_name}
+                  {selfie.displayName}
                 </p>
-                {config.show_messages && selfie.message && (
+                {config.showMessages && selfie.message && (
                   <p className="text-white/70 text-xs truncate">{selfie.message}</p>
                 )}
               </div>

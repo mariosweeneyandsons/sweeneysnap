@@ -1,44 +1,44 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { CopyButton } from "@/components/admin/CopyButton";
-import { Event } from "@/types/database";
 
-interface Props {
-  params: Promise<{ token: string }>;
-}
+export default function CrewDashboardPage() {
+  const { token } = useParams<{ token: string }>();
+  const event = useQuery(api.events.getByCrewToken, { token });
 
-export default async function CrewDashboardPage({ params }: Props) {
-  const { token } = await params;
-  const supabase = await createClient();
+  const totalSelfies = useQuery(
+    api.selfies.countByEvent,
+    event ? { eventId: event._id } : "skip"
+  );
+  const pendingSelfies = useQuery(
+    api.selfies.countByEventAndStatus,
+    event ? { eventId: event._id, status: "pending" as const } : "skip"
+  );
+  const approvedSelfies = useQuery(
+    api.selfies.countByEventAndStatus,
+    event ? { eventId: event._id, status: "approved" as const } : "skip"
+  );
 
-  const { data: row } = await supabase
-    .from("events")
-    .select("*")
-    .eq("crew_token", token)
-    .single();
+  if (event === undefined) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Loading...</p>
+      </main>
+    );
+  }
 
-  if (!row) notFound();
-
-  const event = row as unknown as Event;
-
-  const { count: totalSelfies } = await supabase
-    .from("selfies")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", event.id);
-
-  const { count: pendingSelfies } = await supabase
-    .from("selfies")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", event.id)
-    .eq("status", "pending");
-
-  const { count: approvedSelfies } = await supabase
-    .from("selfies")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", event.id)
-    .eq("status", "approved");
+  if (!event) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Event not found</p>
+      </main>
+    );
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const uploadUrl = `${siteUrl}/${event.slug}`;
@@ -52,27 +52,27 @@ export default async function CrewDashboardPage({ params }: Props) {
           <h1 className="text-2xl font-bold">{event.name}</h1>
           <span
             className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-              event.is_active
+              event.isActive
                 ? "bg-green-500/20 text-green-400"
                 : "bg-white/10 text-white/50"
             }`}
           >
-            {event.is_active ? "Live" : "Inactive"}
+            {event.isActive ? "Live" : "Inactive"}
           </span>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <Card className="text-center">
-            <p className="text-3xl font-bold">{totalSelfies || 0}</p>
+            <p className="text-3xl font-bold">{totalSelfies ?? 0}</p>
             <p className="text-white/50 text-sm">Total</p>
           </Card>
           <Card className="text-center">
-            <p className="text-3xl font-bold text-yellow-400">{pendingSelfies || 0}</p>
+            <p className="text-3xl font-bold text-yellow-400">{pendingSelfies ?? 0}</p>
             <p className="text-white/50 text-sm">Pending</p>
           </Card>
           <Card className="text-center">
-            <p className="text-3xl font-bold text-green-400">{approvedSelfies || 0}</p>
+            <p className="text-3xl font-bold text-green-400">{approvedSelfies ?? 0}</p>
             <p className="text-white/50 text-sm">Approved</p>
           </Card>
         </div>

@@ -10,8 +10,8 @@ interface SelfieGridProps {
 }
 
 export function SelfieGrid({ selfies, config }: SelfieGridProps) {
-  const columns = config.grid_columns || 3;
-  const swapInterval = (config.swap_interval || 6) * 1000;
+  const columns = config.gridColumns || 3;
+  const swapInterval = (config.swapInterval || 6) * 1000;
   const totalSlots = columns * columns;
 
   // Visible frames — what's currently showing on screen
@@ -31,7 +31,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
     for (let i = 0; i < totalSlots; i++) {
       if (i < selfies.length) {
         initial.push(selfies[i]);
-        ids.add(selfies[i].id);
+        ids.add(selfies[i]._id);
       } else {
         initial.push(null);
       }
@@ -55,8 +55,8 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
 
       // Remove old from visible set, add new
       const old = next[slotIndex];
-      if (old) visibleIdsRef.current.delete(old.id);
-      visibleIdsRef.current.add(nextSelfie.id);
+      if (old) visibleIdsRef.current.delete(old._id);
+      visibleIdsRef.current.add(nextSelfie._id);
       next[slotIndex] = nextSelfie;
 
       return next;
@@ -73,23 +73,23 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
   useEffect(() => {
     if (selfies.length === 0) return;
     const newest = selfies[0];
-    if (visibleIdsRef.current.has(newest.id)) return;
+    if (visibleIdsRef.current.has(newest._id)) return;
 
     setVisibleSelfies((prev) => {
       const emptyIndex = prev.findIndex((s) => s === null);
       if (emptyIndex !== -1) {
         const next = [...prev];
         next[emptyIndex] = newest;
-        visibleIdsRef.current.add(newest.id);
+        visibleIdsRef.current.add(newest._id);
         return next;
       }
       // No empty slot — replace a random one
       const slotIndex = Math.floor(Math.random() * totalSlots);
       const next = [...prev];
       const old = next[slotIndex];
-      if (old) visibleIdsRef.current.delete(old.id);
+      if (old) visibleIdsRef.current.delete(old._id);
       next[slotIndex] = newest;
-      visibleIdsRef.current.add(newest.id);
+      visibleIdsRef.current.add(newest._id);
       return next;
     });
   }, [selfies, totalSlots]);
@@ -100,7 +100,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
       style={{
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
         gridTemplateRows: `repeat(${columns}, 1fr)`,
-        backgroundColor: config.background_color || "#000000",
+        backgroundColor: config.backgroundColor || "#000000",
       }}
     >
       {visibleSelfies.map((selfie, i) => (

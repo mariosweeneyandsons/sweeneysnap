@@ -1,25 +1,30 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import { ModerationGrid } from "@/components/admin/ModerationGrid";
 import Link from "next/link";
 
-interface Props {
-  params: Promise<{ token: string }>;
-}
+export default function CrewModeratePage() {
+  const { token } = useParams<{ token: string }>();
+  const event = useQuery(api.events.getByCrewToken, { token });
 
-export default async function CrewModeratePage({ params }: Props) {
-  const { token } = await params;
-  const supabase = await createClient();
+  if (event === undefined) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Loading...</p>
+      </main>
+    );
+  }
 
-  const { data: row } = await supabase
-    .from("events")
-    .select("*")
-    .eq("crew_token", token)
-    .single();
-
-  if (!row) notFound();
-
-  const event = row as unknown as { id: string; name: string };
+  if (!event) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Event not found</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-dvh bg-black text-white p-6">
@@ -32,7 +37,7 @@ export default async function CrewModeratePage({ params }: Props) {
           </Link>
           <h1 className="text-2xl font-bold">Moderate: {event.name}</h1>
         </div>
-        <ModerationGrid eventId={event.id} mode="crew" />
+        <ModerationGrid eventId={event._id} mode="crew" />
       </div>
     </main>
   );

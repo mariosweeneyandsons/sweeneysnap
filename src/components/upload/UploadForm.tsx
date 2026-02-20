@@ -7,14 +7,14 @@ import { UploadSuccess } from "./UploadSuccess";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Event, UploadConfig } from "@/types/database";
+import { Event } from "@/types/database";
 
 interface UploadFormProps {
   event: Event;
 }
 
 export function UploadForm({ event }: UploadFormProps) {
-  const config = event.upload_config as UploadConfig;
+  const config = event.uploadConfig;
   const { state, progress, error, upload, reset } = useImageUpload();
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState("");
@@ -28,7 +28,7 @@ export function UploadForm({ event }: UploadFormProps) {
 
   const handleSubmit = async () => {
     if (!capturedFile) return;
-    await upload(capturedFile, event.slug, event.id, displayName, message, event.moderation_enabled);
+    await upload(capturedFile, event._id, displayName, message, event.moderationEnabled);
   };
 
   const handleRetake = () => {
@@ -49,8 +49,8 @@ export function UploadForm({ event }: UploadFormProps) {
   if (state === "done") {
     return (
       <UploadSuccess
-        successText={config.success_text}
-        moderationEnabled={event.moderation_enabled}
+        successText={config.successText}
+        moderationEnabled={event.moderationEnabled}
         onUploadAnother={handleUploadAnother}
       />
     );
@@ -73,7 +73,7 @@ export function UploadForm({ event }: UploadFormProps) {
         </div>
       )}
 
-      {(config.require_name !== false) && (
+      {(config.requireName !== false) && (
         <Input
           label="Your Name"
           placeholder="Enter your name"
@@ -82,7 +82,7 @@ export function UploadForm({ event }: UploadFormProps) {
         />
       )}
 
-      {config.require_message && (
+      {config.requireMessage && (
         <Input
           label="Message"
           placeholder="Say something!"
@@ -97,7 +97,7 @@ export function UploadForm({ event }: UploadFormProps) {
 
       <div className="flex gap-3 w-full">
         <Button onClick={handleSubmit} size="lg" className="flex-1">
-          {config.button_text || "Upload Selfie"}
+          {config.buttonText || "Upload Selfie"}
         </Button>
         <Button onClick={handleRetake} variant="ghost" size="lg">
           Retake

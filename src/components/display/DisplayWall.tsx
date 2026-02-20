@@ -1,20 +1,18 @@
 "use client";
 
-import { useRealtimeSelfies } from "@/hooks/useRealtimeSelfies";
 import { SelfieGrid } from "./SelfieGrid";
 import { EmptyState } from "./EmptyState";
 import { DisplayOverlay } from "./DisplayOverlay";
-import { Event, Selfie, DisplayConfig } from "@/types/database";
+import { Event, Selfie } from "@/types/database";
 import { useEffect } from "react";
 
 interface DisplayWallProps {
   event: Event;
-  initialSelfies: Selfie[];
+  selfies: Selfie[];
 }
 
-export function DisplayWall({ event, initialSelfies }: DisplayWallProps) {
-  const config = event.display_config as DisplayConfig;
-  const selfies = useRealtimeSelfies(event.id, initialSelfies);
+export function DisplayWall({ event, selfies }: DisplayWallProps) {
+  const config = event.displayConfig;
 
   // Auto-hide cursor after 3s of inactivity
   useEffect(() => {
@@ -39,7 +37,7 @@ export function DisplayWall({ event, initialSelfies }: DisplayWallProps) {
   return (
     <div
       className="fixed inset-0 overflow-hidden"
-      style={{ backgroundColor: config.background_color || "#000000" }}
+      style={{ backgroundColor: config.backgroundColor || "#000000" }}
     >
       <DisplayOverlay event={event} />
       {selfies.length === 0 ? (

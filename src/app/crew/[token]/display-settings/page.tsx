@@ -1,26 +1,30 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import { DisplaySettingsForm } from "@/components/admin/DisplaySettingsForm";
-import { Event } from "@/types/database";
 import Link from "next/link";
 
-interface Props {
-  params: Promise<{ token: string }>;
-}
+export default function CrewDisplaySettingsPage() {
+  const { token } = useParams<{ token: string }>();
+  const event = useQuery(api.events.getByCrewToken, { token });
 
-export default async function CrewDisplaySettingsPage({ params }: Props) {
-  const { token } = await params;
-  const supabase = await createClient();
+  if (event === undefined) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Loading...</p>
+      </main>
+    );
+  }
 
-  const { data: row } = await supabase
-    .from("events")
-    .select("*")
-    .eq("crew_token", token)
-    .single();
-
-  if (!row) notFound();
-
-  const event = row as unknown as Event;
+  if (!event) {
+    return (
+      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+        <p className="text-white/50">Event not found</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-dvh bg-black text-white p-6">
