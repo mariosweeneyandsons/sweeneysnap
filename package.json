@@ -9,9 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth/core": "^0.37.4",
+    "@convex-dev/auth": "^0.0.90",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",
     "browser-image-compression": "^2.0.2",
+    "convex": "^1.32.0",
     "motion": "^12.34.2",
     "next": "16.1.6",
     "qrcode.react": "^4.2.0",
