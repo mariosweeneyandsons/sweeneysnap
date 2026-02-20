@@ -859,31 +859,6 @@ export default function BrandKitPage() {
           </div>
         </section>
 
-        {/* ========== 8. GRID PAPER BACKGROUND ========== */}
-        <section>
-          <SectionHeading>8. Grid Paper Background</SectionHeading>
-          <Card>
-            <Label>bp-grid utility class</Label>
-            <p className="text-sm text-foreground-muted mt-2 mb-4">
-              The signature Blueprint grid-paper background. 40px intervals, blue gridlines at 5% opacity.
-              Applied with the <span className="font-mono text-line">.bp-grid</span> utility class.
-            </p>
-            <div className="bg-background bp-grid rounded-xs border border-border-strong h-48 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-sm text-foreground-muted" style={{ fontVariant: "small-caps" }}>
-                  40px grid interval
-                </div>
-                <div className="text-[10px] font-mono text-foreground-faint mt-1">
-                  background: repeating-linear-gradient at 5% opacity
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 text-[10px] font-mono text-foreground-faint">
-              Usage: <span className="text-line">&lt;div className=&quot;bp-grid&quot;&gt;</span>
-            </div>
-          </Card>
-        </section>
-
         {/* Footer */}
         <div className="border-t border-border-separator pt-6 pb-10 text-center">
           <div className="text-[10px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
