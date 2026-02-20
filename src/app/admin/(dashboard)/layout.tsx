@@ -23,7 +23,8 @@ export default async function AdminLayout({
     .single();
 
   if (!profile) {
-    redirect("/admin/login");
+    await supabase.auth.signOut();
+    redirect("/admin/login?error=no_admin_profile");
   }
 
   return (

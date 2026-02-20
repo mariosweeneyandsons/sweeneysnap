@@ -12,7 +12,6 @@ export default function AccountsPage() {
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +39,7 @@ export default function AccountsPage() {
     const res = await fetch("/api/admin/create-account", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, displayName }),
+      body: JSON.stringify({ email, displayName }),
     });
 
     if (!res.ok) {
@@ -52,7 +51,6 @@ export default function AccountsPage() {
 
     setShowModal(false);
     setEmail("");
-    setPassword("");
     setDisplayName("");
     setLoading(false);
     fetchProfiles();
@@ -88,19 +86,11 @@ export default function AccountsPage() {
             required
           />
           <Input
-            label="Email"
+            label="Google Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-          />
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
           />
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <div className="flex gap-3 justify-end mt-2">

@@ -20,22 +20,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { email, password, displayName } = await request.json();
+  const { email, displayName } = await request.json();
 
-  if (!email || !password || !displayName) {
+  if (!email || !displayName) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  // Use service role to create the user
+  // Use service role to create the admin profile entry
   const adminClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
+  // Look up existing user by email, or create a placeholder
+  const { data: existingUsers } = await adminClient.auth.admin.listUsers();
+  const existingUser = existingUsers?.users?.find((u) => u.email === email);
+
+  if (existingUser) {
+    // User already exists in auth — just create the admin profile
+    const { error: profileError } = await adminClient
+      .from("admin_profiles")
+      .insert({
+        id: existingUser.id,
+        display_name: displayName,
+        role: "super_admin",
+      });
+
+    if (profileError) {
+      return NextResponse.json({ error: profileError.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ success: true });
+  }
+
+  // User doesn't exist yet — create a placeholder that will be linked on first Google sign-in
   const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
     email,
-    password,
     email_confirm: true,
   });
 
@@ -56,10 +77,7 @@ export async function POST(request: NextRequest) {
     });
 
   if (profileError) {
-    return NextResponse.json(
-      { error: profileError.message },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: profileError.message }, { status: 400 });
   }
 
   return NextResponse.json({ success: true });
