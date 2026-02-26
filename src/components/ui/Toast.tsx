@@ -96,7 +96,7 @@ function ToastContainer({
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 80, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className={`flex items-start gap-3 rounded-lg border border-border bg-surface p-3 shadow-lg border-l-4 ${typeStyles[t.type]}`}
+            className={`flex items-start gap-3 rounded-xs border border-border bg-surface p-3 border-l-4 ${typeStyles[t.type]}`}
           >
             <svg
               className="w-5 h-5 shrink-0 mt-0.5"
