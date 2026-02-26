@@ -49,7 +49,7 @@ export function PrintQueueView({ eventId }: PrintQueueViewProps) {
       {jobs.map((job) => (
         <div
           key={job._id}
-          className="flex items-center gap-4 p-3 rounded-lg bg-card-bg border border-border-separator"
+          className="flex items-center gap-4 p-3 rounded-xs bg-card-bg border border-border-separator"
         >
           {job.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element

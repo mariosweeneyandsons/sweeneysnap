@@ -96,17 +96,17 @@ function SortableEventCard({
               </div>
               <div className="flex items-center gap-2">
                 {event.archived && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-foreground-faint">
+                  <span className="px-2 py-0.5 rounded-xs text-xs font-medium bg-secondary text-foreground-faint">
                     Archived
                   </span>
                 )}
                 {scheduleBadge && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${scheduleBadge.color}`}>
+                  <span className={`px-2 py-0.5 rounded-xs text-xs font-medium ${scheduleBadge.color}`}>
                     {scheduleBadge.label}
                   </span>
                 )}
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                  className={`px-2 py-0.5 rounded-xs text-xs font-medium ${
                     event.isActive
                       ? "bg-success-bg text-success"
                       : "bg-secondary text-foreground-faint"

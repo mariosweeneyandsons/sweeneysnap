@@ -220,7 +220,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
               setFilter(tab.value);
               setSelectedIds(new Set());
             }}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xs text-sm font-medium transition-colors flex items-center gap-1.5 ${
               filter === tab.value
                 ? "bg-foreground text-background"
                 : "bg-secondary text-foreground-muted hover:text-foreground"
@@ -228,7 +228,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
           >
             {tab.label}
             <span
-              className={`text-xs px-1.5 py-0.5 rounded-full ${
+              className={`text-xs px-1.5 py-0.5 rounded-xs ${
                 filter === tab.value
                   ? "bg-secondary text-foreground-muted"
                   : "bg-secondary text-foreground-faint"
@@ -264,7 +264,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
           {selfies.map((selfie, idx) => (
             <div
               key={selfie._id}
-              className={`rounded-xl border overflow-hidden bg-input-bg transition-colors ${
+              className={`rounded-xs border overflow-hidden bg-input-bg transition-colors ${
                 idx === selectedIndex
                   ? "ring-2 ring-primary border-primary"
                   : selectedIds.has(selfie._id)
@@ -286,7 +286,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
                 {/* AI Flagged badge */}
                 {selfie.aiModeration?.flagged && (
                   <span
-                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-xs font-medium bg-warning text-background"
+                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-xs text-xs font-medium bg-warning text-background"
                     title={`AI flagged: ${selfie.aiModeration.categories.join(", ")} (${Math.round(selfie.aiModeration.confidence * 100)}% confidence)`}
                   >
                     AI Flagged
@@ -370,7 +370,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
 
       {/* Floating bulk action bar */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xl px-5 py-3 flex items-center gap-4 shadow-2xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xs px-5 py-3 flex items-center gap-4 shadow-2xl">
           <span className="text-sm text-foreground-muted font-medium">
             {selectedIds.size} selected
           </span>

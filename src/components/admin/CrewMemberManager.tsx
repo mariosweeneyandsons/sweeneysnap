@@ -80,7 +80,7 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
             <select
               value={newPermission}
               onChange={(e) => setNewPermission(e.target.value as Permission)}
-              className="rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
+              className="rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
             >
               <option value="moderator" className="bg-surface">Moderator</option>
               <option value="viewer" className="bg-surface">Viewer</option>
@@ -106,7 +106,7 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
                   <div className="flex items-center gap-2">
                     <p className="font-medium truncate">{member.name}</p>
                     <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                      className={`px-2 py-0.5 rounded-xs text-xs font-medium ${
                         member.permission === "moderator"
                           ? "bg-info-bg text-info"
                           : "bg-secondary text-foreground-faint"
