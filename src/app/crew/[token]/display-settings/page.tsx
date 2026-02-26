@@ -12,25 +12,25 @@ export default function CrewDisplaySettingsPage() {
 
   if (event === undefined) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
-        <p className="text-white/50">Loading...</p>
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
+        <p className="text-foreground-muted">Loading...</p>
       </main>
     );
   }
 
   if (!event) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
-        <p className="text-white/50">Event not found</p>
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
+        <p className="text-foreground-muted">Event not found</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-dvh bg-black text-white p-6">
+    <main className="min-h-dvh bg-background text-foreground p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Link href={`/crew/${token}`} className="text-white/50 hover:text-white transition-colors">
+          <Link href={`/crew/${token}`} className="text-foreground-muted hover:text-foreground transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>

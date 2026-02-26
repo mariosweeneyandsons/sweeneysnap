@@ -9,10 +9,10 @@ interface ActivityLogProps {
 }
 
 const ACTION_LABELS: Record<string, { label: string; color: string }> = {
-  approve: { label: "Approved", color: "text-green-400" },
-  reject: { label: "Rejected", color: "text-red-400" },
-  reset: { label: "Reset to Pending", color: "text-yellow-400" },
-  delete: { label: "Deleted", color: "text-red-500" },
+  approve: { label: "Approved", color: "text-success" },
+  reject: { label: "Rejected", color: "text-destructive" },
+  reset: { label: "Reset to Pending", color: "text-warning" },
+  delete: { label: "Deleted", color: "text-destructive" },
 };
 
 export function ActivityLog({ eventId }: ActivityLogProps) {
@@ -21,35 +21,34 @@ export function ActivityLog({ eventId }: ActivityLogProps) {
   });
 
   if (logs === undefined) {
-    return <p className="text-white/50 text-sm">Loading activity log...</p>;
+    return <p className="text-foreground-muted text-sm">Loading activity log...</p>;
   }
 
   if (logs.length === 0) {
-    return <p className="text-white/40 text-sm">No crew activity yet.</p>;
+    return <p className="text-foreground-muted text-sm">No crew activity yet.</p>;
   }
 
   return (
     <div className="space-y-2">
       {logs.map((log) => {
-        const actionInfo = ACTION_LABELS[log.action] || { label: log.action, color: "text-white/60" };
+        const actionInfo = ACTION_LABELS[log.action] || { label: log.action, color: "text-foreground-muted" };
         const timeAgo = getTimeAgo(log.timestamp);
         const actor = log.crewMemberName || "Legacy Crew";
 
         return (
           <div
             key={log._id}
-            className="flex items-center gap-3 py-2 px-3 rounded-lg bg-white/5 text-sm"
+            className="flex items-center gap-3 py-2 px-3 rounded-xs bg-secondary text-sm"
           >
             <div className="w-2 h-2 rounded-full shrink-0" style={{
-              backgroundColor: actionInfo.color === "text-green-400" ? "#4ade80"
-                : actionInfo.color === "text-red-400" ? "#f87171"
-                : actionInfo.color === "text-red-500" ? "#ef4444"
-                : "#facc15",
+              backgroundColor: actionInfo.color === "text-success" ? "var(--success)"
+                : actionInfo.color === "text-destructive" ? "var(--destructive)"
+                : "var(--warning)",
             }} />
-            <span className="text-white/70 font-medium">{actor}</span>
+            <span className="text-foreground font-medium">{actor}</span>
             <span className={actionInfo.color}>{actionInfo.label}</span>
-            <span className="text-white/30">a selfie</span>
-            <span className="ml-auto text-white/30 text-xs shrink-0">{timeAgo}</span>
+            <span className="text-foreground-muted">a selfie</span>
+            <span className="ml-auto text-foreground-muted text-xs shrink-0">{timeAgo}</span>
           </div>
         );
       })}
