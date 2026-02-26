@@ -6,10 +6,12 @@ import { api } from "../../../convex/_generated/api";
 import { UploadForm } from "@/components/upload/UploadForm";
 import { EventThemeProvider } from "@/components/EventThemeProvider";
 import { deriveBackground, deriveTextColor } from "@/lib/color-utils";
+import { useServiceWorker } from "@/hooks/useServiceWorker";
 
 export default function UploadPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>();
   const event = useQuery(api.events.getBySlug, { slug: eventSlug });
+  useServiceWorker();
 
   if (event === undefined) {
     return (
