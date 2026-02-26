@@ -13,6 +13,9 @@ import type * as aiModeration from "../aiModeration.js";
 import type * as analytics from "../analytics.js";
 import type * as auth from "../auth.js";
 import type * as brandAssets from "../brandAssets.js";
+import type * as crewActivityLog from "../crewActivityLog.js";
+import type * as crewLib from "../crewLib.js";
+import type * as crewMembers from "../crewMembers.js";
 import type * as crons from "../crons.js";
 import type * as eventScheduler from "../eventScheduler.js";
 import type * as events from "../events.js";
@@ -22,6 +25,8 @@ import type * as presets from "../presets.js";
 import type * as selfies from "../selfies.js";
 import type * as sessions from "../sessions.js";
 import type * as validators from "../validators.js";
+import type * as webhookDispatch from "../webhookDispatch.js";
+import type * as webhooks from "../webhooks.js";
 
 import type {
   ApiFromModules,
@@ -35,6 +40,9 @@ declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   auth: typeof auth;
   brandAssets: typeof brandAssets;
+  crewActivityLog: typeof crewActivityLog;
+  crewLib: typeof crewLib;
+  crewMembers: typeof crewMembers;
   crons: typeof crons;
   eventScheduler: typeof eventScheduler;
   events: typeof events;
@@ -44,6 +52,8 @@ declare const fullApi: ApiFromModules<{
   selfies: typeof selfies;
   sessions: typeof sessions;
   validators: typeof validators;
+  webhookDispatch: typeof webhookDispatch;
+  webhooks: typeof webhooks;
 }>;
 
 /**

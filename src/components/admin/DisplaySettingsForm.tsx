@@ -14,6 +14,7 @@ interface DisplaySettingsFormProps {
   event: Event;
   backHref: string;
   onConfigChange?: (config: DisplayConfig) => void;
+  crewToken?: string;
 }
 
 const selectClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
@@ -21,7 +22,7 @@ const inputClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2
 const labelClass = "block text-sm font-medium text-foreground-muted mb-1";
 const sectionClass = "border-t border-border pt-4";
 
-export function DisplaySettingsForm({ event, backHref, onConfigChange }: DisplaySettingsFormProps) {
+export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken }: DisplaySettingsFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const config = event.displayConfig;
@@ -90,6 +91,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
           backgroundImageId?: Id<"_storage">;
           backgroundVideoId?: Id<"_storage">;
         },
+        crewToken,
       });
       toast("Display settings saved", "success");
       router.push(backHref);

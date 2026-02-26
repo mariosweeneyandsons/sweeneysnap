@@ -58,7 +58,7 @@ export const moderateWithAi = internalAction({
       );
 
       if (!response.ok) {
-        console.error("OpenAI API error:", response.status, await response.text());
+        console.error("OpenAI API error:", response.status);
         return;
       }
 

@@ -5,6 +5,7 @@ import { requireAdmin } from "./lib";
 export const generateUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -145,7 +146,7 @@ export const listByEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
-    if (!event) return [];
+    if (!event || !event.isActive) return [];
     return event.assets || [];
   },
 });

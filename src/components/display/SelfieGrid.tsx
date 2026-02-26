@@ -151,7 +151,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
             className="relative w-full h-full max-w-[80vh] mx-auto rounded-2xl overflow-hidden shadow-2xl ring-4"
-            style={{ ringColor: "var(--primary-color, #ffffff)" }}
+            style={{ "--tw-ring-color": "var(--primary-color, #ffffff)" } as React.CSSProperties}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

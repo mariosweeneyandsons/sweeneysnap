@@ -27,24 +27,28 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
   const selfies = useQuery(api.selfies.listByEvent, {
     eventId: eventId as Id<"events">,
     status: filter === "all" ? undefined : filter,
+    crewToken,
   });
 
   const pendingCount =
     useQuery(api.selfies.countByEventAndStatus, {
       eventId: eventId as Id<"events">,
       status: "pending",
+      crewToken,
     }) ?? 0;
 
   const approvedCount =
     useQuery(api.selfies.countByEventAndStatus, {
       eventId: eventId as Id<"events">,
       status: "approved",
+      crewToken,
     }) ?? 0;
 
   const rejectedCount =
     useQuery(api.selfies.countByEventAndStatus, {
       eventId: eventId as Id<"events">,
       status: "rejected",
+      crewToken,
     }) ?? 0;
 
   const totalCount = pendingCount + approvedCount + rejectedCount;
@@ -55,7 +59,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
   const removeSelfie = useMutation(api.selfies.remove);
 
   // Notification sound for new pending selfies
-  useNewPendingAlert(eventId);
+  useNewPendingAlert(eventId, crewToken);
 
   const handleUpdateStatus = async (
     selfieId: string,
@@ -187,7 +191,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
               key={selfie._id}
               className={`rounded-xl border overflow-hidden bg-input-bg transition-colors ${
                 selectedIds.has(selfie._id)
-                  ? "border-blue-500 ring-1 ring-blue-500/50"
+                  ? "border-primary ring-1 ring-primary/50"
                   : "border-border"
               }`}
             >
@@ -205,7 +209,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
                 {/* AI Flagged badge */}
                 {selfie.aiModeration?.flagged && (
                   <span
-                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-500/90 text-foreground"
+                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-xs font-medium bg-warning text-background"
                     title={`AI flagged: ${selfie.aiModeration.categories.join(", ")} (${Math.round(selfie.aiModeration.confidence * 100)}% confidence)`}
                   >
                     AI Flagged
@@ -227,10 +231,10 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
                   <span
                     className={`px-1.5 py-0.5 rounded text-xs font-medium ${
                       selfie.status === "approved"
-                        ? "bg-green-500/20 text-green-400"
+                        ? "bg-success-bg text-success"
                         : selfie.status === "rejected"
-                          ? "bg-red-500/20 text-red-400"
-                          : "bg-yellow-500/20 text-yellow-400"
+                          ? "bg-destructive-bg text-destructive"
+                          : "bg-warning-bg text-warning"
                     }`}
                   >
                     {selfie.status}
@@ -286,14 +290,14 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
           <Button
             size="sm"
             onClick={() => handleBulkAction("approved")}
-            className="text-xs bg-green-600 hover:bg-green-500"
+            className="text-xs bg-success hover:bg-success/80"
           >
             Approve All
           </Button>
           <Button
             size="sm"
             onClick={() => handleBulkAction("rejected")}
-            className="text-xs bg-red-600 hover:bg-red-500"
+            className="text-xs bg-destructive hover:bg-destructive/80"
           >
             Reject All
           </Button>

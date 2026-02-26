@@ -10,13 +10,14 @@ import { Event, UploadConfig } from "@/types/database";
 
 interface UploadSettingsFormProps {
   event: Event;
+  crewToken?: string;
 }
 
 const inputClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
 const labelClass = "block text-sm font-medium text-white/70 mb-1";
 const sectionClass = "border-t border-white/10 pt-4";
 
-export function UploadSettingsForm({ event }: UploadSettingsFormProps) {
+export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps) {
   const config = event.uploadConfig;
   const updateUploadConfig = useMutation(api.events.updateUploadConfig);
   const [loading, setLoading] = useState(false);
@@ -73,6 +74,7 @@ export function UploadSettingsForm({ event }: UploadSettingsFormProps) {
       await updateUploadConfig({
         id: event._id as Id<"events">,
         uploadConfig: newConfig,
+        crewToken,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);

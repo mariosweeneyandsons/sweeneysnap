@@ -77,7 +77,8 @@ export default function AccountsPage() {
   };
 
   // Group sessions by userId for "Logout All" button
-  const sessionsByUser = new Map<string, typeof sessionsData extends { sessions: infer S } ? (S extends (infer T)[] ? T[] : never) : never>();
+  type SessionItem = NonNullable<typeof sessionsData>["sessions"][number];
+  const sessionsByUser = new Map<string, SessionItem[]>();
   if (sessionsData?.sessions) {
     for (const s of sessionsData.sessions) {
       const existing = sessionsByUser.get(s.userId) || [];

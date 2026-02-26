@@ -37,7 +37,7 @@ export default function CrewDisplaySettingsPage() {
           </Link>
           <h1 className="text-2xl font-bold">Display Settings: {event.name}</h1>
         </div>
-        <DisplaySettingsForm event={event} backHref={`/crew/${token}`} />
+        <DisplaySettingsForm event={event} backHref={`/crew/${token}`} crewToken={token} />
       </div>
     </main>
   );

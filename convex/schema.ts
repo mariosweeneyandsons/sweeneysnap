@@ -96,6 +96,22 @@ export default defineSchema({
     .index("by_eventId", ["eventId"])
     .index("by_token", ["token"]),
 
+  webhooks: defineTable({
+    eventId: v.id("events"),
+    url: v.string(),
+    secret: v.string(),
+    triggers: v.array(
+      v.union(
+        v.literal("selfie.created"),
+        v.literal("selfie.approved"),
+        v.literal("selfie.rejected")
+      )
+    ),
+    isActive: v.boolean(),
+    createdBy: v.optional(v.id("users")),
+    updatedAt: v.number(),
+  }).index("by_eventId", ["eventId"]),
+
   crewActivityLog: defineTable({
     eventId: v.id("events"),
     crewMemberId: v.optional(v.id("crewMembers")),

@@ -40,6 +40,10 @@ export function getEventThemeVars(event: Event): Record<string, string> {
 
 export function sanitizeCss(css: string): string {
   if (!css) return "";
+  // Enforce max length (10KB)
+  if (css.length > 10000) {
+    css = css.slice(0, 10000);
+  }
   // Strip dangerous patterns
   return css
     .replace(/expression\s*\(/gi, "/* blocked */")
@@ -47,6 +51,9 @@ export function sanitizeCss(css: string): string {
     .replace(/-moz-binding\s*:/gi, "/* blocked */")
     .replace(/behavior\s*:/gi, "/* blocked */")
     .replace(/@import/gi, "/* blocked */")
+    .replace(/@charset/gi, "/* blocked */")
+    .replace(/@namespace/gi, "/* blocked */")
     .replace(/url\s*\(\s*["']?\s*javascript:/gi, 'url("/* blocked */')
-    .replace(/<\/?script/gi, "/* blocked */");
+    .replace(/<\/?script/gi, "/* blocked */")
+    .replace(/<\/?\s*style/gi, "/* blocked */");
 }

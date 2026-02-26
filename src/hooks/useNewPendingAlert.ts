@@ -5,11 +5,12 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 
-export function useNewPendingAlert(eventId: string) {
+export function useNewPendingAlert(eventId: string, crewToken?: string) {
   const pendingCount =
     useQuery(api.selfies.countByEventAndStatus, {
       eventId: eventId as Id<"events">,
       status: "pending",
+      crewToken,
     }) ?? 0;
 
   const prevCountRef = useRef<number | null>(null);

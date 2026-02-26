@@ -118,10 +118,12 @@ export function EventForm({ event }: EventFormProps) {
 
     try {
       if (event) {
-        await updateEvent({ id: event._id as Id<"events">, ...payload });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await updateEvent({ id: event._id as Id<"events">, ...payload } as any);
         toast("Event saved successfully", "success");
       } else {
-        await createEvent(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await createEvent(payload as any);
         toast("Event created successfully", "success");
       }
       router.push("/admin");

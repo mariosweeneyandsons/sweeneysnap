@@ -6,7 +6,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { requireAdmin, validateStringLength } from "./lib";
+import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
 
 export const listApprovedByEvent = query({
   args: { eventId: v.id("events") },
@@ -41,9 +41,10 @@ export const listByEvent = query({
         v.literal("rejected")
       )
     ),
+    crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAdmin(ctx);
+    await requireAdminOrCrew(ctx, args.eventId, args.crewToken);
     let selfies;
     if (args.status) {
       selfies = await ctx.db
@@ -71,9 +72,9 @@ export const listByEvent = query({
 });
 
 export const countByEvent = query({
-  args: { eventId: v.id("events") },
+  args: { eventId: v.id("events"), crewToken: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    await requireAdmin(ctx);
+    await requireAdminOrCrew(ctx, args.eventId, args.crewToken);
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
@@ -90,9 +91,10 @@ export const countByEventAndStatus = query({
       v.literal("approved"),
       v.literal("rejected")
     ),
+    crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAdmin(ctx);
+    await requireAdminOrCrew(ctx, args.eventId, args.crewToken);
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId_status", (q) =>
@@ -206,6 +208,13 @@ export const create = mutation({
       });
     }
 
+    // Dispatch webhook
+    await ctx.scheduler.runAfter(0, internal.webhookDispatch.dispatch, {
+      eventId: args.eventId,
+      trigger: "selfie.created",
+      payload: { selfieId, displayName: args.displayName, status: args.status },
+    });
+
     return selfieId;
   },
 });
@@ -221,7 +230,19 @@ export const updateStatus = mutation({
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    const selfie = await ctx.db.get(args.id);
+    if (!selfie) throw new Error("Selfie not found");
     await ctx.db.patch(args.id, { status: args.status });
+
+    // Dispatch webhook for approve/reject
+    if (args.status === "approved" || args.status === "rejected") {
+      const trigger = args.status === "approved" ? "selfie.approved" as const : "selfie.rejected" as const;
+      await ctx.scheduler.runAfter(0, internal.webhookDispatch.dispatch, {
+        eventId: selfie.eventId,
+        trigger,
+        payload: { selfieId: args.id, displayName: selfie.displayName, status: args.status },
+      });
+    }
   },
 });
 
@@ -237,6 +258,12 @@ export const updateStatusWithLog = mutation({
     crewMemberId: v.optional(v.id("crewMembers")),
   },
   handler: async (ctx, args) => {
+    const selfie = await ctx.db.get(args.id);
+    if (!selfie) throw new Error("Selfie not found");
+
+    // Validate crew authorization against the selfie's event
+    await requireAdminOrCrew(ctx, selfie.eventId, args.crewToken);
+
     // If crewMemberId is provided, verify permission
     if (args.crewMemberId) {
       const member = await ctx.db.get(args.crewMemberId);
@@ -245,9 +272,6 @@ export const updateStatusWithLog = mutation({
         throw new Error("Viewers cannot moderate selfies");
       }
     }
-
-    const selfie = await ctx.db.get(args.id);
-    if (!selfie) throw new Error("Selfie not found");
 
     await ctx.db.patch(args.id, { status: args.status });
 
@@ -337,7 +361,18 @@ export const bulkUpdateStatus = mutation({
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
     for (const id of args.ids) {
+      const selfie = await ctx.db.get(id);
+      if (!selfie) continue;
       await ctx.db.patch(id, { status: args.status });
+
+      if (args.status === "approved" || args.status === "rejected") {
+        const trigger = args.status === "approved" ? "selfie.approved" as const : "selfie.rejected" as const;
+        await ctx.scheduler.runAfter(0, internal.webhookDispatch.dispatch, {
+          eventId: selfie.eventId,
+          trigger,
+          payload: { selfieId: id, displayName: selfie.displayName, status: args.status },
+        });
+      }
     }
   },
 });

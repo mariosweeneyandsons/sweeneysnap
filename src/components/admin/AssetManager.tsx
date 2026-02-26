@@ -70,7 +70,7 @@ export function AssetManager({ event }: AssetManagerProps) {
 
       await addAsset({
         id: event._id as Id<"events">,
-        asset,
+        asset: { ...asset, storageId: storageId as Id<"_storage"> },
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");

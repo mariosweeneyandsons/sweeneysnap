@@ -10,6 +10,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/components/ui/Toast";
 import { ExportSelfiesButton } from "@/components/admin/ExportSelfiesButton";
 import { EventDetailSkeleton } from "@/components/admin/skeletons/EventDetailSkeleton";
+import { WebhookManager } from "@/components/admin/WebhookManager";
 import {
   Field,
   TextInput,

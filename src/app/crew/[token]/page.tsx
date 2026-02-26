@@ -16,15 +16,15 @@ export default function CrewDashboardPage() {
 
   const totalSelfies = useQuery(
     api.selfies.countByEvent,
-    event ? { eventId: event._id } : "skip"
+    event ? { eventId: event._id, crewToken: token } : "skip"
   );
   const pendingSelfies = useQuery(
     api.selfies.countByEventAndStatus,
-    event ? { eventId: event._id, status: "pending" as const } : "skip"
+    event ? { eventId: event._id, status: "pending" as const, crewToken: token } : "skip"
   );
   const approvedSelfies = useQuery(
     api.selfies.countByEventAndStatus,
-    event ? { eventId: event._id, status: "approved" as const } : "skip"
+    event ? { eventId: event._id, status: "approved" as const, crewToken: token } : "skip"
   );
 
   if (result === undefined) {
