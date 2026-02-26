@@ -178,7 +178,7 @@ export function UploadForm({ event }: UploadFormProps) {
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-sm mx-auto">
       {editedPreview && (
-        <div className="w-full aspect-square rounded-2xl overflow-hidden">
+        <div className="w-full aspect-square rounded-xs overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={editedPreview} alt="Preview" className="w-full h-full object-cover" />
         </div>
