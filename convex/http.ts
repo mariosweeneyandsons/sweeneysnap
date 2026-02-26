@@ -54,6 +54,7 @@ http.route({
     await ctx.runMutation(api.printJobs.updateStatus, {
       id: jobId,
       status,
+      token,
       errorMessage,
     });
 

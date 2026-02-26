@@ -22,11 +22,11 @@ export function PrintQueueView({ eventId }: PrintQueueViewProps) {
   const jobs = useQuery(api.printJobs.listByEvent, {
     eventId: eventId as Id<"events">,
   });
-  const updateStatus = useMutation(api.printJobs.updateStatus);
+  const adminUpdateStatus = useMutation(api.printJobs.adminUpdateStatus);
 
   const handleRetry = async (jobId: string) => {
     try {
-      await updateStatus({
+      await adminUpdateStatus({
         id: jobId as Id<"printJobs">,
         status: "queued",
       });

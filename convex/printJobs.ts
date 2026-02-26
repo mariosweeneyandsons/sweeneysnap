@@ -52,9 +52,42 @@ export const updateStatus = mutation({
       v.literal("printed"),
       v.literal("failed")
     ),
+    token: v.string(),
     errorMessage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const job = await ctx.db.get(args.id);
+    if (!job) throw new Error("Print job not found");
+
+    const event = await ctx.db.get(job.eventId);
+    if (!event || event.printConfig?.printStationToken !== args.token) {
+      throw new Error("Invalid token");
+    }
+
+    const patch: Record<string, unknown> = { status: args.status };
+    if (args.status === "printed") {
+      patch.printedAt = Date.now();
+    }
+    if (args.errorMessage) {
+      patch.errorMessage = args.errorMessage;
+    }
+    await ctx.db.patch(args.id, patch);
+  },
+});
+
+export const adminUpdateStatus = mutation({
+  args: {
+    id: v.id("printJobs"),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("printing"),
+      v.literal("printed"),
+      v.literal("failed")
+    ),
+    errorMessage: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const patch: Record<string, unknown> = { status: args.status };
     if (args.status === "printed") {
       patch.printedAt = Date.now();
