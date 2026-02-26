@@ -42,7 +42,7 @@ export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSide
         {onClose && (
           <button
             onClick={onClose}
-            className="lg:hidden p-1 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface transition-colors"
+            className="lg:hidden p-1 rounded-xs text-foreground-muted hover:text-foreground hover:bg-surface transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -58,7 +58,7 @@ export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSide
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-xs text-sm transition-colors ${
                 isActive
                   ? "bg-surface text-foreground-emphasis"
                   : "text-foreground-muted hover:text-foreground hover:bg-surface"

@@ -61,7 +61,7 @@ export function UserProfilePopover({
       {/* Trigger */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-surface transition-colors text-left cursor-pointer"
+        className="w-full flex items-center gap-3 px-2 py-2 rounded-xs hover:bg-surface transition-colors text-left cursor-pointer"
       >
         <UserAvatar
           name={identity.name}
@@ -94,7 +94,7 @@ export function UserProfilePopover({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-secondary backdrop-blur-xl border border-border shadow-2xl p-4 z-50"
+            className="absolute bottom-full left-0 right-0 mb-2 rounded-xs bg-secondary backdrop-blur-xl border border-border p-4 z-50"
           >
             <div className="flex items-center gap-3 mb-4">
               <UserAvatar
@@ -116,7 +116,7 @@ export function UserProfilePopover({
 
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-foreground-muted hover:text-foreground-emphasis hover:bg-secondary transition-colors cursor-pointer"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xs text-sm text-foreground-muted hover:text-foreground-emphasis hover:bg-secondary transition-colors cursor-pointer"
             >
               <svg
                 className="w-4 h-4"

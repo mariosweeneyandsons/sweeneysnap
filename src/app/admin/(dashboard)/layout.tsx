@@ -103,7 +103,7 @@ export default function AdminLayout({
           <div className="fixed top-0 left-0 right-0 z-20 lg:hidden bg-background border-b border-border px-4 py-3 flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1 rounded-lg text-foreground hover:bg-secondary transition-colors"
+              className="p-1 rounded-xs text-foreground hover:bg-secondary transition-colors"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
