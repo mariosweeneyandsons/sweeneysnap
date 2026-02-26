@@ -11,10 +11,10 @@ export default function EditPresetPage() {
   const preset = useQuery(api.presets.getById, { id: presetId as Id<"presets"> });
 
   if (preset === undefined) {
-    return <div className="text-center py-12 text-white/50">Loading...</div>;
+    return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
   }
   if (!preset) {
-    return <div className="text-center py-12 text-white/50">Preset not found</div>;
+    return <div className="text-center py-12 text-foreground-faint">Preset not found</div>;
   }
 
   return (

@@ -13,16 +13,16 @@ export default function UploadSettingsPage() {
   const event = useQuery(api.events.getById, { id: eventId as Id<"events"> });
 
   if (event === undefined) {
-    return <div className="text-center py-12 text-white/50">Loading...</div>;
+    return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
   }
   if (!event) {
-    return <div className="text-center py-12 text-white/50">Event not found</div>;
+    return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
   }
 
   return (
     <div>
       <div className="flex items-center gap-4 mb-8">
-        <Link href={`/admin/events/${eventId}`} className="text-white/50 hover:text-white transition-colors">
+        <Link href={`/admin/events/${eventId}`} className="text-foreground-faint hover:text-foreground-emphasis transition-colors">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>

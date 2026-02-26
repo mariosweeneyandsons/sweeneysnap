@@ -76,14 +76,14 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Permission</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Permission</label>
             <select
               value={newPermission}
               onChange={(e) => setNewPermission(e.target.value as Permission)}
-              className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white text-sm"
+              className="rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
             >
-              <option value="moderator" className="bg-gray-900">Moderator</option>
-              <option value="viewer" className="bg-gray-900">Viewer</option>
+              <option value="moderator" className="bg-surface">Moderator</option>
+              <option value="viewer" className="bg-surface">Viewer</option>
             </select>
           </div>
           <Button onClick={handleAdd} loading={adding} disabled={!newName.trim()}>
@@ -93,9 +93,9 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
       </Card>
 
       {members === undefined ? (
-        <p className="text-white/50 text-sm">Loading...</p>
+        <p className="text-foreground-faint text-sm">Loading...</p>
       ) : members.length === 0 ? (
-        <p className="text-white/40 text-sm">No crew members yet. Add one above or use the legacy shared crew link.</p>
+        <p className="text-foreground-faint text-sm">No crew members yet. Add one above or use the legacy shared crew link.</p>
       ) : (
         <div className="space-y-3">
           {members.map((member) => {
@@ -108,36 +108,36 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
                     <span
                       className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                         member.permission === "moderator"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-white/10 text-white/50"
+                          ? "bg-info-bg text-info"
+                          : "bg-secondary text-foreground-faint"
                       }`}
                     >
                       {member.permission}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <code className="text-xs text-white/40 truncate">{crewUrl}</code>
+                    <code className="text-xs text-foreground-faint truncate">{crewUrl}</code>
                     <CopyButton text={crewUrl} />
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => handleTogglePermission(member._id, member.permission)}
-                    className="text-xs text-white/50 hover:text-white transition-colors"
+                    className="text-xs text-foreground-faint hover:text-foreground-emphasis transition-colors"
                     title={`Switch to ${member.permission === "moderator" ? "viewer" : "moderator"}`}
                   >
                     {member.permission === "moderator" ? "Make Viewer" : "Make Moderator"}
                   </button>
                   <button
                     onClick={() => handleRegenerate(member._id)}
-                    className="text-xs text-yellow-400/70 hover:text-yellow-400 transition-colors"
+                    className="text-xs text-warning/70 hover:text-warning transition-colors"
                     title="Regenerate access token"
                   >
                     Regen
                   </button>
                   <button
                     onClick={() => handleRemove(member._id)}
-                    className="text-xs text-red-400/70 hover:text-red-400 transition-colors"
+                    className="text-xs text-destructive/70 hover:text-destructive transition-colors"
                   >
                     Remove
                   </button>

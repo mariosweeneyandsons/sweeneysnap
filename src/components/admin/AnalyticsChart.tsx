@@ -17,7 +17,7 @@ interface UploadTimelineProps {
 export function UploadTimeline({ data }: UploadTimelineProps) {
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-white/30 text-sm">
+      <div className="flex items-center justify-center h-64 text-foreground-faint text-sm">
         No upload data yet
       </div>
     );
@@ -32,31 +32,31 @@ export function UploadTimeline({ data }: UploadTimelineProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={formatted} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
         <XAxis
           dataKey="label"
-          tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
+          tick={{ fill: "var(--foreground-faint)", fontSize: 12 }}
           tickLine={false}
-          axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+          axisLine={{ stroke: "var(--border)" }}
         />
         <YAxis
-          tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
+          tick={{ fill: "var(--foreground-faint)", fontSize: 12 }}
           tickLine={false}
-          axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+          axisLine={{ stroke: "var(--border)" }}
           allowDecimals={false}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "rgba(0,0,0,0.9)",
-            border: "1px solid rgba(255,255,255,0.2)",
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: 8,
-            color: "white",
+            color: "var(--foreground)",
           }}
-          labelStyle={{ color: "rgba(255,255,255,0.7)" }}
+          labelStyle={{ color: "var(--foreground-muted)" }}
           formatter={(value: unknown) => [String(value), "Uploads"]}
           labelFormatter={(label: unknown) => `Hour: ${String(label)}`}
         />
-        <Bar dataKey="count" fill="rgba(255,255,255,0.6)" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="count" fill="var(--foreground-muted)" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
