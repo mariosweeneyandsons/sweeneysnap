@@ -13,7 +13,7 @@ export function QRCodeDisplay({ url, size = 200 }: QRCodeDisplayProps) {
       <div className="bg-white p-4 rounded-xl">
         <QRCodeSVG value={url} size={size} />
       </div>
-      <p className="text-white/50 text-sm font-mono break-all text-center max-w-xs">
+      <p className="text-foreground-muted text-sm font-mono break-all text-center max-w-xs">
         {url}
       </p>
     </div>
