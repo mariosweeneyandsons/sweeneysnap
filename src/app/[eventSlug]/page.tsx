@@ -7,11 +7,14 @@ import { UploadForm } from "@/components/upload/UploadForm";
 import { EventThemeProvider } from "@/components/EventThemeProvider";
 import { deriveBackground, deriveTextColor } from "@/lib/color-utils";
 import { useServiceWorker } from "@/hooks/useServiceWorker";
+import { useOfflineQueue } from "@/hooks/useOfflineQueue";
+import { OfflineQueueIndicator } from "@/components/upload/OfflineQueueIndicator";
 
 export default function UploadPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>();
   const event = useQuery(api.events.getBySlug, { slug: eventSlug });
   useServiceWorker();
+  const { isOnline, queueCount, flushing } = useOfflineQueue();
 
   if (event === undefined) {
     return (
@@ -34,6 +37,7 @@ export default function UploadPage() {
 
   return (
     <EventThemeProvider event={event}>
+      <OfflineQueueIndicator isOnline={isOnline} queueCount={queueCount} flushing={flushing} />
       <main
         className="min-h-dvh flex flex-col"
         style={{

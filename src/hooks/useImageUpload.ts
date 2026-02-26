@@ -46,6 +46,7 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
   ) => {
     try {
       setError(null);
+      setSelfieId(null);
 
       // Compress
       setState("compressing");
@@ -70,6 +71,13 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
           setLimitReached(true);
           throw err;
         }
+        // Offline: queue the compressed blob
+        if (typeof navigator !== "undefined" && !navigator.onLine && options?.onOfflineQueue) {
+          await options.onOfflineQueue(compressed, eventId, displayName, message, moderationEnabled);
+          setState("queued");
+          setProgress("Saved offline");
+          return;
+        }
         throw err;
       }
 
@@ -85,7 +93,7 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
       setState("saving");
       setProgress("Saving...");
 
-      await createSelfie({
+      const id = await createSelfie({
         eventId: eventId as Id<"events">,
         storageId,
         displayName: displayName || undefined,
@@ -95,10 +103,25 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
         sessionId,
       });
 
+      setSelfieId(id);
       setUploadCount((c) => c + 1);
       setState("done");
       setProgress("Done!");
     } catch (err) {
+      // Offline fallback for network errors
+      if (typeof navigator !== "undefined" && !navigator.onLine && options?.onOfflineQueue) {
+        try {
+          const compressed = await compressImage(file, {
+            maxSizeMB: options?.maxFileSizeMb ?? 0.2,
+          });
+          await options.onOfflineQueue(compressed, eventId, displayName, message, moderationEnabled);
+          setState("queued");
+          setProgress("Saved offline");
+          return;
+        } catch {
+          // Fall through to error state
+        }
+      }
       setState("error");
       setError(err instanceof Error ? err.message : "Upload failed");
     }
@@ -108,7 +131,8 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
     setState("idle");
     setProgress("");
     setError(null);
+    setSelfieId(null);
   };
 
-  return { state, progress, error, uploadCount, limitReached, upload, reset, setLimitReached };
+  return { state, progress, error, uploadCount, limitReached, selfieId, upload, reset, setLimitReached };
 }

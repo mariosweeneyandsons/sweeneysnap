@@ -6,6 +6,7 @@ import { PhotoEditor } from "./PhotoEditor";
 import { UploadProgress } from "./UploadProgress";
 import { UploadSuccess } from "./UploadSuccess";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useOfflineQueue } from "@/hooks/useOfflineQueue";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Event, BrandAsset } from "@/types/database";
@@ -18,8 +19,12 @@ interface UploadFormProps {
 
 export function UploadForm({ event }: UploadFormProps) {
   const config = event.uploadConfig;
+  const { enqueueUpload } = useOfflineQueue();
   const { state, progress, error, uploadCount, limitReached, upload, reset } =
-    useImageUpload({ maxFileSizeMb: config.maxFileSizeMb });
+    useImageUpload({
+      maxFileSizeMb: config.maxFileSizeMb,
+      onOfflineQueue: enqueueUpload,
+    });
 
   const [screen, setScreen] = useState<Screen>("camera");
   const [capturedFile, setCapturedFile] = useState<File | null>(null);
@@ -89,6 +94,23 @@ export function UploadForm({ event }: UploadFormProps) {
     reset();
     setScreen("camera");
   };
+
+  if (state === "queued") {
+    return (
+      <div className="flex flex-col items-center gap-6 py-12 text-center">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-yellow-500/20">
+          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="#eab308">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0" />
+          </svg>
+        </div>
+        <p className="text-xl font-semibold">Saved offline!</p>
+        <p style={{ opacity: 0.6 }}>Your photo will upload automatically when you&apos;re back online.</p>
+        <Button onClick={handleUploadAnother} variant="secondary" size="lg">
+          Take Another
+        </Button>
+      </div>
+    );
+  }
 
   if (screen === "success" || state === "done") {
     return (
