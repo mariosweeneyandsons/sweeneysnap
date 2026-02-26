@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as _debug from "../_debug.js";
 import type * as accessRequests from "../accessRequests.js";
 import type * as adminProfiles from "../adminProfiles.js";
 import type * as aiModeration from "../aiModeration.js";
@@ -30,6 +31,7 @@ import type * as presets from "../presets.js";
 import type * as printJobs from "../printJobs.js";
 import type * as selfies from "../selfies.js";
 import type * as sessions from "../sessions.js";
+import type * as systemHealth from "../systemHealth.js";
 import type * as validators from "../validators.js";
 import type * as webhookDispatch from "../webhookDispatch.js";
 import type * as webhooks from "../webhooks.js";
@@ -41,6 +43,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  _debug: typeof _debug;
   accessRequests: typeof accessRequests;
   adminProfiles: typeof adminProfiles;
   aiModeration: typeof aiModeration;
@@ -63,6 +66,7 @@ declare const fullApi: ApiFromModules<{
   printJobs: typeof printJobs;
   selfies: typeof selfies;
   sessions: typeof sessions;
+  systemHealth: typeof systemHealth;
   validators: typeof validators;
   webhookDispatch: typeof webhookDispatch;
   webhooks: typeof webhooks;

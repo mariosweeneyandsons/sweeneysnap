@@ -9,6 +9,7 @@ import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
 import { ThemeProvider } from "@/components/admin/ThemeProvider";
 import { ShortcutHelpModal } from "@/components/admin/ShortcutHelpModal";
 import { ToastProvider } from "@/components/ui/Toast";
+import { ConfigWarningBanner } from "@/components/admin/ConfigWarningBanner";
 import { useHotkeys, useTwoStrokeHotkeys } from "@/hooks/useHotkeys";
 
 export default function AdminLayout({
@@ -114,6 +115,7 @@ export default function AdminLayout({
 
           <main className="flex-1 p-4 lg:p-6 ml-0 lg:ml-64 mt-14 lg:mt-0">
             <AdminBreadcrumbs />
+            <ConfigWarningBanner />
             {children}
           </main>
         </div>
