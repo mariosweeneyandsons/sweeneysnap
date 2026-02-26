@@ -74,9 +74,13 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
     };
 
     try {
+      // Cast needed: config spreads storage IDs as string, but mutation expects Id<"_storage">
       await updateDisplayConfig({
         id: event._id as Id<"events">,
-        displayConfig,
+        displayConfig: displayConfig as typeof displayConfig & {
+          backgroundImageId?: Id<"_storage">;
+          backgroundVideoId?: Id<"_storage">;
+        },
       });
       router.push(backHref);
     } catch (err) {
