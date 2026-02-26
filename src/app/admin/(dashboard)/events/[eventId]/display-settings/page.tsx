@@ -31,7 +31,7 @@ export default function AdminDisplaySettingsPage() {
     );
   }
   if (!event) {
-    return <div className="text-center py-12 text-white/50">Event not found</div>;
+    return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
   }
 
   const previewConfig = liveConfig ?? event.displayConfig;

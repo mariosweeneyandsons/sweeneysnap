@@ -104,7 +104,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
           {webhooks.map((wh) => (
             <div
               key={wh._id}
-              className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10"
+              className="flex items-start gap-3 p-3 rounded-lg bg-surface border border-border"
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-mono truncate">{wh.url}</p>
@@ -112,7 +112,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
                   {wh.triggers.map((t) => (
                     <span
                       key={t}
-                      className="text-xs px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400"
+                      className="text-xs px-1.5 py-0.5 rounded bg-info-bg text-info"
                     >
                       {t}
                     </span>
@@ -127,7 +127,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
                   </code>
                   <button
                     onClick={() => toggleSecret(wh._id)}
-                    className="text-xs text-blue-400 hover:underline"
+                    className="text-xs text-info hover:underline"
                   >
                     {showSecrets.has(wh._id) ? "Hide" : "Show"}
                   </button>
@@ -139,8 +139,8 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
                   onClick={() => handleToggleActive(wh._id, wh.isActive)}
                   className={`text-xs px-2 py-1 rounded ${
                     wh.isActive
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-white/10 text-foreground-muted"
+                      ? "bg-success-bg text-success"
+                      : "bg-secondary text-foreground-muted"
                   }`}
                 >
                   {wh.isActive ? "Active" : "Paused"}
@@ -167,7 +167,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
           onChange={(e) => setUrl(e.target.value)}
         />
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-2">
+          <label className="block text-sm font-medium text-foreground-muted mb-2">
             Triggers
           </label>
           <div className="flex gap-3">
@@ -179,7 +179,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
                   onChange={() => toggleTrigger(opt.value)}
                   className="rounded"
                 />
-                <span className="text-sm text-white/70">{opt.label}</span>
+                <span className="text-sm text-foreground-muted">{opt.label}</span>
               </label>
             ))}
           </div>
