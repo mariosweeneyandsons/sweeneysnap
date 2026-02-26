@@ -15,6 +15,8 @@ interface UserIdentity {
 interface AdminSidebarProps {
   profile: AdminProfile;
   userIdentity?: UserIdentity | null;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 const navItems = [
@@ -23,14 +25,30 @@ const navItems = [
   { href: "/admin/accounts", label: "Accounts", icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" },
 ];
 
-export function AdminSidebar({ profile, userIdentity }: AdminSidebarProps) {
+export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-secondary border-r border-border flex flex-col p-4">
-      <div className="mb-8">
-        <h2 className="text-lg font-bold text-foreground">SweeneySnap</h2>
-        <p className="text-foreground-muted text-sm">Admin Panel</p>
+    <aside
+      className={`fixed left-0 top-0 bottom-0 w-64 bg-secondary border-r border-border flex flex-col p-4 z-40 transition-transform duration-200 ${
+        open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}
+    >
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-lg font-bold text-foreground">SweeneySnap</h2>
+          <p className="text-foreground-muted text-sm">Admin Panel</p>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 flex flex-col gap-1">
