@@ -11,9 +11,11 @@ import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
 import { selfieStatusValidator } from "./validators";
 
 /** Enrich a selfie doc with signed URLs for image, thumbnail, and medium. */
-async function enrichWithUrls(
+async function enrichWithUrls<
+  T extends { storageId: string; thumbnailStorageId?: string; mediumStorageId?: string }
+>(
   ctx: { storage: { getUrl: (id: string) => Promise<string | null> } },
-  selfie: { storageId: string; thumbnailStorageId?: string; mediumStorageId?: string }
+  selfie: T
 ) {
   const [imageUrl, thumbnailUrl, mediumUrl] = await Promise.all([
     ctx.storage.getUrl(selfie.storageId),

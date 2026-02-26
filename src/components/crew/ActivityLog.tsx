@@ -6,6 +6,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 
 interface ActivityLogProps {
   eventId: string;
+  crewToken?: string;
 }
 
 const ACTION_LABELS: Record<string, { label: string; color: string }> = {
@@ -15,9 +16,10 @@ const ACTION_LABELS: Record<string, { label: string; color: string }> = {
   delete: { label: "Deleted", color: "text-destructive" },
 };
 
-export function ActivityLog({ eventId }: ActivityLogProps) {
+export function ActivityLog({ eventId, crewToken }: ActivityLogProps) {
   const logs = useQuery(api.crewActivityLog.listByEvent, {
     eventId: eventId as Id<"events">,
+    crewToken,
   });
 
   if (logs === undefined) {

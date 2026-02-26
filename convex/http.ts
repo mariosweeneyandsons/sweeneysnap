@@ -1,6 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { auth } from "./auth";
 
 const http = httpRouter();
@@ -20,7 +20,7 @@ http.route({
       });
     }
 
-    const jobs = await ctx.runQuery(api.printJobs.getQueuedByToken, { token });
+    const jobs = await ctx.runQuery(internal.printJobs.getQueuedByToken, { token });
     return new Response(JSON.stringify({ jobs }), {
       headers: { "Content-Type": "application/json" },
     });

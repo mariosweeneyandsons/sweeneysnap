@@ -34,7 +34,7 @@ export default function CrewActivityPage() {
           </div>
         </div>
 
-        <ActivityLog eventId={event._id} />
+        <ActivityLog eventId={event._id} crewToken={token} />
       </div>
     </main>
   );

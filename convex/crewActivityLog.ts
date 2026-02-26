@@ -1,11 +1,12 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin } from "./lib";
+import { requireAdmin, requireAdminOrCrew } from "./lib";
 import { crewActionValidator } from "./validators";
 
 export const listByEvent = query({
-  args: { eventId: v.id("events") },
+  args: { eventId: v.id("events"), crewToken: v.optional(v.string()) },
   handler: async (ctx, args) => {
+    await requireAdminOrCrew(ctx, args.eventId, args.crewToken);
     const logs = await ctx.db
       .query("crewActivityLog")
       .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
@@ -35,6 +36,7 @@ export const log = mutation({
     selfieId: v.optional(v.id("selfies")),
   },
   handler: async (ctx, args) => {
+    await requireAdminOrCrew(ctx, args.eventId, args.crewToken);
     return await ctx.db.insert("crewActivityLog", {
       ...args,
       timestamp: Date.now(),

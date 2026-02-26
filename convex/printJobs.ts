@@ -1,4 +1,4 @@
-import { query, mutation, internalMutation } from "./_generated/server";
+import { query, mutation, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
 
@@ -122,8 +122,8 @@ export const autoQueue = internalMutation({
   },
 });
 
-// Internal queries for HTTP endpoints
-export const getQueuedByToken = query({
+// Internal query — only callable from HTTP endpoints, not from clients
+export const getQueuedByToken = internalQuery({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     // Find event by print station token

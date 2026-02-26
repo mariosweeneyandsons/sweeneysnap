@@ -59,7 +59,8 @@ export const getBySlugs = query({
     for (const slug of args.slugs) {
       const event = await getEventBySlug(ctx, slug);
       if (event && event.isActive) {
-        events.push(event);
+        const { crewToken: _ct, ...publicEvent } = event;
+        events.push(publicEvent);
       }
     }
     return events;
