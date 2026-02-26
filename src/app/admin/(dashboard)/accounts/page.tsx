@@ -344,6 +344,28 @@ export default function AccountsPage() {
         </form>
       </Modal>
 
+      {/* Remove Admin Confirmation Modal */}
+      <Modal
+        open={removeTarget !== null}
+        onClose={() => setRemoveTarget(null)}
+        title="Remove Admin Account"
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-foreground-muted">
+            Remove <strong>{removeTarget?.name}</strong> from admin accounts? They will
+            lose all admin access immediately.
+          </p>
+          <div className="flex gap-3 justify-end mt-2">
+            <Button type="button" variant="ghost" onClick={() => setRemoveTarget(null)}>
+              Cancel
+            </Button>
+            <Button variant="danger" loading={removeLoading} onClick={handleRemoveAdmin}>
+              Remove Admin
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
       {/* Force Logout Confirmation Modal */}
       <Modal
         open={confirmTarget !== null}
