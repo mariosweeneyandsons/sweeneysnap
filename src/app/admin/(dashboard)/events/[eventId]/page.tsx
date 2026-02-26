@@ -392,6 +392,14 @@ export default function EventDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {(event.archived || (event.endsAt && event.endsAt < Date.now())) && (
+              <Link
+                href={`/admin/events/${event._id}/summary`}
+                className="border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition"
+              >
+                summary
+              </Link>
+            )}
             <Link
               href={`/admin/events/${event._id}/analytics`}
               className="border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition"

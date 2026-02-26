@@ -22,6 +22,12 @@ export default function AnalyticsPage() {
   const analytics = useQuery(api.analytics.getEventAnalytics, {
     eventId: eventId as Id<"events">,
   });
+  const crewActivity = useQuery(api.analytics.getCrewActivity, {
+    eventId: eventId as Id<"events">,
+  });
+  const aiStats = useQuery(api.analytics.getAiModerationStats, {
+    eventId: eventId as Id<"events">,
+  });
 
   if (event === undefined || analytics === undefined) {
     return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
@@ -48,6 +54,11 @@ export default function AnalyticsPage() {
         <Card>
           <p className="text-foreground-faint text-sm">Total Selfies</p>
           <p className="text-3xl font-bold">{analytics?.totalSelfies ?? 0}</p>
+          {(analytics?.uniqueUploaders ?? 0) > 0 && (
+            <p className="text-xs text-foreground-muted mt-1">
+              ~{analytics?.uniqueUploaders} unique uploaders
+            </p>
+          )}
         </Card>
         <Card>
           <p className="text-foreground-faint text-sm">Approved</p>
@@ -80,6 +91,84 @@ export default function AnalyticsPage() {
         <h3 className="font-semibold mb-4">Upload Timeline</h3>
         <UploadTimeline data={analytics?.timeline ?? []} />
       </Card>
+
+      {/* AI Moderation Stats */}
+      {aiStats?.hasData && (
+        <Card className="mt-6">
+          <h3 className="font-semibold mb-4">AI Moderation</h3>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <p className="text-foreground-faint text-sm">Analyzed</p>
+              <p className="text-2xl font-bold">{aiStats.analyzed}</p>
+            </div>
+            <div>
+              <p className="text-foreground-faint text-sm">Flagged</p>
+              <p className="text-2xl font-bold text-warning">{aiStats.flagged}</p>
+            </div>
+            <div>
+              <p className="text-foreground-faint text-sm">Auto-Rejected</p>
+              <p className="text-2xl font-bold text-destructive">{aiStats.autoRejected}</p>
+            </div>
+          </div>
+          {Object.keys(aiStats.categoryCounts).length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {Object.entries(aiStats.categoryCounts).map(([cat, count]) => (
+                <span
+                  key={cat}
+                  className="px-2 py-0.5 rounded-full text-xs bg-warning-bg text-warning"
+                >
+                  {cat}: {count}
+                </span>
+              ))}
+            </div>
+          )}
+          {aiStats.falsePositiveEstimate > 0 && (
+            <p className="text-xs text-foreground-muted">
+              ~{aiStats.falsePositiveEstimate} flagged items were later approved (possible false positives)
+            </p>
+          )}
+        </Card>
+      )}
+
+      {/* Crew Activity */}
+      {crewActivity && crewActivity.totalActions > 0 && (
+        <Card className="mt-6">
+          <h3 className="font-semibold mb-4">Crew Activity</h3>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <p className="text-foreground-faint text-sm">Total Actions</p>
+              <p className="text-2xl font-bold">{crewActivity.totalActions}</p>
+            </div>
+            {crewActivity.mostActiveName && (
+              <div>
+                <p className="text-foreground-faint text-sm">Most Active</p>
+                <p className="text-lg font-bold">{crewActivity.mostActiveName}</p>
+                <p className="text-xs text-foreground-muted">{crewActivity.mostActiveCount} actions</p>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(crewActivity.actionCounts).map(([action, count]) => (
+              <span
+                key={action}
+                className="px-2 py-0.5 rounded-full text-xs bg-secondary text-foreground"
+              >
+                {action}: {count}
+              </span>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Summary link */}
+      <div className="mt-8 text-center">
+        <Link
+          href={`/admin/events/${eventId}/summary`}
+          className="text-primary hover:text-primary/80 transition-colors text-sm underline"
+        >
+          View Post-Event Summary
+        </Link>
+      </div>
     </div>
   );
 }

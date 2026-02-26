@@ -17,6 +17,7 @@ const labelMap: Record<string, string> = {
   "upload-settings": "Upload Settings",
   branding: "Branding",
   analytics: "Analytics",
+  summary: "Summary",
 };
 
 function EventName({ eventId }: { eventId: string }) {
