@@ -11,7 +11,7 @@ export default function GalleryRoute() {
 
   if (event === undefined) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-white/50">Loading gallery...</p>
       </div>
     );
@@ -19,7 +19,7 @@ export default function GalleryRoute() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-white/50 text-lg">Gallery not available</p>
           <p className="text-white/30 text-sm mt-2">

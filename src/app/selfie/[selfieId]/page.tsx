@@ -14,7 +14,7 @@ export default function SelfiePage() {
 
   if (selfie === undefined) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
         <p style={{ opacity: 0.5 }}>Loading...</p>
       </main>
     );
@@ -22,14 +22,14 @@ export default function SelfiePage() {
 
   if (!selfie) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
         <p style={{ opacity: 0.5 }}>Selfie not found or not yet approved</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-dvh bg-black text-white flex flex-col items-center justify-center px-4 py-8">
+    <main className="min-h-dvh bg-background text-foreground flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full max-w-lg mx-auto">
         {selfie.eventLogoUrl && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -39,7 +39,7 @@ export default function SelfiePage() {
             className="h-10 w-auto mb-4 mx-auto"
           />
         )}
-        <div className="rounded-2xl overflow-hidden mb-4">
+        <div className="rounded-xs overflow-hidden mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={selfie.imageUrl || ""}
@@ -61,7 +61,7 @@ export default function SelfiePage() {
         <div className="text-center">
           <Link
             href={`/${selfie.eventSlug}`}
-            className="inline-block bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition"
+            className="inline-block bg-foreground text-background px-6 py-3 rounded-xs font-semibold hover:bg-foreground/90 transition"
           >
             Take your own selfie!
           </Link>

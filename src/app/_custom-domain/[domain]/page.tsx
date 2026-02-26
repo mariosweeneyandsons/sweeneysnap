@@ -15,7 +15,7 @@ export default function CustomDomainPage() {
 
   if (event === undefined) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
         <p style={{ opacity: 0.5 }}>Loading...</p>
       </main>
     );
@@ -23,7 +23,7 @@ export default function CustomDomainPage() {
 
   if (!event) {
     return (
-      <main className="min-h-dvh bg-black text-white flex items-center justify-center">
+      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
         <p style={{ opacity: 0.5 }}>Event not found</p>
       </main>
     );
