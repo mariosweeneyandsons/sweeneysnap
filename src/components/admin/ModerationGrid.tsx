@@ -59,6 +59,7 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
   const updateStatusWithLog = useMutation(api.selfies.updateStatusWithLog);
   const bulkUpdateStatus = useMutation(api.selfies.bulkUpdateStatus);
   const removeSelfie = useMutation(api.selfies.remove);
+  const createPrintJob = useMutation(api.printJobs.create);
 
   // Notification sound for new pending selfies
   useNewPendingAlert(eventId, crewToken);
@@ -151,6 +152,18 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
       toast("Selfie deleted", "success");
     } catch {
       toast("Failed to delete selfie", "error");
+    }
+  };
+
+  const handlePrint = async (selfieId: string) => {
+    try {
+      await createPrintJob({
+        selfieId: selfieId as Id<"selfies">,
+        eventId: eventId as Id<"events">,
+      });
+      toast("Added to print queue", "success");
+    } catch {
+      toast("Failed to queue print", "error");
     }
   };
 
@@ -336,6 +349,16 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
                       className="text-xs"
                     >
                       Delete
+                    </Button>
+                  )}
+                  {mode === "admin" && selfie.status === "approved" && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handlePrint(selfie._id)}
+                      className="text-xs"
+                    >
+                      Print
                     </Button>
                   )}
                 </div>

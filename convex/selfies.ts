@@ -291,25 +291,37 @@ export const updateStatus = mutation({
     }
 
     // Schedule delivery when approved and has contact info
-    if (args.status === "approved" && selfie.deliveryStatus === "pending") {
+    if (args.status === "approved") {
       const event = await ctx.db.get(selfie.eventId);
-      const imageUrl = await ctx.storage.getUrl(selfie.storageId);
-      if (event && imageUrl) {
-        if (selfie.email) {
-          await ctx.scheduler.runAfter(0, internal.delivery.sendEmail, {
-            selfieId: args.id,
-            email: selfie.email,
-            imageUrl,
-            displayName: selfie.displayName,
-            eventName: event.name,
-          });
+      if (event) {
+        // Email/SMS delivery
+        if (selfie.deliveryStatus === "pending") {
+          const imageUrl = await ctx.storage.getUrl(selfie.storageId);
+          if (imageUrl) {
+            if (selfie.email) {
+              await ctx.scheduler.runAfter(0, internal.delivery.sendEmail, {
+                selfieId: args.id,
+                email: selfie.email,
+                imageUrl,
+                displayName: selfie.displayName,
+                eventName: event.name,
+              });
+            }
+            if (selfie.phone) {
+              await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
+                selfieId: args.id,
+                phone: selfie.phone,
+                imageUrl,
+                eventName: event.name,
+              });
+            }
+          }
         }
-        if (selfie.phone) {
-          await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
+        // Auto-queue print job
+        if (event.printConfig?.enabled && event.printConfig?.autoPrintOnApproval) {
+          await ctx.scheduler.runAfter(0, internal.printJobs.autoQueue, {
             selfieId: args.id,
-            phone: selfie.phone,
-            imageUrl,
-            eventName: event.name,
+            eventId: selfie.eventId,
           });
         }
       }
