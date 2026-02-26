@@ -5,6 +5,8 @@ import {
   uploadConfigValidator,
   displayConfigValidator,
   brandAssetValidator,
+  crewPermissionValidator,
+  crewActionValidator,
 } from "./validators";
 
 export default defineSchema({
@@ -28,6 +30,7 @@ export default defineSchema({
     primaryColor: v.string(),
     fontFamily: v.string(),
     assets: v.array(brandAssetValidator),
+    customCss: v.optional(v.string()),
     updatedAt: v.number(),
   }),
 
@@ -43,6 +46,8 @@ export default defineSchema({
     displayConfig: displayConfigValidator,
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
+    fontFamily: v.optional(v.string()),
+    customCss: v.optional(v.string()),
     moderationEnabled: v.boolean(),
     aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
@@ -80,4 +85,25 @@ export default defineSchema({
     .index("by_eventId", ["eventId"])
     .index("by_eventId_status", ["eventId", "status"])
     .index("by_eventId_sessionId", ["eventId", "sessionId"]),
+
+  crewMembers: defineTable({
+    eventId: v.id("events"),
+    name: v.string(),
+    token: v.string(),
+    permission: crewPermissionValidator,
+    createdAt: v.number(),
+  })
+    .index("by_eventId", ["eventId"])
+    .index("by_token", ["token"]),
+
+  crewActivityLog: defineTable({
+    eventId: v.id("events"),
+    crewMemberId: v.optional(v.id("crewMembers")),
+    crewToken: v.string(),
+    action: crewActionValidator,
+    selfieId: v.optional(v.id("selfies")),
+    timestamp: v.number(),
+  })
+    .index("by_eventId", ["eventId"])
+    .index("by_crewMemberId", ["crewMemberId"]),
 });

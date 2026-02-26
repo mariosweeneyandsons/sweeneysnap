@@ -78,3 +78,15 @@ export const brandAssetValidator = v.object({
   name: v.string(),
   storageId: v.optional(v.id("_storage")),
 });
+
+export const crewPermissionValidator = v.union(
+  v.literal("moderator"),
+  v.literal("viewer")
+);
+
+export const crewActionValidator = v.union(
+  v.literal("approve"),
+  v.literal("reject"),
+  v.literal("reset"),
+  v.literal("delete")
+);

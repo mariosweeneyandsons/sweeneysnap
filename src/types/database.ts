@@ -90,6 +90,7 @@ export interface Preset extends ConvexDocument {
   primaryColor: string;
   fontFamily: string;
   assets: BrandAsset[];
+  customCss?: string;
   updatedAt: number;
 }
 
@@ -105,6 +106,8 @@ export interface Event extends ConvexDocument {
   displayConfig: DisplayConfig;
   logoUrl?: string;
   primaryColor: string;
+  fontFamily?: string;
+  customCss?: string;
   moderationEnabled: boolean;
   aiModerationEnabled?: boolean;
   startsAt?: number;
@@ -113,6 +116,26 @@ export interface Event extends ConvexDocument {
   sortOrder?: number;
   assets?: BrandAsset[];
   updatedAt: number;
+}
+
+export type CrewPermission = "moderator" | "viewer";
+export type CrewAction = "approve" | "reject" | "reset" | "delete";
+
+export interface CrewMember extends ConvexDocument {
+  eventId: string;
+  name: string;
+  token: string;
+  permission: CrewPermission;
+  createdAt: number;
+}
+
+export interface CrewActivityLogEntry extends ConvexDocument {
+  eventId: string;
+  crewMemberId?: string;
+  crewToken: string;
+  action: CrewAction;
+  selfieId?: string;
+  timestamp: number;
 }
 
 export interface Selfie extends ConvexDocument {
