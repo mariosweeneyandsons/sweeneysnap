@@ -1,6 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
+import { requireAdmin, requireAdminOrCrew, validateStringLength, getEventBySlug } from "./lib";
 import { uploadConfigValidator, displayConfigValidator, brandAssetValidator } from "./validators";
 
 export const list = query({
@@ -32,10 +32,7 @@ export const getById = query({
 export const getBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-    const event = await ctx.db
-      .query("events")
-      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
-      .unique();
+    const event = await getEventBySlug(ctx, args.slug);
     if (!event || !event.isActive) return null;
     const { crewToken: _ct, ...publicEvent } = event;
     return publicEvent;
@@ -60,10 +57,7 @@ export const getBySlugs = query({
   handler: async (ctx, args) => {
     const events = [];
     for (const slug of args.slugs) {
-      const event = await ctx.db
-        .query("events")
-        .withIndex("by_slug", (q) => q.eq("slug", slug))
-        .unique();
+      const event = await getEventBySlug(ctx, slug);
       if (event && event.isActive) {
         events.push(event);
       }
@@ -90,10 +84,7 @@ export const getByIds = query({
 export const getBySlugForGallery = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-    const event = await ctx.db
-      .query("events")
-      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
-      .unique();
+    const event = await getEventBySlug(ctx, args.slug);
     if (!event) return null;
     // Check gallery availability
     const config = event.uploadConfig;
@@ -292,17 +283,11 @@ export const duplicate = mutation({
 
     // Generate a unique slug
     let newSlug = `${event.slug}-copy`;
-    let existing = await ctx.db
-      .query("events")
-      .withIndex("by_slug", (q) => q.eq("slug", newSlug))
-      .unique();
+    let existing = await getEventBySlug(ctx, newSlug);
     let counter = 2;
     while (existing) {
       newSlug = `${event.slug}-copy-${counter}`;
-      existing = await ctx.db
-        .query("events")
-        .withIndex("by_slug", (q) => q.eq("slug", newSlug))
-        .unique();
+      existing = await getEventBySlug(ctx, newSlug);
       counter++;
     }
 

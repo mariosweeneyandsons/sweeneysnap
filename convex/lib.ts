@@ -46,6 +46,13 @@ export async function requireAdminOrCrew(
   throw new Error("Not authorized");
 }
 
+export async function getEventBySlug(ctx: QueryCtx | MutationCtx, slug: string) {
+  return await ctx.db
+    .query("events")
+    .withIndex("by_slug", (q) => q.eq("slug", slug))
+    .unique();
+}
+
 export function validateStringLength(
   value: string | undefined,
   field: string,
