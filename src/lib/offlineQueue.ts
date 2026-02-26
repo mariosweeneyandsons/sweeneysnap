@@ -36,8 +36,8 @@ export async function enqueue(
     const tx = db.transaction(STORE_NAME, "readwrite");
     const store = tx.objectStore(STORE_NAME);
     const request = store.add({ ...metadata, blob, queuedAt: Date.now() });
-    request.onsuccess = () => resolve(request.result as number);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db.close(); resolve(request.result as number); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }
 
@@ -47,8 +47,8 @@ export async function dequeueAll(): Promise<QueuedUpload[]> {
     const tx = db.transaction(STORE_NAME, "readonly");
     const store = tx.objectStore(STORE_NAME);
     const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db.close(); resolve(request.result); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }
 
@@ -58,8 +58,8 @@ export async function remove(id: number): Promise<void> {
     const tx = db.transaction(STORE_NAME, "readwrite");
     const store = tx.objectStore(STORE_NAME);
     const request = store.delete(id);
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db.close(); resolve(); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }
 
@@ -69,7 +69,7 @@ export async function count(): Promise<number> {
     const tx = db.transaction(STORE_NAME, "readonly");
     const store = tx.objectStore(STORE_NAME);
     const request = store.count();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db.close(); resolve(request.result); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }

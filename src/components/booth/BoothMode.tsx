@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useCamera } from "@/hooks/useCamera";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { CaptureCountdown } from "./CaptureCountdown";
@@ -27,6 +27,18 @@ export function BoothMode({ event }: BoothModeProps) {
   const { state, upload, reset: resetUpload } = useImageUpload({
     maxFileSizeMb: config.maxFileSizeMb,
   });
+
+  // Keep refs for unmount cleanup (avoids stale closure over state)
+  const previewUrlRef = useRef<string | null>(null);
+  previewUrlRef.current = previewUrl;
+
+  // Cleanup camera stream and object URLs on unmount
+  useEffect(() => {
+    return () => {
+      stopCamera();
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, [stopCamera]);
 
   const handleStart = useCallback(async () => {
     setScreen("camera");

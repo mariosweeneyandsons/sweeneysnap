@@ -46,14 +46,16 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
     email?: string,
     phone?: string
   ) => {
+    // Declare outside try so the catch fallback can reuse the already-compressed blob
+    const targetMB = options?.maxFileSizeMb ?? 0.2;
+    let compressed: Blob | null = null;
+
     try {
       setError(null);
       setSelfieId(null);
 
       // Compress (skip if already under target size)
-      const targetMB = options?.maxFileSizeMb ?? 0.2;
       const alreadySmall = file.size <= targetMB * 1024 * 1024;
-      let compressed: Blob;
       if (alreadySmall) {
         compressed = file;
       } else {
@@ -117,13 +119,11 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
       setState("done");
       setProgress("Done!");
     } catch (err) {
-      // Offline fallback for network errors
+      // Offline fallback for network errors — reuse already-compressed blob if available
       if (typeof navigator !== "undefined" && !navigator.onLine && options?.onOfflineQueue) {
         try {
-          const compressed = await compressImage(file, {
-            maxSizeMB: options?.maxFileSizeMb ?? 0.2,
-          });
-          await options.onOfflineQueue(compressed, eventId, displayName, message, moderationEnabled);
+          const blob = compressed ?? await compressImage(file, { maxSizeMB: targetMB });
+          await options.onOfflineQueue(blob, eventId, displayName, message, moderationEnabled);
           setState("queued");
           setProgress("Saved offline");
           return;

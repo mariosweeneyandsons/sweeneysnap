@@ -98,8 +98,8 @@ export function useOfflineQueue() {
           });
 
           await remove(item.id);
-        } catch {
-          // Individual item failed, skip and try next
+        } catch (err) {
+          console.warn(`[OfflineQueue] Failed to flush item ${item.id}:`, err);
         }
       }
     } finally {
