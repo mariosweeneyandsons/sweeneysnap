@@ -40,7 +40,7 @@ export function UserAvatar({ name, image, size = 36 }: UserAvatarProps) {
 
   return (
     <div
-      className="rounded-full overflow-hidden shrink-0 flex items-center justify-center font-semibold text-white select-none"
+      className="rounded-full overflow-hidden shrink-0 flex items-center justify-center font-semibold text-foreground-emphasis select-none"
       style={{
         width: size,
         height: size,

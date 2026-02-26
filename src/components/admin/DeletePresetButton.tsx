@@ -24,7 +24,7 @@ export function DeletePresetButton({ presetId }: { presetId: string }) {
   return (
     <button
       onClick={handleDelete}
-      className="p-1.5 rounded-lg hover:bg-red-500/20 text-foreground-faint hover:text-red-400 transition-colors"
+      className="p-1.5 rounded-lg hover:bg-destructive-bg text-foreground-faint hover:text-destructive transition-colors"
       title="Delete preset"
     >
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

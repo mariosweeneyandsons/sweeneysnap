@@ -44,11 +44,11 @@ export function LivePreviewPanel({ eventId, config }: LivePreviewPanelProps) {
 
   return (
     <div className="sticky top-4">
-      <h3 className="text-sm font-medium text-white/50 mb-2 uppercase tracking-wider">
+      <h3 className="text-sm font-medium text-foreground-faint mb-2 uppercase tracking-wider">
         Live Preview
       </h3>
       <div
-        className="rounded-lg overflow-hidden border border-white/10"
+        className="rounded-lg overflow-hidden border border-border"
         style={{ aspectRatio: "16 / 9" }}
       >
         {selfies && selfies.length > 0 ? (

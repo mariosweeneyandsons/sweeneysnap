@@ -61,18 +61,18 @@ export function UserProfilePopover({
       {/* Trigger */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors text-left cursor-pointer"
+        className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-surface transition-colors text-left cursor-pointer"
       >
         <UserAvatar
           name={identity.name}
           image={identity.image}
           size={36}
         />
-        <span className="flex-1 text-sm text-white/80 truncate">
+        <span className="flex-1 text-sm text-foreground truncate">
           {displayName}
         </span>
         <svg
-          className={`w-4 h-4 text-white/40 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-foreground-faint transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={2}
@@ -94,7 +94,7 @@ export function UserProfilePopover({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl p-4 z-50"
+            className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-secondary backdrop-blur-xl border border-border shadow-2xl p-4 z-50"
           >
             <div className="flex items-center gap-3 mb-4">
               <UserAvatar
@@ -103,11 +103,11 @@ export function UserProfilePopover({
                 size={44}
               />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">
+                <p className="text-sm font-medium text-foreground-emphasis truncate">
                   {identity.name ?? displayName}
                 </p>
                 {identity.email && (
-                  <p className="text-xs text-white/50 truncate">
+                  <p className="text-xs text-foreground-faint truncate">
                     {identity.email}
                   </p>
                 )}
@@ -116,7 +116,7 @@ export function UserProfilePopover({
 
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-foreground-muted hover:text-foreground-emphasis hover:bg-secondary transition-colors cursor-pointer"
             >
               <svg
                 className="w-4 h-4"
