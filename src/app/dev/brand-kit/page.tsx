@@ -1063,13 +1063,11 @@ export default function BrandKitPage() {
                   <div className="text-[10px] text-foreground-faint mb-3" style={{ fontVariant: "small-caps" }}>
                     panel &mdash; normal (250ms)
                   </div>
-                  <div className="group">
-                    <div
-                      className="w-full bg-surface rounded-xs px-4 py-2.5 text-sm text-foreground border border-card-border cursor-pointer hover:bg-surface-hover hover:border-border-strong transition-all"
-                      style={{ transitionDuration: "250ms" }}
-                    >
-                      Hover to expand
-                    </div>
+                  <div
+                    className="w-full bg-surface rounded-xs px-4 py-2.5 text-sm text-foreground border border-card-border cursor-pointer hover:bg-surface-hover hover:border-border-strong hover:py-6 transition-all"
+                    style={{ transitionDuration: "250ms" }}
+                  >
+                    Hover to expand
                   </div>
                   <div className="text-[10px] font-mono text-foreground-faint mt-2">
                     <span className="text-line">transition-all duration-normal</span>
