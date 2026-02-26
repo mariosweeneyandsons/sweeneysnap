@@ -11,10 +11,10 @@ interface PrintQueueViewProps {
 }
 
 const statusColors: Record<string, string> = {
-  queued: "bg-blue-500/20 text-blue-400",
-  printing: "bg-yellow-500/20 text-yellow-400",
-  printed: "bg-green-500/20 text-green-400",
-  failed: "bg-red-500/20 text-red-400",
+  queued: "bg-primary/10 text-primary",
+  printing: "bg-warning-bg text-warning",
+  printed: "bg-success-bg text-success",
+  failed: "bg-destructive/10 text-destructive",
 };
 
 export function PrintQueueView({ eventId }: PrintQueueViewProps) {
@@ -49,7 +49,7 @@ export function PrintQueueView({ eventId }: PrintQueueViewProps) {
       {jobs.map((job) => (
         <div
           key={job._id}
-          className="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/10"
+          className="flex items-center gap-4 p-3 rounded-lg bg-card-bg border border-border-separator"
         >
           {job.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element

@@ -92,7 +92,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
       <div className="space-y-6">
         {/* Copy & Messaging */}
         <section>
-          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
+          <h3 className="text-label-caps mb-3">
             Copy & Messaging
           </h3>
           <div className="space-y-4">
@@ -128,7 +128,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Upload Rules */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
+          <h3 className="text-label-caps mb-3">
             Upload Rules
           </h3>
           <div className="space-y-4">
@@ -152,7 +152,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Session Limits */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
+          <h3 className="text-label-caps mb-3">
             Session Limits
           </h3>
           <div className="space-y-4">
@@ -173,7 +173,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Camera Features */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
+          <h3 className="text-label-caps mb-3">
             Camera Features
           </h3>
           <div className="space-y-4">
@@ -195,7 +195,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Photo Editor */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
+          <h3 className="text-label-caps mb-3">
             Photo Editor
           </h3>
           <div className="space-y-4">

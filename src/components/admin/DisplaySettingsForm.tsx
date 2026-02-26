@@ -164,7 +164,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Background */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Background</h3>
+          <h3 className="text-label-caps mb-3">Background</h3>
           <div className="flex flex-col gap-3">
             <div>
               <label className={labelClass}>Background Color</label>
@@ -189,7 +189,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Display Options */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Display Options</h3>
+          <h3 className="text-label-caps mb-3">Display Options</h3>
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
@@ -204,7 +204,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Spotlight */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Spotlight</h3>
+          <h3 className="text-label-caps mb-3">Spotlight</h3>
           <label className="flex items-center gap-2 cursor-pointer mb-3">
             <input type="checkbox" checked={spotlightEnabled} onChange={(e) => setSpotlightEnabled(e.target.checked)} className="rounded" />
             <span className="text-sm text-foreground-muted">Enable spotlight mode</span>
@@ -239,7 +239,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Ticker */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Ticker Bar</h3>
+          <h3 className="text-label-caps mb-3">Ticker Bar</h3>
           <label className="flex items-center gap-2 cursor-pointer mb-3">
             <input type="checkbox" checked={tickerEnabled} onChange={(e) => setTickerEnabled(e.target.checked)} className="rounded" />
             <span className="text-sm text-foreground-muted">Enable scrolling ticker</span>
@@ -260,7 +260,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Countdown */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Countdown</h3>
+          <h3 className="text-label-caps mb-3">Countdown</h3>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={countdownEnabled} onChange={(e) => setCountdownEnabled(e.target.checked)} className="rounded" />
             <span className="text-sm text-foreground-muted">Show countdown timer (uses event start/end dates)</span>
@@ -269,7 +269,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Social Overlay */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Social Overlay</h3>
+          <h3 className="text-label-caps mb-3">Social Overlay</h3>
           <div>
             <label className={labelClass}>Hashtag / Handle</label>
             <input
@@ -284,7 +284,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange, crewToken
 
         {/* Sound & Effects */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Sound & Effects</h3>
+          <h3 className="text-label-caps mb-3">Sound & Effects</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>New Selfie Sound</label>

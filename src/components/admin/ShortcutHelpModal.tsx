@@ -45,7 +45,7 @@ function ShortcutGroup({
 }) {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-foreground-muted mb-2 uppercase tracking-wider">
+      <h3 className="text-label-caps mb-2">
         {title}
       </h3>
       <div className="flex flex-col gap-2">
