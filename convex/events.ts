@@ -175,23 +175,23 @@ export const create = mutation({
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
-    // Validate custom domain format
-    if (args.customDomain !== undefined) {
-      const domain = args.customDomain;
-      if (domain === "") throw new Error("Custom domain cannot be empty");
-      if (/\s/.test(domain)) throw new Error("Custom domain cannot contain spaces");
-      if (/^https?:\/\//i.test(domain)) throw new Error("Custom domain should not include http:// or https://");
+    // Normalize and validate custom domain
+    const customDomain = args.customDomain?.toLowerCase();
+    if (customDomain !== undefined) {
+      if (customDomain === "") throw new Error("Custom domain cannot be empty");
+      if (/\s/.test(customDomain)) throw new Error("Custom domain cannot contain spaces");
+      if (/^https?:\/\//i.test(customDomain)) throw new Error("Custom domain should not include http:// or https://");
     }
-    // Validate custom domain uniqueness
-    if (args.customDomain) {
+    if (customDomain) {
       const existing = await ctx.db
         .query("events")
-        .withIndex("by_customDomain", (q) => q.eq("customDomain", args.customDomain))
+        .withIndex("by_customDomain", (q) => q.eq("customDomain", customDomain))
         .unique();
       if (existing) throw new Error("Custom domain already in use");
     }
     return await ctx.db.insert("events", {
       ...args,
+      customDomain,
       crewToken: crypto.randomUUID(),
       updatedAt: Date.now(),
     });
@@ -224,22 +224,21 @@ export const update = mutation({
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
-    // Validate custom domain format
-    if (args.customDomain !== undefined) {
-      const domain = args.customDomain;
-      if (domain === "") throw new Error("Custom domain cannot be empty");
-      if (/\s/.test(domain)) throw new Error("Custom domain cannot contain spaces");
-      if (/^https?:\/\//i.test(domain)) throw new Error("Custom domain should not include http:// or https://");
+    // Normalize and validate custom domain
+    const customDomain = args.customDomain?.toLowerCase();
+    if (customDomain !== undefined) {
+      if (customDomain === "") throw new Error("Custom domain cannot be empty");
+      if (/\s/.test(customDomain)) throw new Error("Custom domain cannot contain spaces");
+      if (/^https?:\/\//i.test(customDomain)) throw new Error("Custom domain should not include http:// or https://");
     }
-    // Validate custom domain uniqueness
-    if (args.customDomain) {
+    if (customDomain) {
       const existing = await ctx.db
         .query("events")
-        .withIndex("by_customDomain", (q) => q.eq("customDomain", args.customDomain))
+        .withIndex("by_customDomain", (q) => q.eq("customDomain", customDomain))
         .unique();
       if (existing && existing._id !== id) throw new Error("Custom domain already in use");
     }
-    await ctx.db.patch(id, { ...data, updatedAt: Date.now() });
+    await ctx.db.patch(id, { ...data, customDomain, updatedAt: Date.now() });
   },
 });
 

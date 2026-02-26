@@ -8,7 +8,7 @@ const APP_DOMAINS = [
 ];
 
 export function middleware(request: NextRequest) {
-  const hostname = request.headers.get("host")?.split(":")[0] ?? "";
+  const hostname = (request.headers.get("host")?.split(":")[0] ?? "").toLowerCase();
 
   // Skip for app's own domains
   if (APP_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
