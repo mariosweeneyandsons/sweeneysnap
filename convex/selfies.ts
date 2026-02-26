@@ -202,6 +202,50 @@ export const updateStatus = mutation({
   },
 });
 
+export const updateStatusWithLog = mutation({
+  args: {
+    id: v.id("selfies"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("rejected")
+    ),
+    crewToken: v.string(),
+    crewMemberId: v.optional(v.id("crewMembers")),
+  },
+  handler: async (ctx, args) => {
+    // If crewMemberId is provided, verify permission
+    if (args.crewMemberId) {
+      const member = await ctx.db.get(args.crewMemberId);
+      if (!member) throw new Error("Crew member not found");
+      if (member.permission === "viewer") {
+        throw new Error("Viewers cannot moderate selfies");
+      }
+    }
+
+    const selfie = await ctx.db.get(args.id);
+    if (!selfie) throw new Error("Selfie not found");
+
+    await ctx.db.patch(args.id, { status: args.status });
+
+    // Map status to action
+    const actionMap: Record<string, "approve" | "reject" | "reset"> = {
+      approved: "approve",
+      rejected: "reject",
+      pending: "reset",
+    };
+
+    await ctx.db.insert("crewActivityLog", {
+      eventId: selfie.eventId,
+      crewMemberId: args.crewMemberId,
+      crewToken: args.crewToken,
+      action: actionMap[args.status],
+      selfieId: args.id,
+      timestamp: Date.now(),
+    });
+  },
+});
+
 export const remove = mutation({
   args: { id: v.id("selfies") },
   handler: async (ctx, args) => {
