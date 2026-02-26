@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Preset } from "@/types/database";
+import { useToast } from "@/components/ui/Toast";
 
 interface PresetFormProps {
   preset?: Preset;
@@ -16,6 +17,7 @@ interface PresetFormProps {
 
 export function PresetForm({ preset }: PresetFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const createPreset = useMutation(api.presets.create);
   const updatePreset = useMutation(api.presets.update);
   const [loading, setLoading] = useState(false);
@@ -57,12 +59,16 @@ export function PresetForm({ preset }: PresetFormProps) {
     try {
       if (preset) {
         await updatePreset({ id: preset._id as Id<"presets">, ...payload });
+        toast("Preset saved successfully", "success");
       } else {
         await createPreset(payload);
+        toast("Preset created successfully", "success");
       }
       router.push("/admin/presets");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      toast(msg, "error");
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Event } from "@/types/database";
+import { useToast } from "@/components/ui/Toast";
 
 interface DisplaySettingsFormProps {
   event: Event;
@@ -21,6 +22,7 @@ const sectionClass = "border-t border-white/10 pt-4";
 
 export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const config = event.displayConfig;
   const updateDisplayConfig = useMutation(api.events.updateDisplayConfig);
   const [loading, setLoading] = useState(false);
@@ -82,9 +84,12 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
           backgroundVideoId?: Id<"_storage">;
         },
       });
+      toast("Display settings saved", "success");
       router.push(backHref);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      toast(msg, "error");
     } finally {
       setLoading(false);
     }

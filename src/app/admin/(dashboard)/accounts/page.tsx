@@ -7,9 +7,11 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
+import { useToast } from "@/components/ui/Toast";
 import type { Id } from "../../../../../convex/_generated/dataModel";
 
 export default function AccountsPage() {
+  const { toast } = useToast();
   const profiles = useQuery(api.adminProfiles.list);
   const sessionsData = useQuery(api.sessions.listAdminSessions);
   const createAdmin = useMutation(api.adminProfiles.create);
@@ -43,8 +45,11 @@ export default function AccountsPage() {
       setShowModal(false);
       setEmail("");
       setDisplayName("");
+      toast("Admin account created", "success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create account");
+      const msg = err instanceof Error ? err.message : "Failed to create account";
+      setError(msg);
+      toast(msg, "error");
     } finally {
       setLoading(false);
     }

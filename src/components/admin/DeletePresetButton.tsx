@@ -3,15 +3,22 @@
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+import { useToast } from "@/components/ui/Toast";
 
 export function DeletePresetButton({ presetId }: { presetId: string }) {
   const removePreset = useMutation(api.presets.remove);
+  const { toast } = useToast();
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!confirm("Delete this preset?")) return;
-    await removePreset({ id: presetId as Id<"presets"> });
+    try {
+      await removePreset({ id: presetId as Id<"presets"> });
+      toast("Preset deleted", "success");
+    } catch {
+      toast("Failed to delete preset", "error");
+    }
   };
 
   return (
