@@ -5,6 +5,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
 import { ToastProvider } from "@/components/ui/Toast";
 
 export default function AdminLayout({
@@ -52,7 +53,10 @@ export default function AdminLayout({
     <ToastProvider>
       <div className="min-h-dvh bg-black text-white flex">
         <AdminSidebar profile={adminProfile} userIdentity={userIdentity} />
-        <main className="flex-1 p-6 ml-64">{children}</main>
+        <main className="flex-1 p-6 ml-64">
+          <AdminBreadcrumbs />
+          {children}
+        </main>
       </div>
     </ToastProvider>
   );

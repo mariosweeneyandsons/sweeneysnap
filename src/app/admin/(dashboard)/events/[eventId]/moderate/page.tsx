@@ -6,7 +6,6 @@ import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { ModerationGrid } from "@/components/admin/ModerationGrid";
 import { ModerationGridSkeleton } from "@/components/admin/skeletons/ModerationGridSkeleton";
-import Link from "next/link";
 
 export default function AdminModeratePage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -21,12 +20,7 @@ export default function AdminModeratePage() {
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-8">
-        <Link href={`/admin/events/${eventId}`} className="text-white/50 hover:text-white transition-colors">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-          </svg>
-        </Link>
+      <div className="mb-8">
         <h1 className="text-2xl font-bold">Moderate: {event.name}</h1>
       </div>
       <ModerationGrid eventId={event._id} mode="admin" />
