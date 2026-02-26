@@ -42,6 +42,56 @@ export const getBySlug = query({
   },
 });
 
+export const getByCustomDomain = query({
+  args: { domain: v.string() },
+  handler: async (ctx, args) => {
+    const event = await ctx.db
+      .query("events")
+      .withIndex("by_customDomain", (q) => q.eq("customDomain", args.domain))
+      .unique();
+    if (!event || !event.isActive) return null;
+    const { crewToken: _ct, ...publicEvent } = event;
+    return publicEvent;
+  },
+});
+
+export const getBySlugs = query({
+  args: { slugs: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    const events = [];
+    for (const slug of args.slugs) {
+      const event = await ctx.db
+        .query("events")
+        .withIndex("by_slug", (q) => q.eq("slug", slug))
+        .unique();
+      if (event && event.isActive) {
+        events.push(event);
+      }
+    }
+    return events;
+  },
+});
+
+export const getBySlugForGallery = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    const event = await ctx.db
+      .query("events")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .unique();
+    if (!event) return null;
+    // Check gallery availability
+    const config = event.uploadConfig;
+    if (!config.galleryEnabled) return null;
+    // Check if gallery should only be available after event ends
+    if (config.galleryAvailableAfterEvent && event.endsAt && Date.now() < event.endsAt) {
+      return null;
+    }
+    const { crewToken: _ct, ...publicEvent } = event;
+    return publicEvent;
+  },
+});
+
 export const getByCrewToken = query({
   args: { token: v.string() },
   handler: async (ctx, args) => {
@@ -103,12 +153,21 @@ export const create = mutation({
     aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
     endsAt: v.optional(v.number()),
+    customDomain: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
+    // Validate custom domain uniqueness
+    if (args.customDomain) {
+      const existing = await ctx.db
+        .query("events")
+        .withIndex("by_customDomain", (q) => q.eq("customDomain", args.customDomain))
+        .unique();
+      if (existing) throw new Error("Custom domain already in use");
+    }
     return await ctx.db.insert("events", {
       ...args,
       crewToken: crypto.randomUUID(),
@@ -135,12 +194,21 @@ export const update = mutation({
     aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
     endsAt: v.optional(v.number()),
+    customDomain: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
+    // Validate custom domain uniqueness
+    if (args.customDomain) {
+      const existing = await ctx.db
+        .query("events")
+        .withIndex("by_customDomain", (q) => q.eq("customDomain", args.customDomain))
+        .unique();
+      if (existing && existing._id !== id) throw new Error("Custom domain already in use");
+    }
     const { id, ...data } = args;
     await ctx.db.patch(id, { ...data, updatedAt: Date.now() });
   },
