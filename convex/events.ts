@@ -175,6 +175,13 @@ export const create = mutation({
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
+    // Validate custom domain format
+    if (args.customDomain !== undefined) {
+      const domain = args.customDomain;
+      if (domain === "") throw new Error("Custom domain cannot be empty");
+      if (/\s/.test(domain)) throw new Error("Custom domain cannot contain spaces");
+      if (/^https?:\/\//i.test(domain)) throw new Error("Custom domain should not include http:// or https://");
+    }
     // Validate custom domain uniqueness
     if (args.customDomain) {
       const existing = await ctx.db
@@ -213,9 +220,17 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    const { id, ...data } = args;
     validateStringLength(args.slug, "slug", 100);
     validateStringLength(args.name, "name", 200);
     validateStringLength(args.customCss, "customCss", 10000);
+    // Validate custom domain format
+    if (args.customDomain !== undefined) {
+      const domain = args.customDomain;
+      if (domain === "") throw new Error("Custom domain cannot be empty");
+      if (/\s/.test(domain)) throw new Error("Custom domain cannot contain spaces");
+      if (/^https?:\/\//i.test(domain)) throw new Error("Custom domain should not include http:// or https://");
+    }
     // Validate custom domain uniqueness
     if (args.customDomain) {
       const existing = await ctx.db
@@ -224,7 +239,6 @@ export const update = mutation({
         .unique();
       if (existing && existing._id !== id) throw new Error("Custom domain already in use");
     }
-    const { id, ...data } = args;
     await ctx.db.patch(id, { ...data, updatedAt: Date.now() });
   },
 });
