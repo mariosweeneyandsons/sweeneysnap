@@ -53,7 +53,7 @@ export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={selfie.imageUrl || ""}
+              src={selfie.thumbnailUrl || selfie.imageUrl || ""}
               alt={selfie.displayName || `Selfie ${index + 1}`}
               className="w-full h-full object-cover"
               loading="eager"

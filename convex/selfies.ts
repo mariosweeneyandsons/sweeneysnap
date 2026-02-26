@@ -26,6 +26,12 @@ export const listApprovedByEvent = query({
       selfies.map(async (selfie) => ({
         ...selfie,
         imageUrl: await ctx.storage.getUrl(selfie.storageId),
+        thumbnailUrl: selfie.thumbnailStorageId
+          ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
+          : null,
+        mediumUrl: selfie.mediumStorageId
+          ? await ctx.storage.getUrl(selfie.mediumStorageId)
+          : null,
       }))
     );
   },
@@ -66,6 +72,12 @@ export const listByEvent = query({
       selfies.map(async (selfie) => ({
         ...selfie,
         imageUrl: await ctx.storage.getUrl(selfie.storageId),
+        thumbnailUrl: selfie.thumbnailStorageId
+          ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
+          : null,
+        mediumUrl: selfie.mediumStorageId
+          ? await ctx.storage.getUrl(selfie.mediumStorageId)
+          : null,
       }))
     );
   },
@@ -208,6 +220,11 @@ export const create = mutation({
       });
     }
 
+    // Schedule image optimization (thumbnail + medium)
+    await ctx.scheduler.runAfter(0, internal.imageProcessing.generateResizedVersions, {
+      selfieId,
+    });
+
     // Dispatch webhook
     await ctx.scheduler.runAfter(0, internal.webhookDispatch.dispatch, {
       eventId: args.eventId,
@@ -300,6 +317,8 @@ export const remove = mutation({
     const selfie = await ctx.db.get(args.id);
     if (!selfie) throw new Error("Selfie not found");
     await ctx.storage.delete(selfie.storageId);
+    if (selfie.thumbnailStorageId) await ctx.storage.delete(selfie.thumbnailStorageId);
+    if (selfie.mediumStorageId) await ctx.storage.delete(selfie.mediumStorageId);
     await ctx.db.delete(args.id);
   },
 });
@@ -336,6 +355,8 @@ export const removeAllByEvent = mutation({
 
     for (const selfie of selfies) {
       await ctx.storage.delete(selfie.storageId);
+      if (selfie.thumbnailStorageId) await ctx.storage.delete(selfie.thumbnailStorageId);
+      if (selfie.mediumStorageId) await ctx.storage.delete(selfie.mediumStorageId);
       await ctx.db.delete(selfie._id);
     }
 
@@ -403,5 +424,110 @@ export const updateAiModeration = internalMutation({
       patch.status = "rejected";
     }
     await ctx.db.patch(args.selfieId, patch);
+  },
+});
+
+export const updateStorageIds = internalMutation({
+  args: {
+    selfieId: v.id("selfies"),
+    thumbnailStorageId: v.id("_storage"),
+    mediumStorageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.selfieId, {
+      thumbnailStorageId: args.thumbnailStorageId,
+      mediumStorageId: args.mediumStorageId,
+    });
+  },
+});
+
+// Public query for individual selfie (social sharing)
+export const getPublicById = query({
+  args: { selfieId: v.id("selfies") },
+  handler: async (ctx, args) => {
+    const selfie = await ctx.db.get(args.selfieId);
+    if (!selfie || selfie.status !== "approved") return null;
+    const event = await ctx.db.get(selfie.eventId);
+    if (!event) return null;
+    return {
+      _id: selfie._id,
+      displayName: selfie.displayName,
+      message: selfie.message,
+      imageUrl: await ctx.storage.getUrl(selfie.storageId),
+      eventName: event.name,
+      eventSlug: event.slug,
+      eventLogoUrl: event.logoUrl,
+    };
+  },
+});
+
+// Paginated query for gallery
+export const listApprovedByEventPaginated = query({
+  args: {
+    eventId: v.id("events"),
+    paginationOpts: v.object({
+      numItems: v.number(),
+      cursor: v.union(v.string(), v.null()),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db
+      .query("selfies")
+      .withIndex("by_eventId_status", (q) =>
+        q.eq("eventId", args.eventId).eq("status", "approved")
+      )
+      .order("desc")
+      .paginate(args.paginationOpts);
+
+    return {
+      ...result,
+      page: await Promise.all(
+        result.page.map(async (selfie) => ({
+          ...selfie,
+          imageUrl: await ctx.storage.getUrl(selfie.storageId),
+          thumbnailUrl: selfie.thumbnailStorageId
+            ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
+            : null,
+          mediumUrl: selfie.mediumStorageId
+            ? await ctx.storage.getUrl(selfie.mediumStorageId)
+            : null,
+        }))
+      ),
+    };
+  },
+});
+
+// Query for multiple events (multi-event display)
+export const listApprovedByMultipleEvents = query({
+  args: { eventIds: v.array(v.id("events")) },
+  handler: async (ctx, args) => {
+    const allSelfies = [];
+    for (const eventId of args.eventIds) {
+      const selfies = await ctx.db
+        .query("selfies")
+        .withIndex("by_eventId_status", (q) =>
+          q.eq("eventId", eventId).eq("status", "approved")
+        )
+        .order("desc")
+        .collect();
+      for (const selfie of selfies) {
+        const event = await ctx.db.get(eventId);
+        allSelfies.push({
+          ...selfie,
+          imageUrl: await ctx.storage.getUrl(selfie.storageId),
+          thumbnailUrl: selfie.thumbnailStorageId
+            ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
+            : null,
+          mediumUrl: selfie.mediumStorageId
+            ? await ctx.storage.getUrl(selfie.mediumStorageId)
+            : null,
+          eventName: event?.name,
+          eventSlug: event?.slug,
+        });
+      }
+    }
+    // Sort by creation time desc
+    allSelfies.sort((a, b) => b._creationTime - a._creationTime);
+    return allSelfies;
   },
 });

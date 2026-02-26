@@ -56,9 +56,20 @@ export default defineSchema({
     sortOrder: v.optional(v.number()),
     assets: v.optional(v.array(brandAssetValidator)),
     updatedAt: v.number(),
+    // Custom domain (Feature 88)
+    customDomain: v.optional(v.string()),
+    // Print config (Feature 90)
+    printConfig: v.optional(
+      v.object({
+        enabled: v.boolean(),
+        autoPrintOnApproval: v.optional(v.boolean()),
+        printStationToken: v.optional(v.string()),
+      })
+    ),
   })
     .index("by_slug", ["slug"])
-    .index("by_crewToken", ["crewToken"]),
+    .index("by_crewToken", ["crewToken"])
+    .index("by_customDomain", ["customDomain"]),
 
   selfies: defineTable({
     eventId: v.id("events"),
@@ -81,6 +92,16 @@ export default defineSchema({
         analyzedAt: v.number(),
       })
     ),
+    // Image optimization (Feature 87)
+    thumbnailStorageId: v.optional(v.id("_storage")),
+    mediumStorageId: v.optional(v.id("_storage")),
+    // Email/SMS delivery (Feature 91)
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    deliveryStatus: v.optional(
+      v.union(v.literal("pending"), v.literal("sent"), v.literal("failed"))
+    ),
+    deliveredAt: v.optional(v.number()),
   })
     .index("by_eventId", ["eventId"])
     .index("by_eventId_status", ["eventId", "status"])
@@ -122,4 +143,33 @@ export default defineSchema({
   })
     .index("by_eventId", ["eventId"])
     .index("by_crewMemberId", ["crewMemberId"]),
+
+  // Print jobs (Feature 90)
+  printJobs: defineTable({
+    selfieId: v.id("selfies"),
+    eventId: v.id("events"),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("printing"),
+      v.literal("printed"),
+      v.literal("failed")
+    ),
+    copies: v.optional(v.number()),
+    errorMessage: v.optional(v.string()),
+    queuedAt: v.number(),
+    printedAt: v.optional(v.number()),
+  })
+    .index("by_eventId_status", ["eventId", "status"])
+    .index("by_selfieId", ["selfieId"]),
+
+  // Multi-event displays (Feature 94)
+  multiEventDisplays: defineTable({
+    name: v.string(),
+    eventIds: v.array(v.id("events")),
+    slug: v.string(),
+    displayConfig: displayConfigValidator,
+    showEventBadges: v.optional(v.boolean()),
+    createdBy: v.optional(v.id("users")),
+    updatedAt: v.number(),
+  }).index("by_slug", ["slug"]),
 });

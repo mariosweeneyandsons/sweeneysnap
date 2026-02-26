@@ -141,7 +141,7 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={selfie.imageUrl || ""}
+                    src={selfie.mediumUrl || selfie.imageUrl || ""}
                     alt={selfie.displayName || `Selfie ${i + 1}`}
                     className="w-full h-full object-cover"
                     loading="eager"

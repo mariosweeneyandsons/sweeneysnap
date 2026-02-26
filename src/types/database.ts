@@ -27,6 +27,22 @@ export interface UploadConfig {
   filtersEnabled?: boolean;
   framesEnabled?: boolean;
   stickersEnabled?: boolean;
+  // Social sharing
+  shareEnabled?: boolean;
+  shareHashtag?: string;
+  shareText?: string;
+  // Email/SMS delivery
+  collectEmail?: boolean;
+  collectPhone?: boolean;
+  // Photo booth mode
+  boothAutoResetSeconds?: number;
+  boothCaptureCountdown?: boolean;
+  boothIdleMessage?: string;
+  // Gallery
+  galleryEnabled?: boolean;
+  galleryAvailableAfterEvent?: boolean;
+  galleryAllowDownload?: boolean;
+  galleryHeaderText?: string;
 }
 
 export interface DisplayConfig {
@@ -116,6 +132,26 @@ export interface Event extends ConvexDocument {
   sortOrder?: number;
   assets?: BrandAsset[];
   updatedAt: number;
+  // Custom domain
+  customDomain?: string;
+  // Print config
+  printConfig?: {
+    enabled: boolean;
+    autoPrintOnApproval?: boolean;
+    printStationToken?: string;
+  };
+}
+
+export type PrintJobStatus = "queued" | "printing" | "printed" | "failed";
+
+export interface PrintJob extends ConvexDocument {
+  selfieId: string;
+  eventId: string;
+  status: PrintJobStatus;
+  copies?: number;
+  errorMessage?: string;
+  queuedAt: number;
+  printedAt?: number;
 }
 
 export type CrewPermission = "moderator" | "viewer";
@@ -148,4 +184,12 @@ export interface Selfie extends ConvexDocument {
   sessionId?: string;
   fileSizeBytes?: number;
   aiModeration?: AiModeration;
+  // Image optimization
+  thumbnailUrl?: string | null;
+  mediumUrl?: string | null;
+  // Email/SMS delivery
+  email?: string;
+  phone?: string;
+  deliveryStatus?: "pending" | "sent" | "failed";
+  deliveredAt?: number;
 }

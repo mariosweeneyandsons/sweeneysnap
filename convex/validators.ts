@@ -16,6 +16,22 @@ export const uploadConfigValidator = v.object({
   filtersEnabled: v.optional(v.boolean()),
   framesEnabled: v.optional(v.boolean()),
   stickersEnabled: v.optional(v.boolean()),
+  // Social sharing (Feature 92)
+  shareEnabled: v.optional(v.boolean()),
+  shareHashtag: v.optional(v.string()),
+  shareText: v.optional(v.string()),
+  // Email/SMS delivery (Feature 91)
+  collectEmail: v.optional(v.boolean()),
+  collectPhone: v.optional(v.boolean()),
+  // Photo booth mode (Feature 93)
+  boothAutoResetSeconds: v.optional(v.number()),
+  boothCaptureCountdown: v.optional(v.boolean()),
+  boothIdleMessage: v.optional(v.string()),
+  // Gallery (Feature 95)
+  galleryEnabled: v.optional(v.boolean()),
+  galleryAvailableAfterEvent: v.optional(v.boolean()),
+  galleryAllowDownload: v.optional(v.boolean()),
+  galleryHeaderText: v.optional(v.string()),
 });
 
 export const displayConfigValidator = v.object({
