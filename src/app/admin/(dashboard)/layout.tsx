@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
 import { ThemeProvider } from "@/components/admin/ThemeProvider";
+import { ShortcutHelpModal } from "@/components/admin/ShortcutHelpModal";
 import { ToastProvider } from "@/components/ui/Toast";
+import { useHotkeys, useTwoStrokeHotkeys } from "@/hooks/useHotkeys";
 
 export default function AdminLayout({
   children,
@@ -18,6 +20,7 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shortcutHelpOpen, setShortcutHelpOpen] = useState(false);
 
   const adminProfile = useQuery(
     api.adminProfiles.getByCurrentUser,
@@ -44,6 +47,25 @@ export default function AdminLayout({
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
+
+  // Global keyboard shortcuts
+  const isReady = !isLoading && isAuthenticated && !!adminProfile;
+  useHotkeys([
+    {
+      key: "?",
+      enabled: isReady,
+      handler: () => setShortcutHelpOpen((v) => !v),
+    },
+  ]);
+  useTwoStrokeHotkeys(
+    "g",
+    [
+      { key: "d", handler: () => router.push("/admin") },
+      { key: "p", handler: () => router.push("/admin/presets") },
+      { key: "a", handler: () => router.push("/admin/accounts") },
+    ],
+    isReady
+  );
 
   if (isLoading || !isAuthenticated || adminProfile === undefined) {
     return (
@@ -95,6 +117,10 @@ export default function AdminLayout({
             {children}
           </main>
         </div>
+        <ShortcutHelpModal
+          open={shortcutHelpOpen}
+          onClose={() => setShortcutHelpOpen(false)}
+        />
       </ToastProvider>
     </ThemeProvider>
   );

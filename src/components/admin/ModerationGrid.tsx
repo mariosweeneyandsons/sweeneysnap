@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { ModerationGridSkeleton } from "@/components/admin/skeletons/ModerationGridSkeleton";
 import { useNewPendingAlert } from "@/hooks/useNewPendingAlert";
+import { useHotkeys } from "@/hooks/useHotkeys";
 
 interface ModerationGridProps {
   eventId: string;
@@ -22,6 +23,7 @@ type FilterTab = "all" | SelfieStatus;
 export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: ModerationGridProps) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const { toast } = useToast();
 
   const selfies = useQuery(api.selfies.listByEvent, {
@@ -60,6 +62,66 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
 
   // Notification sound for new pending selfies
   useNewPendingAlert(eventId, crewToken);
+
+  // Clamp selectedIndex when selfies list changes
+  useEffect(() => {
+    if (selfies && selectedIndex >= selfies.length) {
+      setSelectedIndex(Math.max(selfies.length - 1, -1));
+    }
+  }, [selfies, selectedIndex]);
+
+  const selectedSelfie = selfies && selectedIndex >= 0 ? selfies[selectedIndex] : null;
+
+  // Keyboard shortcuts for moderation
+  useHotkeys([
+    {
+      key: "j",
+      enabled: !!selfies && selfies.length > 0,
+      handler: () => setSelectedIndex((i) => Math.min(i + 1, (selfies?.length ?? 1) - 1)),
+    },
+    {
+      key: "k",
+      enabled: !!selfies && selfies.length > 0,
+      handler: () => setSelectedIndex((i) => Math.max(i - 1, 0)),
+    },
+    {
+      key: "a",
+      enabled: !!selectedSelfie && selectedSelfie.status !== "approved",
+      handler: () => {
+        if (selectedSelfie) handleUpdateStatus(selectedSelfie._id, "approved");
+      },
+    },
+    {
+      key: "r",
+      enabled: !!selectedSelfie && selectedSelfie.status !== "rejected",
+      handler: () => {
+        if (selectedSelfie) handleUpdateStatus(selectedSelfie._id, "rejected");
+      },
+    },
+    {
+      key: "d",
+      enabled: !!selectedSelfie && mode === "admin",
+      handler: () => {
+        if (selectedSelfie) handleDelete(selectedSelfie._id);
+      },
+    },
+    {
+      key: "1",
+      handler: () => { setFilter("all"); setSelectedIndex(-1); },
+    },
+    {
+      key: "2",
+      handler: () => { setFilter("pending"); setSelectedIndex(-1); },
+    },
+    {
+      key: "3",
+      handler: () => { setFilter("approved"); setSelectedIndex(-1); },
+    },
+    {
+      key: "4",
+      handler: () => { setFilter("rejected"); setSelectedIndex(-1); },
+    },
+  ]);
 
   const handleUpdateStatus = async (
     selfieId: string,
@@ -186,13 +248,15 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
         <div className="text-center py-12 text-foreground-muted">No selfies found</div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {selfies.map((selfie) => (
+          {selfies.map((selfie, idx) => (
             <div
               key={selfie._id}
               className={`rounded-xl border overflow-hidden bg-input-bg transition-colors ${
-                selectedIds.has(selfie._id)
-                  ? "border-primary ring-1 ring-primary/50"
-                  : "border-border"
+                idx === selectedIndex
+                  ? "ring-2 ring-primary border-primary"
+                  : selectedIds.has(selfie._id)
+                    ? "border-primary ring-1 ring-primary/50"
+                    : "border-border"
               }`}
             >
               <div className="relative">
