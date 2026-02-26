@@ -1,4 +1,5 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
 
@@ -109,9 +110,19 @@ export const create = mutation({
     fileSizeBytes: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("selfies", {
+    const selfieId = await ctx.db.insert("selfies", {
       ...args,
     });
+
+    // Schedule AI moderation if enabled on the event
+    const event = await ctx.db.get(args.eventId);
+    if (event?.aiModerationEnabled) {
+      await ctx.scheduler.runAfter(0, internal.aiModeration.moderateWithAi, {
+        selfieId,
+      });
+    }
+
+    return selfieId;
   },
 });
 
@@ -181,5 +192,42 @@ export const removeAllByEvent = mutation({
       .first();
 
     return { deleted: selfies.length, hasMore: remaining !== null };
+  },
+});
+
+export const bulkUpdateStatus = mutation({
+  args: {
+    ids: v.array(v.id("selfies")),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("rejected")
+    ),
+  },
+  handler: async (ctx, args) => {
+    for (const id of args.ids) {
+      await ctx.db.patch(id, { status: args.status });
+    }
+  },
+});
+
+export const updateAiModeration = internalMutation({
+  args: {
+    selfieId: v.id("selfies"),
+    aiModeration: v.object({
+      flagged: v.boolean(),
+      categories: v.array(v.string()),
+      confidence: v.number(),
+      autoRejected: v.boolean(),
+      analyzedAt: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.selfieId, {
+      aiModeration: args.aiModeration,
+    });
+    if (args.aiModeration.flagged) {
+      await ctx.db.patch(args.selfieId, { status: "rejected" });
+    }
   },
 });
