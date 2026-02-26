@@ -9,6 +9,7 @@ import { DisplayConfig, Selfie } from "@/types/database";
 interface LivePreviewPanelProps {
   eventId: string;
   config: DisplayConfig;
+  className?: string;
 }
 
 function generatePlaceholders(count: number): Selfie[] {
@@ -28,7 +29,7 @@ function generatePlaceholders(count: number): Selfie[] {
   }));
 }
 
-export function LivePreviewPanel({ eventId, config }: LivePreviewPanelProps) {
+export function LivePreviewPanel({ eventId, config, className }: LivePreviewPanelProps) {
   const selfies = useQuery(api.selfies.listApprovedByEvent, {
     eventId: eventId as Id<"events">,
   });
@@ -43,12 +44,9 @@ export function LivePreviewPanel({ eventId, config }: LivePreviewPanelProps) {
       : generatePlaceholders(totalSlots);
 
   return (
-    <div className="sticky top-4">
-      <h3 className="text-sm font-medium text-foreground-faint mb-2 uppercase tracking-wider">
-        Live Preview
-      </h3>
+    <div className={className}>
       <div
-        className="rounded-lg overflow-hidden border border-border"
+        className="rounded-xs overflow-hidden border border-card-border"
         style={{ aspectRatio: "16 / 9" }}
       >
         {selfies && selfies.length > 0 ? (
@@ -65,7 +63,7 @@ export function LivePreviewPanel({ eventId, config }: LivePreviewPanelProps) {
             {generatePlaceholders(totalSlots).map((p, i) => (
               <div
                 key={i}
-                className="rounded"
+                className="rounded-xs"
                 style={{ backgroundColor: (p as unknown as { _color: string })._color, opacity: 0.5 }}
               />
             ))}
