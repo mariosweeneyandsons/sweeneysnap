@@ -1,8 +1,29 @@
 "use node";
 
-import { internalAction, internalMutation } from "./_generated/server";
+import { action, internalAction, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+
+export const sendTestEmail = action({
+  args: {},
+  handler: async () => {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY not set");
+
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+
+    const { data, error } = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: "mario@sweeneyandsons.tv",
+      subject: "Hello World",
+      html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
+    });
+
+    if (error) throw new Error(JSON.stringify(error));
+    return data;
+  },
+});
 
 function escapeHtml(str: string): string {
   return str
