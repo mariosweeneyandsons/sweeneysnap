@@ -57,3 +57,20 @@ export const create = mutation({
     });
   },
 });
+
+export const remove = mutation({
+  args: { id: v.id("adminProfiles") },
+  handler: async (ctx, args) => {
+    const { identity } = await requireAdmin(ctx);
+
+    const target = await ctx.db.get(args.id);
+    if (!target) throw new Error("Admin profile not found");
+
+    // Prevent self-removal
+    if (target.email === identity.email) {
+      throw new Error("You cannot remove your own admin account");
+    }
+
+    await ctx.db.delete(args.id);
+  },
+});

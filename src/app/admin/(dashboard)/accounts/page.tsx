@@ -15,7 +15,9 @@ export default function AccountsPage() {
   const profiles = useQuery(api.adminProfiles.list);
   const sessionsData = useQuery(api.sessions.listAdminSessions);
   const pendingRequests = useQuery(api.accessRequests.listPending);
+  const currentAdmin = useQuery(api.adminProfiles.getByCurrentUser);
   const createAdmin = useMutation(api.adminProfiles.create);
+  const removeAdmin = useMutation(api.adminProfiles.remove);
   const approveRequest = useMutation(api.accessRequests.approve);
   const denyRequest = useMutation(api.accessRequests.deny);
   const forceDeleteSession = useMutation(api.sessions.forceDeleteSession);
@@ -28,6 +30,10 @@ export default function AccountsPage() {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Remove admin confirmation state
+  const [removeTarget, setRemoveTarget] = useState<{ id: Id<"adminProfiles">; name: string } | null>(null);
+  const [removeLoading, setRemoveLoading] = useState(false);
 
   // Force logout confirmation state
   const [confirmTarget, setConfirmTarget] = useState<
@@ -55,6 +61,20 @@ export default function AccountsPage() {
       toast(msg, "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRemoveAdmin = async () => {
+    if (!removeTarget) return;
+    setRemoveLoading(true);
+    try {
+      await removeAdmin({ id: removeTarget.id });
+      setRemoveTarget(null);
+      toast("Admin account removed", "success");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Failed to remove admin", "error");
+    } finally {
+      setRemoveLoading(false);
     }
   };
 
@@ -165,18 +185,39 @@ export default function AccountsPage() {
 
       {/* Admin Profiles */}
       <div className="grid gap-4">
-        {(profiles || []).map((profile) => (
-          <Card key={profile._id} className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">{profile.displayName}</p>
-              <p className="text-foreground-muted text-sm">{profile.email}</p>
-              <p className="text-foreground-muted text-sm">{profile.role}</p>
-            </div>
-            <p className="text-foreground-faint text-sm">
-              {new Date(profile._creationTime).toLocaleDateString()}
-            </p>
-          </Card>
-        ))}
+        {(profiles || []).map((profile) => {
+          const isSelf = currentAdmin?._id === profile._id;
+          return (
+            <Card key={profile._id} className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">
+                  {profile.displayName}
+                  {isSelf && (
+                    <span className="ml-2 text-xs text-success">(you)</span>
+                  )}
+                </p>
+                <p className="text-foreground-muted text-sm">{profile.email}</p>
+                <p className="text-foreground-muted text-sm">{profile.role}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-foreground-faint text-sm">
+                  {new Date(profile._creationTime).toLocaleDateString()}
+                </p>
+                {!isSelf && (
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() =>
+                      setRemoveTarget({ id: profile._id, name: profile.displayName })
+                    }
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Active Sessions */}
