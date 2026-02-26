@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { CameraCapture } from "./CameraCapture";
 import { UploadProgress } from "./UploadProgress";
 import { UploadSuccess } from "./UploadSuccess";
@@ -20,6 +20,7 @@ export function UploadForm({ event }: UploadFormProps) {
   const [displayName, setDisplayName] = useState("");
   const [message, setMessage] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const isSubmittingRef = useRef(false);
 
   const handleCapture = (file: File) => {
     setCapturedFile(file);
@@ -27,8 +28,13 @@ export function UploadForm({ event }: UploadFormProps) {
   };
 
   const handleSubmit = async () => {
-    if (!capturedFile) return;
-    await upload(capturedFile, event._id, displayName, message, event.moderationEnabled);
+    if (!capturedFile || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    try {
+      await upload(capturedFile, event._id, displayName, message, event.moderationEnabled);
+    } finally {
+      isSubmittingRef.current = false;
+    }
   };
 
   const handleRetake = () => {
@@ -96,7 +102,7 @@ export function UploadForm({ event }: UploadFormProps) {
       )}
 
       <div className="flex gap-3 w-full">
-        <Button onClick={handleSubmit} size="lg" className="flex-1">
+        <Button onClick={handleSubmit} size="lg" className="flex-1" disabled={state !== "idle"}>
           {config.buttonText || "Upload Selfie"}
         </Button>
         <Button onClick={handleRetake} variant="ghost" size="lg">
