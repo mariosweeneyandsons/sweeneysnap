@@ -106,7 +106,7 @@ export function PresetForm({ preset }: PresetFormProps) {
             <select
               value={gridColumns}
               onChange={(e) => setGridColumns(Number(e.target.value))}
-              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
+              className="w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground"
             >
               {[2, 3, 4, 5].map((n) => (
                 <option key={n} value={n} className="bg-surface">{n}x{n}</option>
@@ -121,7 +121,7 @@ export function PresetForm({ preset }: PresetFormProps) {
               max={30}
               value={swapInterval}
               onChange={(e) => setSwapInterval(Number(e.target.value))}
-              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
+              className="w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground"
             />
           </div>
         </div>
@@ -166,7 +166,7 @@ export function PresetForm({ preset }: PresetFormProps) {
               value={customCss}
               onChange={(e) => setCustomCss(e.target.value)}
               placeholder={`.selfie-frame { border-radius: 50%; }`}
-              className="mt-2 w-full h-32 rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground font-mono text-sm resize-y"
+              className="mt-2 w-full h-32 rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground font-mono text-sm resize-y"
             />
           )}
         </div>

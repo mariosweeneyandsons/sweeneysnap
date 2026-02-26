@@ -17,8 +17,8 @@ interface DisplaySettingsFormProps {
   crewToken?: string;
 }
 
-const selectClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
-const inputClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
+const selectClass = "w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground";
+const inputClass = "w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground";
 const labelClass = "block text-sm font-medium text-foreground-muted mb-1";
 const sectionClass = "border-t border-border pt-4";
 

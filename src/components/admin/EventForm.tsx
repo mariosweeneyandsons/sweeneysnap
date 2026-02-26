@@ -149,7 +149,7 @@ export function EventForm({ event }: EventFormProps) {
             <select
               value={presetId}
               onChange={(e) => setPresetId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
+              className="w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground"
             >
               <option value="" className="bg-surface">No preset (defaults)</option>
               {(presets || []).map((p) => (
@@ -180,7 +180,7 @@ export function EventForm({ event }: EventFormProps) {
             <span className="text-sm font-medium text-foreground-muted">Schedule</span>
             <span className="text-xs text-foreground-faint">Times in {timezone}</span>
             {scheduleStatus && (
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${scheduleStatus.color}`}>
+              <span className={`px-2 py-0.5 rounded-xs text-xs font-medium ${scheduleStatus.color}`}>
                 {scheduleStatus.label}
               </span>
             )}
@@ -193,7 +193,7 @@ export function EventForm({ event }: EventFormProps) {
                   type="datetime-local"
                   value={startsAt}
                   onChange={(e) => setStartsAt(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
+                  className="w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
                 />
                 {startsAt && (
                   <button
@@ -213,7 +213,7 @@ export function EventForm({ event }: EventFormProps) {
                   type="datetime-local"
                   value={endsAt}
                   onChange={(e) => setEndsAt(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
+                  className="w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
                 />
                 {endsAt && (
                   <button

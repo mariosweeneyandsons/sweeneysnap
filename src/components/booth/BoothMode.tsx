@@ -195,8 +195,8 @@ export function BoothMode({ event }: BoothModeProps) {
     <div className="min-h-dvh flex flex-col items-center justify-center bg-black px-8">
       <canvas ref={canvasRef} className="hidden" />
       <div className="flex flex-col items-center gap-8">
-        <div className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center">
-          <svg className="w-12 h-12 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        <div className="w-24 h-24 rounded-full bg-success-bg flex items-center justify-center">
+          <svg className="w-12 h-12 text-success" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </div>

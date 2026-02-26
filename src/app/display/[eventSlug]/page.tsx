@@ -20,16 +20,16 @@ export default function DisplayPage() {
 
   if (event === undefined || selfies === undefined) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <p className="text-white/50">Loading...</p>
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <p className="text-foreground/50">Loading...</p>
       </div>
     );
   }
 
   if (!event) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <p className="text-white/50">Event not found</p>
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <p className="text-foreground/50">Event not found</p>
       </div>
     );
   }

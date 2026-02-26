@@ -26,24 +26,24 @@ export default function SavedMultiDisplayPage() {
 
   if (multiDisplay === undefined || selfies === undefined) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <p className="text-white/50">Loading...</p>
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <p className="text-foreground/50">Loading...</p>
       </div>
     );
   }
 
   if (!multiDisplay) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <p className="text-white/50">Display not found</p>
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <p className="text-foreground/50">Display not found</p>
       </div>
     );
   }
 
   if (!events || events.length === 0) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
-        <p className="text-white/50">Loading events...</p>
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <p className="text-foreground/50">Loading events...</p>
       </div>
     );
   }

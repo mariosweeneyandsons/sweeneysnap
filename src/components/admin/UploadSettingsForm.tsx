@@ -13,7 +13,7 @@ interface UploadSettingsFormProps {
   crewToken?: string;
 }
 
-const inputClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
+const inputClass = "w-full rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground";
 const labelClass = "block text-sm font-medium text-foreground-muted mb-1";
 const sectionClass = "border-t border-border pt-4";
 
@@ -233,12 +233,12 @@ function Toggle({
         role="switch"
         aria-checked={value}
         onClick={() => onChange(!value)}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+        className={`relative inline-flex h-6 w-11 items-center rounded-xs transition-colors ${
           value ? "bg-primary" : "bg-secondary-hover"
         }`}
       >
         <span
-          className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
+          className={`inline-block h-4 w-4 rounded-xs bg-foreground transition-transform ${
             value ? "translate-x-6" : "translate-x-1"
           }`}
         />
