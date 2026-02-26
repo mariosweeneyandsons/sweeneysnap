@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { requireAdmin } from "./lib";
 
 export const listApprovedByEvent = query({
   args: { eventId: v.id("events") },
@@ -135,5 +136,50 @@ export const remove = mutation({
     if (!selfie) throw new Error("Selfie not found");
     await ctx.storage.delete(selfie.storageId);
     await ctx.db.delete(args.id);
+  },
+});
+
+export const countsByEvents = query({
+  args: { eventIds: v.array(v.id("events")) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const result: Record<string, { total: number; pending: number; approved: number; rejected: number }> = {};
+    for (const eventId of args.eventIds) {
+      const selfies = await ctx.db
+        .query("selfies")
+        .withIndex("by_eventId", (q) => q.eq("eventId", eventId))
+        .collect();
+      result[eventId] = {
+        total: selfies.length,
+        pending: selfies.filter((s) => s.status === "pending").length,
+        approved: selfies.filter((s) => s.status === "approved").length,
+        rejected: selfies.filter((s) => s.status === "rejected").length,
+      };
+    }
+    return result;
+  },
+});
+
+export const removeAllByEvent = mutation({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const selfies = await ctx.db
+      .query("selfies")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .take(100);
+
+    for (const selfie of selfies) {
+      await ctx.storage.delete(selfie.storageId);
+      await ctx.db.delete(selfie._id);
+    }
+
+    // Check if there are more
+    const remaining = await ctx.db
+      .query("selfies")
+      .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
+      .first();
+
+    return { deleted: selfies.length, hasMore: remaining !== null };
   },
 });
