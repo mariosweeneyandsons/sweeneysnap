@@ -14,6 +14,11 @@ interface DisplaySettingsFormProps {
   backHref: string;
 }
 
+const selectClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
+const inputClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
+const labelClass = "block text-sm font-medium text-white/70 mb-1";
+const sectionClass = "border-t border-white/10 pt-4";
+
 export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProps) {
   const router = useRouter();
   const config = event.displayConfig;
@@ -21,12 +26,26 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Existing settings
   const [gridColumns, setGridColumns] = useState(config.gridColumns ?? 3);
   const [swapInterval, setSwapInterval] = useState(config.swapInterval ?? 6);
   const [backgroundColor, setBackgroundColor] = useState(config.backgroundColor || "#000000");
   const [showNames, setShowNames] = useState(config.showNames ?? true);
   const [showMessages, setShowMessages] = useState(config.showMessages ?? false);
   const [transition, setTransition] = useState<"fade" | "slide" | "zoom">(config.transition || "fade");
+
+  // New settings
+  const [layoutMode, setLayoutMode] = useState<"grid" | "slideshow" | "mosaic">(config.layoutMode || "grid");
+  const [animatedBackground, setAnimatedBackground] = useState<"none" | "gradient">(config.animatedBackground || "none");
+  const [spotlightEnabled, setSpotlightEnabled] = useState(config.spotlightEnabled ?? false);
+  const [spotlightInterval, setSpotlightInterval] = useState(config.spotlightInterval ?? 30);
+  const [spotlightDuration, setSpotlightDuration] = useState(config.spotlightDuration ?? 5);
+  const [tickerEnabled, setTickerEnabled] = useState(config.tickerEnabled ?? false);
+  const [tickerText, setTickerText] = useState(config.tickerText || "");
+  const [countdownEnabled, setCountdownEnabled] = useState(config.countdownEnabled ?? false);
+  const [socialOverlay, setSocialOverlay] = useState(config.socialOverlay || "");
+  const [newSelfieSound, setNewSelfieSound] = useState<"none" | "chime" | "shutter">(config.newSelfieSound || "none");
+  const [celebrationEffect, setCelebrationEffect] = useState<"none" | "confetti" | "ripple" | "glow">(config.celebrationEffect || "none");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +60,17 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
       showNames,
       showMessages,
       transition,
+      layoutMode,
+      animatedBackground,
+      spotlightEnabled,
+      spotlightInterval,
+      spotlightDuration,
+      tickerEnabled,
+      tickerText: tickerText || undefined,
+      countdownEnabled,
+      socialOverlay: socialOverlay || undefined,
+      newSelfieSound,
+      celebrationEffect,
     };
 
     try {
@@ -59,13 +89,28 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl">
       <Card className="flex flex-col gap-5">
+        {/* Layout Mode */}
+        <div>
+          <label className={labelClass}>Layout Mode</label>
+          <select
+            value={layoutMode}
+            onChange={(e) => setLayoutMode(e.target.value as "grid" | "slideshow" | "mosaic")}
+            className={selectClass}
+          >
+            <option value="grid" className="bg-gray-900">Grid</option>
+            <option value="slideshow" className="bg-gray-900">Slideshow</option>
+            <option value="mosaic" className="bg-gray-900">Mosaic</option>
+          </select>
+        </div>
+
+        {/* Grid & Timing */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Grid Size</label>
+            <label className={labelClass}>Grid Size</label>
             <select
               value={gridColumns}
               onChange={(e) => setGridColumns(Number(e.target.value))}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+              className={selectClass}
             >
               {[2, 3, 4, 5].map((n) => (
                 <option key={n} value={n} className="bg-gray-900">{n}x{n} ({n * n} frames)</option>
@@ -73,24 +118,25 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Swap Interval (sec)</label>
+            <label className={labelClass}>Swap Interval (sec)</label>
             <input
               type="number"
               min={2}
               max={30}
               value={swapInterval}
               onChange={(e) => setSwapInterval(Number(e.target.value))}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+              className={inputClass}
             />
           </div>
         </div>
 
+        {/* Transition */}
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1">Transition</label>
+          <label className={labelClass}>Transition</label>
           <select
             value={transition}
             onChange={(e) => setTransition(e.target.value as "fade" | "slide" | "zoom")}
-            className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+            className={selectClass}
           >
             <option value="fade" className="bg-gray-900">Fade</option>
             <option value="slide" className="bg-gray-900">Slide</option>
@@ -98,23 +144,156 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-white/70 mb-1">Background Color</label>
-          <div className="flex items-center gap-2">
-            <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0" />
-            <span className="text-white/50 font-mono text-sm">{backgroundColor}</span>
+        {/* Background */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Background</h3>
+          <div className="flex flex-col gap-3">
+            <div>
+              <label className={labelClass}>Background Color</label>
+              <div className="flex items-center gap-2">
+                <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0" />
+                <span className="text-white/50 font-mono text-sm">{backgroundColor}</span>
+              </div>
+            </div>
+            <div>
+              <label className={labelClass}>Animated Background</label>
+              <select
+                value={animatedBackground}
+                onChange={(e) => setAnimatedBackground(e.target.value as "none" | "gradient")}
+                className={selectClass}
+              >
+                <option value="none" className="bg-gray-900">None</option>
+                <option value="gradient" className="bg-gray-900">Animated Gradient</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Show names on display</span>
+        {/* Display Options */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Display Options</h3>
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
+              <span className="text-sm text-white/70">Show names on display</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={showMessages} onChange={(e) => setShowMessages(e.target.checked)} className="rounded" />
+              <span className="text-sm text-white/70">Show messages on display</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Spotlight */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Spotlight</h3>
+          <label className="flex items-center gap-2 cursor-pointer mb-3">
+            <input type="checkbox" checked={spotlightEnabled} onChange={(e) => setSpotlightEnabled(e.target.checked)} className="rounded" />
+            <span className="text-sm text-white/70">Enable spotlight mode</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={showMessages} onChange={(e) => setShowMessages(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Show messages on display</span>
+          {spotlightEnabled && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Interval (sec)</label>
+                <input
+                  type="number"
+                  min={10}
+                  max={120}
+                  value={spotlightInterval}
+                  onChange={(e) => setSpotlightInterval(Number(e.target.value))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Duration (sec)</label>
+                <input
+                  type="number"
+                  min={3}
+                  max={15}
+                  value={spotlightDuration}
+                  onChange={(e) => setSpotlightDuration(Number(e.target.value))}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Ticker */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Ticker Bar</h3>
+          <label className="flex items-center gap-2 cursor-pointer mb-3">
+            <input type="checkbox" checked={tickerEnabled} onChange={(e) => setTickerEnabled(e.target.checked)} className="rounded" />
+            <span className="text-sm text-white/70">Enable scrolling ticker</span>
           </label>
+          {tickerEnabled && (
+            <div>
+              <label className={labelClass}>Ticker Text</label>
+              <input
+                type="text"
+                value={tickerText}
+                onChange={(e) => setTickerText(e.target.value)}
+                placeholder="Welcome to our event! Share your selfies..."
+                className={inputClass}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Countdown */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Countdown</h3>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={countdownEnabled} onChange={(e) => setCountdownEnabled(e.target.checked)} className="rounded" />
+            <span className="text-sm text-white/70">Show countdown timer (uses event start/end dates)</span>
+          </label>
+        </div>
+
+        {/* Social Overlay */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Social Overlay</h3>
+          <div>
+            <label className={labelClass}>Hashtag / Handle</label>
+            <input
+              type="text"
+              value={socialOverlay}
+              onChange={(e) => setSocialOverlay(e.target.value)}
+              placeholder="#EventHashtag @handle"
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        {/* Sound & Effects */}
+        <div className={sectionClass}>
+          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Sound & Effects</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>New Selfie Sound</label>
+              <select
+                value={newSelfieSound}
+                onChange={(e) => setNewSelfieSound(e.target.value as "none" | "chime" | "shutter")}
+                className={selectClass}
+              >
+                <option value="none" className="bg-gray-900">None</option>
+                <option value="chime" className="bg-gray-900">Chime</option>
+                <option value="shutter" className="bg-gray-900">Shutter</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelClass}>Celebration Effect</label>
+              <select
+                value={celebrationEffect}
+                onChange={(e) => setCelebrationEffect(e.target.value as "none" | "confetti" | "ripple" | "glow")}
+                className={selectClass}
+              >
+                <option value="none" className="bg-gray-900">None</option>
+                <option value="confetti" className="bg-gray-900">Confetti</option>
+                <option value="ripple" className="bg-gray-900">Ripple</option>
+                <option value="glow" className="bg-gray-900">Glow</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
