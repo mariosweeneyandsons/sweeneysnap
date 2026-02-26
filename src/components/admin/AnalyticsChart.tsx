@@ -53,8 +53,8 @@ export function UploadTimeline({ data }: UploadTimelineProps) {
             color: "white",
           }}
           labelStyle={{ color: "rgba(255,255,255,0.7)" }}
-          formatter={(value: number) => [value, "Uploads"]}
-          labelFormatter={(label: string) => `Hour: ${label}`}
+          formatter={(value: unknown) => [String(value), "Uploads"]}
+          labelFormatter={(label: unknown) => `Hour: ${String(label)}`}
         />
         <Bar dataKey="count" fill="rgba(255,255,255,0.6)" radius={[4, 4, 0, 0]} />
       </BarChart>

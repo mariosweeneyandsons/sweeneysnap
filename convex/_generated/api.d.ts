@@ -9,12 +9,18 @@
  */
 
 import type * as adminProfiles from "../adminProfiles.js";
+import type * as aiModeration from "../aiModeration.js";
+import type * as analytics from "../analytics.js";
 import type * as auth from "../auth.js";
+import type * as brandAssets from "../brandAssets.js";
+import type * as crons from "../crons.js";
+import type * as eventScheduler from "../eventScheduler.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
 import type * as lib from "../lib.js";
 import type * as presets from "../presets.js";
 import type * as selfies from "../selfies.js";
+import type * as sessions from "../sessions.js";
 import type * as validators from "../validators.js";
 
 import type {
@@ -25,12 +31,18 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   adminProfiles: typeof adminProfiles;
+  aiModeration: typeof aiModeration;
+  analytics: typeof analytics;
   auth: typeof auth;
+  brandAssets: typeof brandAssets;
+  crons: typeof crons;
+  eventScheduler: typeof eventScheduler;
   events: typeof events;
   http: typeof http;
   lib: typeof lib;
   presets: typeof presets;
   selfies: typeof selfies;
+  sessions: typeof sessions;
   validators: typeof validators;
 }>;
 
