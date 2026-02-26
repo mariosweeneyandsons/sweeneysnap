@@ -36,7 +36,7 @@ export function PrintQueueView({ eventId }: PrintQueueViewProps) {
     }
   };
 
-  if (!jobs) {
+  if (jobs === undefined) {
     return <p className="text-foreground-muted">Loading print queue...</p>;
   }
 

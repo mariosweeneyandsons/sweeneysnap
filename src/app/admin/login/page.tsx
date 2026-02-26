@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useQuery, useMutation } from "convex/react";
+import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
 
@@ -91,14 +91,22 @@ function RequestAccessPanel() {
 function LoginContent() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
   const errorCode = searchParams.get("error");
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] || "An error occurred." : null;
   const { signIn } = useAuthActions();
   const showRequestAccess = errorCode === "no_admin_profile";
 
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/admin");
+    }
+  }, [authLoading, isAuthenticated, router]);
+
   const handleGoogleLogin = async () => {
     setLoading(true);
-    await signIn("google");
+    await signIn("google", { redirectTo: "/admin" });
   };
 
   return (

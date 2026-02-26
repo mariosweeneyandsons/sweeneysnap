@@ -99,7 +99,9 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
       </p>
 
       {/* Existing webhooks */}
-      {webhooks && webhooks.length > 0 && (
+      {webhooks === undefined ? (
+        <p className="text-foreground-muted text-sm mb-4">Loading webhooks...</p>
+      ) : webhooks.length > 0 ? (
         <div className="space-y-3 mb-6">
           {webhooks.map((wh) => (
             <div
@@ -156,7 +158,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
             </div>
           ))}
         </div>
-      )}
+      ) : null}
 
       {/* Add webhook form */}
       <div className="space-y-3">
