@@ -38,6 +38,7 @@ export function EventForm({ event }: EventFormProps) {
   const [presetId, setPresetId] = useState(event?.presetId || "");
   const [isActive, setIsActive] = useState(event?.isActive ?? true);
   const [moderationEnabled, setModerationEnabled] = useState(event?.moderationEnabled ?? false);
+  const [aiModerationEnabled, setAiModerationEnabled] = useState(event?.aiModerationEnabled ?? false);
   const [startsAt, setStartsAt] = useState(
     event?.startsAt ? new Date(event.startsAt).toISOString().slice(0, 16) : ""
   );
@@ -105,6 +106,7 @@ export function EventForm({ event }: EventFormProps) {
       presetId: presetId ? (presetId as Id<"presets">) : undefined,
       isActive,
       moderationEnabled,
+      aiModerationEnabled: moderationEnabled ? aiModerationEnabled : false,
       displayConfig,
       uploadConfig,
       primaryColor,
@@ -223,6 +225,12 @@ export function EventForm({ event }: EventFormProps) {
             <input type="checkbox" checked={moderationEnabled} onChange={(e) => setModerationEnabled(e.target.checked)} className="rounded" />
             <span className="text-sm text-white/70">Enable moderation (selfies need approval)</span>
           </label>
+          {moderationEnabled && (
+            <label className="flex items-center gap-2 cursor-pointer ml-6">
+              <input type="checkbox" checked={aiModerationEnabled} onChange={(e) => setAiModerationEnabled(e.target.checked)} className="rounded" />
+              <span className="text-sm text-white/70">Enable AI content moderation</span>
+            </label>
+          )}
         </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
