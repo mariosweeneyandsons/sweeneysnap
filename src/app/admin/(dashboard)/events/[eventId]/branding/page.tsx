@@ -22,8 +22,8 @@ export default function EventBrandingPage() {
   const [saving, setSaving] = useState(false);
   const [cssOpen, setCssOpen] = useState(false);
 
-  if (event === undefined) return <div className="text-center py-12 text-white/50">Loading...</div>;
-  if (!event) return <div className="text-center py-12 text-white/50">Event not found</div>;
+  if (event === undefined) return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
+  if (!event) return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
 
   const currentColor = primaryColor ?? event.primaryColor;
   const currentFont = fontFamily ?? event.fontFamily ?? "";
@@ -58,21 +58,21 @@ export default function EventBrandingPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-4">
-        <Link href={`/admin/events/${eventId}`} className="text-white/50 hover:text-white transition-colors">
+        <Link href={`/admin/events/${eventId}`} className="text-foreground-faint hover:text-foreground-emphasis transition-colors">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Branding: {event.name}</h1>
-          <p className="text-white/50 text-sm">Colors, fonts, assets, and custom CSS</p>
+          <p className="text-foreground-faint text-sm">Colors, fonts, assets, and custom CSS</p>
         </div>
       </div>
 
       <Card className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Primary Color</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Primary Color</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -80,7 +80,7 @@ export default function EventBrandingPage() {
                 onChange={(e) => setPrimaryColor(e.target.value)}
                 className="w-10 h-10 rounded cursor-pointer bg-transparent border-0"
               />
-              <span className="text-white/50 font-mono text-sm">{currentColor}</span>
+              <span className="text-foreground-faint font-mono text-sm">{currentColor}</span>
             </div>
           </div>
           <Input
@@ -95,7 +95,7 @@ export default function EventBrandingPage() {
           <button
             type="button"
             onClick={() => setCssOpen(!cssOpen)}
-            className="flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-foreground-emphasis transition-colors"
           >
             <svg className={`w-4 h-4 transition-transform ${cssOpen ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -107,7 +107,7 @@ export default function EventBrandingPage() {
               value={currentCss}
               onChange={(e) => setCustomCss(e.target.value)}
               placeholder={`.selfie-frame { border-radius: 50%; }\n.display-overlay { opacity: 0.5; }`}
-              className="mt-2 w-full h-40 rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white font-mono text-sm resize-y"
+              className="mt-2 w-full h-40 rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground font-mono text-sm resize-y"
             />
           )}
         </div>

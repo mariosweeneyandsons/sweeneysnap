@@ -115,8 +115,8 @@ export default function AccountsPage() {
         <h2 className="text-xl font-bold mb-6">Active Sessions</h2>
 
         {sessionsData?.unlinkedCount ? (
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-4 py-3 mb-6">
-            <p className="text-yellow-400 text-sm">
+          <div className="bg-warning-bg border border-warning/30 rounded-lg px-4 py-3 mb-6">
+            <p className="text-warning text-sm">
               {sessionsData.unlinkedCount} admin profile
               {sessionsData.unlinkedCount > 1 ? "s are" : " is"} not linked to a
               user account yet. They need to sign in at least once to appear here.
@@ -222,7 +222,7 @@ export default function AccountsPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
           <div className="flex gap-3 justify-end mt-2">
             <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
               Cancel
@@ -245,8 +245,8 @@ export default function AccountsPage() {
       >
         <div className="flex flex-col gap-4">
           {confirmTarget?.type === "session" && confirmTarget.isCurrentSession && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
-              <p className="text-red-400 text-sm font-medium">
+            <div className="bg-destructive-bg border border-destructive/30 rounded-lg px-4 py-3">
+              <p className="text-destructive text-sm font-medium">
                 This is your current session. You will be logged out immediately.
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function AccountsPage() {
               ? `Remove all sessions for ${confirmTarget.label}? They will need to sign in again.`
               : `Force logout ${confirmTarget?.label}? Their session will be terminated immediately.`}
           </p>
-          {logoutError && <p className="text-red-400 text-sm">{logoutError}</p>}
+          {logoutError && <p className="text-destructive text-sm">{logoutError}</p>}
           <div className="flex gap-3 justify-end mt-2">
             <Button
               type="button"

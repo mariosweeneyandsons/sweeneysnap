@@ -24,10 +24,10 @@ export default function AnalyticsPage() {
   });
 
   if (event === undefined || analytics === undefined) {
-    return <div className="text-center py-12 text-white/50">Loading...</div>;
+    return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
   }
   if (!event) {
-    return <div className="text-center py-12 text-white/50">Event not found</div>;
+    return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
   }
 
   return (
@@ -35,7 +35,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center gap-4 mb-8">
         <Link
           href={`/admin/events/${eventId}`}
-          className="text-white/50 hover:text-white transition-colors"
+          className="text-foreground-faint hover:text-foreground-emphasis transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -46,31 +46,31 @@ export default function AnalyticsPage() {
 
       <div className="grid gap-4 md:grid-cols-4 mb-8">
         <Card>
-          <p className="text-white/50 text-sm">Total Selfies</p>
+          <p className="text-foreground-faint text-sm">Total Selfies</p>
           <p className="text-3xl font-bold">{analytics?.totalSelfies ?? 0}</p>
         </Card>
         <Card>
-          <p className="text-white/50 text-sm">Approved</p>
-          <p className="text-3xl font-bold text-green-400">
+          <p className="text-foreground-faint text-sm">Approved</p>
+          <p className="text-3xl font-bold text-success">
             {analytics?.statusCounts.approved ?? 0}
           </p>
-          <div className="flex gap-3 text-xs text-white/40 mt-1">
+          <div className="flex gap-3 text-xs text-foreground-faint mt-1">
             <span>{analytics?.statusCounts.pending ?? 0} pending</span>
             <span>{analytics?.statusCounts.rejected ?? 0} rejected</span>
           </div>
         </Card>
         <Card>
-          <p className="text-white/50 text-sm">Total Storage</p>
+          <p className="text-foreground-faint text-sm">Total Storage</p>
           <p className="text-3xl font-bold">
             {formatBytes(analytics?.totalStorageBytes ?? 0)}
           </p>
         </Card>
         <Card>
-          <p className="text-white/50 text-sm">Peak Hour</p>
+          <p className="text-foreground-faint text-sm">Peak Hour</p>
           <p className="text-xl font-bold">
             {analytics?.peakHour || "N/A"}
           </p>
-          <p className="text-xs text-white/40 mt-1">
+          <p className="text-xs text-foreground-faint mt-1">
             Avg {analytics?.averagePerHour ?? 0}/hr
           </p>
         </Card>

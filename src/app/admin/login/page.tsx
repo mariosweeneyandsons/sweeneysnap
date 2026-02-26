@@ -25,11 +25,11 @@ function LoginContent() {
   return (
     <div className="w-full max-w-sm text-center">
       <h1 className="text-2xl font-bold mb-2">Admin Login</h1>
-      <p className="text-white/50 mb-8">Sign in to manage your events</p>
+      <p className="text-foreground-faint mb-8">Sign in to manage your events</p>
 
       {errorMessage && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 mb-6">
-          <p className="text-red-400 text-sm">{errorMessage}</p>
+        <div className="bg-destructive-bg border border-destructive/30 rounded-lg px-4 py-3 mb-6">
+          <p className="text-destructive text-sm">{errorMessage}</p>
         </div>
       )}
 
@@ -47,7 +47,7 @@ function LoginContent() {
 
 export default function AdminLoginPage() {
   return (
-    <main className="min-h-dvh bg-black text-white flex items-center justify-center p-4">
+    <main className="min-h-dvh bg-background-elevated text-foreground flex items-center justify-center p-4">
       <Suspense>
         <LoginContent />
       </Suspense>
