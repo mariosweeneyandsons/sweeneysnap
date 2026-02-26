@@ -1,17 +1,38 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { Selfie, DisplayConfig } from "@/types/database";
+
+const transitionVariants: Record<string, Variants> = {
+  fade: {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 1.05 },
+  },
+  slide: {
+    initial: { x: "100%", opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    exit: { x: "-100%", opacity: 0 },
+  },
+  zoom: {
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 1.5, opacity: 0 },
+  },
+};
 
 interface SelfieFrameProps {
   selfie: Selfie | null;
   config: DisplayConfig;
   index: number;
+  isNew?: boolean;
 }
 
-export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
+export function SelfieFrame({ selfie, config, index, isNew }: SelfieFrameProps) {
   const borderColor = config.frameBorderColor || "rgba(255,255,255,0.1)";
   const borderWidth = config.frameBorderWidth ?? 2;
+  const transition = config.transition || "fade";
+  const variants = transitionVariants[transition] || transitionVariants.fade;
 
   return (
     <div
@@ -24,9 +45,10 @@ export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
         {selfie ? (
           <motion.div
             key={selfie._id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
+            variants={variants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="absolute inset-0"
           >
