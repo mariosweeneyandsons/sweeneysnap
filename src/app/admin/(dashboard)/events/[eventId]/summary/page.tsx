@@ -8,14 +8,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { UploadTimeline } from "@/components/admin/AnalyticsChart";
 import { ExportSelfiesButton } from "@/components/admin/ExportSelfiesButton";
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-}
+import { formatBytes } from "@/lib/format";
 
 function formatDuration(startMs?: number, endMs?: number): string {
   if (!startMs || !endMs) return "N/A";

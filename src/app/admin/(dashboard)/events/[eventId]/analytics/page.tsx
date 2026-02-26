@@ -7,14 +7,7 @@ import { Id } from "../../../../../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { UploadTimeline } from "@/components/admin/AnalyticsChart";
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-}
+import { formatBytes } from "@/lib/format";
 
 export default function AnalyticsPage() {
   const { eventId } = useParams<{ eventId: string }>();
