@@ -3,7 +3,7 @@
 import { useCamera } from "@/hooks/useCamera";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { CountdownOverlay } from "./CountdownOverlay";
+import { CaptureCountdownOverlay } from "./CaptureCountdownOverlay";
 import { FlashOverlay } from "./FlashOverlay";
 
 interface CameraCaptureProps {
@@ -119,7 +119,7 @@ export function CameraCapture({
           className={`w-full h-full object-cover ${facingMode === "user" ? "-scale-x-100" : ""}`}
         />
         {showCountdown && (
-          <CountdownOverlay
+          <CaptureCountdownOverlay
             seconds={countdownSeconds}
             onComplete={handleCountdownComplete}
             primaryColor={primaryColor}

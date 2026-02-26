@@ -7,7 +7,7 @@ import { EmptyState } from "./EmptyState";
 import { DisplayOverlay } from "./DisplayOverlay";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { TickerBar } from "./TickerBar";
-import { CountdownOverlay } from "./CountdownOverlay";
+import { EventCountdownOverlay } from "./EventCountdownOverlay";
 import { QRCodeSVG } from "qrcode.react";
 import { PublicEvent, SelfieWithUrls } from "@/types/database";
 import { useEffect } from "react";
@@ -104,7 +104,7 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
       <div className="relative z-[1] w-full h-full">
         <DisplayOverlay event={event} />
         {config.countdownEnabled && (
-          <CountdownOverlay startsAt={event.startsAt} endsAt={event.endsAt} />
+          <EventCountdownOverlay startsAt={event.startsAt} endsAt={event.endsAt} />
         )}
         {renderLayout()}
         {selfies.length > 0 && (

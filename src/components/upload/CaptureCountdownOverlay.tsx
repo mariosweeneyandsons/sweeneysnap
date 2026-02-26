@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
-interface CountdownOverlayProps {
+interface CaptureCountdownOverlayProps {
   seconds: number;
   onComplete: () => void;
   primaryColor?: string;
 }
 
-export function CountdownOverlay({ seconds, onComplete, primaryColor }: CountdownOverlayProps) {
+export function CaptureCountdownOverlay({ seconds, onComplete, primaryColor }: CaptureCountdownOverlayProps) {
   const [count, setCount] = useState(seconds);
 
   useEffect(() => {

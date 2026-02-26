@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-interface CountdownOverlayProps {
+interface EventCountdownOverlayProps {
   startsAt?: number;
   endsAt?: number;
 }
@@ -16,7 +16,7 @@ function formatTime(ms: number): string {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-export function CountdownOverlay({ startsAt, endsAt }: CountdownOverlayProps) {
+export function EventCountdownOverlay({ startsAt, endsAt }: EventCountdownOverlayProps) {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
