@@ -67,6 +67,14 @@ const colorGroups = [
       { name: "--label-color", tw: "text-label", hex: "#a0c8e8" },
     ],
   },
+  {
+    label: "Overlays & Scrims",
+    tokens: [
+      { name: "--scrim", tw: "bg-scrim", hex: "#000/60%" },
+      { name: "--scrim-heavy", tw: "bg-scrim-heavy", hex: "#000/80%" },
+      { name: "--overlay-light", tw: "bg-overlay-light", hex: "#fff/50%" },
+    ],
+  },
 ];
 
 const typeSizes = [
@@ -176,6 +184,86 @@ const frostedGlassPatterns = [
     classes: "bg-surface-overlay backdrop-blur-lg",
     position: "full" as const,
   },
+];
+
+const shadowScale = [
+  {
+    label: "sm",
+    value: "0 1px 2px",
+    token: "--shadow-sm",
+    tw: "shadow-sm",
+    use: "Subtle depth — buttons, badges, small interactive elements",
+  },
+  {
+    label: "md",
+    value: "0 4px 12px",
+    token: "--shadow-md",
+    tw: "shadow-md",
+    use: "Elevated cards — cards, dropdowns, floating panels",
+  },
+  {
+    label: "lg",
+    value: "0 8px 24px",
+    token: "--shadow-lg",
+    tw: "shadow-lg",
+    use: "High prominence — modals, popovers, lightboxes",
+  },
+];
+
+const blurScale = [
+  {
+    label: "sm",
+    value: "4px",
+    token: "--bp-blur-sm",
+    tw: "backdrop-blur-sm",
+    use: "Subtle — sticky headers, navigation bars",
+  },
+  {
+    label: "md",
+    value: "8px",
+    token: "--bp-blur-md",
+    tw: "backdrop-blur-md",
+    use: "Medium — form inputs, frosted panels",
+  },
+  {
+    label: "lg",
+    value: "16px",
+    token: "--bp-blur-lg",
+    tw: "backdrop-blur-lg",
+    use: "Heavy — modal overlays, surface overlay panels",
+  },
+];
+
+const opacityScale = [
+  {
+    label: "disabled",
+    value: "50%",
+    token: "--opacity-disabled",
+    tw: "opacity-disabled",
+    use: "Disabled buttons, inactive toggles, unavailable items",
+  },
+  {
+    label: "muted",
+    value: "70%",
+    token: "--opacity-muted",
+    tw: "opacity-muted",
+    use: "De-emphasized text, secondary content, placeholder images",
+  },
+  {
+    label: "press",
+    value: "80%",
+    token: "--opacity-press",
+    tw: "opacity-press",
+    use: "Active press state on buttons and interactive elements",
+  },
+];
+
+const zIndexScale = [
+  { level: "z-10", value: 10, label: "Floating badges", description: "Relative overlays, badge counters, floating labels" },
+  { level: "z-20", value: 20, label: "Sticky headers", description: "Navigation bars, sticky table headers, toolbars" },
+  { level: "z-30", value: 30, label: "Dropdowns", description: "Popovers, dropdown menus, autocomplete panels" },
+  { level: "z-40", value: 40, label: "Modals", description: "Modal dialogs, drawers, side panels, lightboxes" },
+  { level: "z-50", value: 50, label: "Toasts", description: "Toast notifications, top-level alerts, global overlays" },
 ];
 
 const durationTokens = [
@@ -294,14 +382,14 @@ export default function BrandKitPage() {
                 <div className="text-[9px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                   rev
                 </div>
-                <div className="text-xs text-foreground-emphasis font-mono">B</div>
+                <div className="text-xs text-foreground-emphasis font-mono">C</div>
               </div>
               <div className="w-[1px] h-6 bg-border-separator" />
               <div>
                 <div className="text-[9px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
                   date
                 </div>
-                <div className="text-xs text-foreground-emphasis font-mono">2026-02-20</div>
+                <div className="text-xs text-foreground-emphasis font-mono">2026-02-26</div>
               </div>
             </div>
           </div>
@@ -1201,10 +1289,260 @@ export default function BrandKitPage() {
           </div>
         </section>
 
+        {/* ========== 11. OVERLAYS & SCRIMS ========== */}
+        <section>
+          <SectionHeading>11. Overlays &amp; Scrims</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Scrim (default) */}
+            <Card>
+              <Label>scrim — 60% black</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Standard dark overlay behind modals, lightboxes, and focused content.
+              </p>
+              <div className="relative h-40 rounded-xs border border-border-separator overflow-hidden">
+                <div className="absolute inset-0 bg-background">
+                  <div className="absolute top-4 left-4 w-20 h-14 rounded-xs bg-primary/60" />
+                  <div className="absolute top-6 left-16 w-16 h-16 rounded-full bg-success/40" />
+                  <div className="absolute bottom-4 right-4 w-14 h-14 rounded-xs bg-warning/50 rotate-6" />
+                </div>
+                <div className="absolute inset-0 bg-scrim flex items-center justify-center">
+                  <div className="bg-card-bg border border-card-border rounded-xs p-4 w-3/4">
+                    <div className="h-2 w-16 rounded-full bg-foreground-muted mb-2" />
+                    <div className="h-2 w-full rounded-full bg-foreground-faint" />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                Token: <span className="text-line">var(--scrim)</span><br />
+                Tailwind: <span className="text-line">bg-scrim</span>
+              </div>
+            </Card>
+
+            {/* Scrim Heavy */}
+            <Card>
+              <Label>scrim-heavy — 80% black</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Heavier scrim for immersive views — fullscreen galleries, spotlight mode.
+              </p>
+              <div className="relative h-40 rounded-xs border border-border-separator overflow-hidden">
+                <div className="absolute inset-0 bg-background">
+                  <div className="absolute top-4 left-4 w-20 h-14 rounded-xs bg-primary/60" />
+                  <div className="absolute top-6 left-16 w-16 h-16 rounded-full bg-success/40" />
+                  <div className="absolute bottom-4 right-4 w-14 h-14 rounded-xs bg-warning/50 rotate-6" />
+                </div>
+                <div className="absolute inset-0 bg-scrim-heavy flex items-center justify-center">
+                  <div className="text-foreground-emphasis text-sm font-medium">Immersive content</div>
+                </div>
+              </div>
+              <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                Token: <span className="text-line">var(--scrim-heavy)</span><br />
+                Tailwind: <span className="text-line">bg-scrim-heavy</span>
+              </div>
+            </Card>
+
+            {/* Overlay Light */}
+            <Card>
+              <Label>overlay-light — 50% white</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Light frost for badges on dark images, watermarks, or light overlays.
+              </p>
+              <div className="relative h-40 rounded-xs border border-border-separator overflow-hidden">
+                <div className="absolute inset-0 bg-background-elevated">
+                  <div className="absolute top-4 left-4 w-20 h-14 rounded-xs bg-primary/60" />
+                  <div className="absolute top-6 left-16 w-16 h-16 rounded-full bg-destructive/40" />
+                  <div className="absolute bottom-4 right-4 w-14 h-14 rounded-xs bg-line/50 rotate-6" />
+                </div>
+                <div className="absolute bottom-3 right-3 bg-overlay-light backdrop-blur-sm rounded-xs px-3 py-1.5">
+                  <span className="text-xs font-medium text-foreground-emphasis">Badge</span>
+                </div>
+              </div>
+              <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                Token: <span className="text-line">var(--overlay-light)</span><br />
+                Tailwind: <span className="text-line">bg-overlay-light</span>
+              </div>
+            </Card>
+          </div>
+
+          {/* Usage guidance */}
+          <Card className="mt-6">
+            <Label>usage guidance</Label>
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-background rounded-xs p-3 border border-border-separator">
+                <div className="text-[10px] text-foreground-faint mb-1" style={{ fontVariant: "small-caps" }}>
+                  scrim (default)
+                </div>
+                <div className="text-foreground-muted text-xs">Modals, dialogs, drawers — anything that needs focus by dimming the background</div>
+              </div>
+              <div className="bg-background rounded-xs p-3 border border-border-separator">
+                <div className="text-[10px] text-foreground-faint mb-1" style={{ fontVariant: "small-caps" }}>
+                  scrim-heavy
+                </div>
+                <div className="text-foreground-muted text-xs">Fullscreen galleries, spotlight mode, immersive photo views, cinematic overlays</div>
+              </div>
+              <div className="bg-background rounded-xs p-3 border border-border-separator">
+                <div className="text-[10px] text-foreground-faint mb-1" style={{ fontVariant: "small-caps" }}>
+                  overlay-light
+                </div>
+                <div className="text-foreground-muted text-xs">Badges on images, frosted watermarks, light overlays on dark content</div>
+              </div>
+            </div>
+          </Card>
+        </section>
+
+        {/* ========== 12. SHADOWS ========== */}
+        <section>
+          <SectionHeading>12. Shadows</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {shadowScale.map((s) => (
+              <Card key={s.label}>
+                <Label>shadow-{s.label}</Label>
+                <p className="text-sm text-foreground-muted mt-2 mb-4">{s.use}</p>
+                <div className="flex justify-center py-6">
+                  <div
+                    className="w-40 h-24 bg-surface border border-card-border rounded-xs flex items-center justify-center"
+                    style={{ boxShadow: `var(--shadow-${s.label})` }}
+                  >
+                    <span className="text-xs font-mono text-foreground-muted">{s.label}</span>
+                  </div>
+                </div>
+                <div className="mt-3 text-[10px] font-mono text-foreground-faint">
+                  Token: <span className="text-line">var({s.token})</span><br />
+                  Tailwind: <span className="text-line">{s.tw}</span><br />
+                  Value: <span className="text-foreground-muted">{s.value}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Blur scale reference */}
+          <Card className="mt-6">
+            <Label>backdrop blur scale</Label>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {blurScale.map((b) => (
+                <div key={b.label}>
+                  <div className="relative h-32 rounded-xs border border-border-separator overflow-hidden mb-3">
+                    <div className="absolute inset-0 bg-background">
+                      <div className="absolute top-3 left-3 w-14 h-14 rounded-full bg-primary/60" />
+                      <div className="absolute top-8 left-10 w-16 h-10 rounded-xs bg-success/40" />
+                      <div className="absolute bottom-3 right-3 w-12 h-12 rounded-xs bg-destructive/40 rotate-12" />
+                    </div>
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-12 bg-surface/60 border-t border-border flex items-center px-3"
+                      style={{ backdropFilter: `blur(${b.value})` }}
+                    >
+                      <span className="text-xs font-mono text-foreground-muted">blur-{b.label}: {b.value}</span>
+                    </div>
+                  </div>
+                  <div className="text-[10px] font-mono text-foreground-faint">
+                    Token: <span className="text-line">var({b.token})</span><br />
+                    Tailwind: <span className="text-line">{b.tw}</span>
+                  </div>
+                  <div className="text-[10px] text-foreground-muted mt-1">{b.use}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Opacity scale reference */}
+          <Card className="mt-6">
+            <Label>opacity scale</Label>
+            <div className="mt-4 space-y-4">
+              {opacityScale.map((o) => (
+                <div key={o.label} className="flex items-center gap-4">
+                  <div className="w-20 shrink-0">
+                    <span className="text-xs font-mono text-foreground">{o.label}</span>
+                  </div>
+                  <div className="w-12 shrink-0">
+                    <span className="text-xs font-mono text-foreground-muted">{o.value}</span>
+                  </div>
+                  <div className="flex-1 flex items-center gap-3">
+                    <div className="h-8 w-24 bg-primary rounded-xs flex items-center justify-center" style={{ opacity: parseInt(o.value) / 100 }}>
+                      <span className="text-[10px] text-primary-foreground font-medium">Sample</span>
+                    </div>
+                    <span className="text-[10px] text-foreground-faint">{o.use}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-[10px] font-mono text-foreground-faint">
+              Tailwind: <span className="text-line">opacity-disabled</span> / <span className="text-line">opacity-muted</span> / <span className="text-line">opacity-press</span>
+            </div>
+          </Card>
+        </section>
+
+        {/* ========== 13. Z-INDEX & LAYERING ========== */}
+        <section>
+          <SectionHeading>13. Z-Index &amp; Layering</SectionHeading>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* Visual stack diagram */}
+            <Card>
+              <Label>layer stack</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Five z-index tiers define the vertical stacking order. Higher layers always sit above lower ones.
+              </p>
+              <div className="relative space-y-2 mt-4">
+                {[...zIndexScale].reverse().map((z, i) => (
+                  <div
+                    key={z.level}
+                    className="relative flex items-center gap-4 bg-background rounded-xs border border-border-separator px-4 py-3"
+                    style={{ marginLeft: `${i * 12}px` }}
+                  >
+                    <span className="text-sm font-mono text-primary font-medium w-10 shrink-0">{z.level}</span>
+                    <span className="text-sm text-foreground font-medium">{z.label}</span>
+                    <span className="text-[10px] text-foreground-faint ml-auto">{z.description}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Reference table */}
+            <Card>
+              <Label>z-index reference</Label>
+              <p className="text-sm text-foreground-muted mt-2 mb-4">
+                Use Tailwind&apos;s built-in z-* utilities. These tiers document the convention.
+              </p>
+              <table className="w-full mt-3 text-sm">
+                <thead>
+                  <tr className="border-b border-border-separator">
+                    <th className="text-left py-2 text-foreground-faint font-normal text-[10px]" style={{ fontVariant: "small-caps" }}>
+                      class
+                    </th>
+                    <th className="text-left py-2 text-foreground-faint font-normal text-[10px]" style={{ fontVariant: "small-caps" }}>
+                      value
+                    </th>
+                    <th className="text-left py-2 text-foreground-faint font-normal text-[10px]" style={{ fontVariant: "small-caps" }}>
+                      use for
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {zIndexScale.map((z) => (
+                    <tr key={z.level} className="border-b border-border-separator last:border-0">
+                      <td className="py-2 font-mono text-line text-xs">{z.level}</td>
+                      <td className="py-2 font-mono text-foreground-muted text-xs">{z.value}</td>
+                      <td className="py-2 text-foreground-muted text-xs">{z.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="mt-4 bg-background rounded-xs p-3 border border-border-separator">
+                <div className="text-[10px] text-foreground-faint mb-1" style={{ fontVariant: "small-caps" }}>
+                  convention note
+                </div>
+                <div className="text-xs text-foreground-muted">
+                  These are documentation-only — no custom tokens needed. Use Tailwind&apos;s standard <span className="font-mono text-line">z-10</span> through <span className="font-mono text-line">z-50</span> utilities directly.
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
         {/* Footer */}
         <div className="border-t border-border-separator pt-6 pb-10 text-center">
           <div className="text-[10px] text-foreground-faint" style={{ fontVariant: "small-caps" }}>
-            sweeneysnap brand kit &mdash; rev b &mdash; 2026-02-20
+            sweeneysnap brand kit &mdash; rev c &mdash; 2026-02-26
           </div>
           <div className="text-[10px] text-foreground-faint mt-1">
             Sweeney &amp; Sons

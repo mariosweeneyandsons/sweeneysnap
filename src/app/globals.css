@@ -58,6 +58,21 @@
   --bp-duration-normal: 250ms;
   --bp-duration-slow: 600ms;
 
+  /* Opacity */
+  --bp-opacity-disabled: 50%;
+  --bp-opacity-muted: 70%;
+  --bp-opacity-press: 80%;
+
+  /* Shadows */
+  --bp-shadow-sm: 0 1px 2px color-mix(in srgb, #000000 10%, transparent);
+  --bp-shadow-md: 0 4px 12px color-mix(in srgb, #000000 15%, transparent);
+  --bp-shadow-lg: 0 8px 24px color-mix(in srgb, #000000 20%, transparent);
+
+  /* Blur */
+  --bp-blur-sm: 4px;
+  --bp-blur-md: 8px;
+  --bp-blur-lg: 16px;
+
   /* --------------------------------------------------------
      LAYER 2: SEMANTIC ROLES
      Maps primitives to UI roles
@@ -118,6 +133,11 @@
   --card-bg: var(--bp-navy-800);
   --card-border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
   --label-color: var(--bp-label-ice);
+
+  /* Overlays & Scrims */
+  --scrim: color-mix(in srgb, #000000 60%, transparent);
+  --scrim-heavy: color-mix(in srgb, #000000 80%, transparent);
+  --overlay-light: color-mix(in srgb, #ffffff 50%, transparent);
 }
 
 /* ------------------------------------------------------------
@@ -179,6 +199,11 @@
   --card-bg: #ffffff;
   --card-border: rgba(26, 39, 68, 0.12);
   --label-color: var(--bp-navy-700);
+
+  /* Overlays & Scrims */
+  --scrim: rgba(0, 0, 0, 0.40);
+  --scrim-heavy: rgba(0, 0, 0, 0.60);
+  --overlay-light: rgba(255, 255, 255, 0.60);
 }
 
 /* ------------------------------------------------------------
@@ -252,6 +277,21 @@
   --duration-fast: var(--bp-duration-fast);
   --duration-normal: var(--bp-duration-normal);
   --duration-slow: var(--bp-duration-slow);
+
+  /* Overlays */
+  --color-scrim: var(--scrim);
+  --color-scrim-heavy: var(--scrim-heavy);
+  --color-overlay-light: var(--overlay-light);
+
+  /* Shadows */
+  --shadow-sm: var(--bp-shadow-sm);
+  --shadow-md: var(--bp-shadow-md);
+  --shadow-lg: var(--bp-shadow-lg);
+
+  /* Opacity */
+  --opacity-disabled: var(--bp-opacity-disabled);
+  --opacity-muted: var(--bp-opacity-muted);
+  --opacity-press: var(--bp-opacity-press);
 
   /* Fonts */
   --font-sans: var(--font-geist-sans);
