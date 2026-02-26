@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" fill="none">
+  <defs>
+    <mask id="inner">
+      <rect width="1080" height="1080" fill="white"/>
+      <rect x="40" y="40" width="1000" height="1000" rx="24" fill="black"/>
+    </mask>
+  </defs>
+  <rect width="1080" height="1080" fill="white" mask="url(#inner)"/>
+  <rect x="40" y="40" width="1000" height="1000" rx="24" fill="none" stroke="white" stroke-width="2"/>
+</svg>

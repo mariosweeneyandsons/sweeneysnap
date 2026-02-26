@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" fill="none">
+  <defs>
+    <mask id="polaroid-inner">
+      <rect width="1080" height="1080" fill="white"/>
+      <rect x="60" y="50" width="960" height="820" rx="4" fill="black"/>
+    </mask>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="8" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1080" height="1080" rx="8" fill="white" mask="url(#polaroid-inner)" filter="url(#shadow)"/>
+  <rect x="60" y="50" width="960" height="820" rx="4" fill="none" stroke="#e5e5e5" stroke-width="1"/>
+</svg>
