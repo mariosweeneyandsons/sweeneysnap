@@ -1,18 +1,26 @@
 "use client";
 
 import { SelfieGrid } from "./SelfieGrid";
+import { SlideshowView } from "./SlideshowView";
+import { MosaicView } from "./MosaicView";
 import { EmptyState } from "./EmptyState";
 import { DisplayOverlay } from "./DisplayOverlay";
+import { AnimatedBackground } from "./AnimatedBackground";
+import { TickerBar } from "./TickerBar";
+import { CountdownOverlay } from "./CountdownOverlay";
 import { Event, Selfie } from "@/types/database";
 import { useEffect } from "react";
 
 interface DisplayWallProps {
   event: Event;
   selfies: Selfie[];
+  backgroundImageUrl?: string | null;
+  backgroundVideoUrl?: string | null;
 }
 
-export function DisplayWall({ event, selfies }: DisplayWallProps) {
+export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVideoUrl }: DisplayWallProps) {
   const config = event.displayConfig;
+  const layoutMode = config.layoutMode || "grid";
 
   // Auto-hide cursor after 3s of inactivity
   useEffect(() => {
@@ -34,16 +42,63 @@ export function DisplayWall({ event, selfies }: DisplayWallProps) {
     };
   }, []);
 
+  const renderLayout = () => {
+    if (selfies.length === 0) {
+      return <EmptyState event={event} />;
+    }
+    switch (layoutMode) {
+      case "slideshow":
+        return <SlideshowView selfies={selfies} config={config} />;
+      case "mosaic":
+        return <MosaicView selfies={selfies} config={config} />;
+      default:
+        return <SelfieGrid selfies={selfies} config={config} />;
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 overflow-hidden"
-      style={{ backgroundColor: config.backgroundColor || "#000000" }}
+      style={{
+        backgroundColor: config.backgroundColor || "#000000",
+        "--primary-color": event.primaryColor,
+      } as React.CSSProperties}
     >
-      <DisplayOverlay event={event} />
-      {selfies.length === 0 ? (
-        <EmptyState event={event} />
-      ) : (
-        <SelfieGrid selfies={selfies} config={config} />
+      {/* Background layers */}
+      {config.animatedBackground === "gradient" && (
+        <AnimatedBackground primaryColor={event.primaryColor} />
+      )}
+      {backgroundVideoUrl && (
+        <video
+          src={backgroundVideoUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      {backgroundImageUrl && !backgroundVideoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={backgroundImageUrl}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+
+      {/* Content */}
+      <div className="relative z-[1] w-full h-full">
+        <DisplayOverlay event={event} />
+        {config.countdownEnabled && (
+          <CountdownOverlay startsAt={event.startsAt} endsAt={event.endsAt} />
+        )}
+        {renderLayout()}
+      </div>
+
+      {/* Ticker bar */}
+      {config.tickerEnabled && config.tickerText && (
+        <TickerBar text={config.tickerText} />
       )}
     </div>
   );

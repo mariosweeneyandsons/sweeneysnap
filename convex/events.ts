@@ -89,6 +89,29 @@ export const update = mutation({
   },
 });
 
+export const getDisplayBackgroundUrls = query({
+  args: { id: v.id("events") },
+  handler: async (ctx, args) => {
+    const event = await ctx.db.get(args.id);
+    if (!event) return null;
+    const config = event.displayConfig;
+    const backgroundImageUrl = config.backgroundImageId
+      ? await ctx.storage.getUrl(config.backgroundImageId)
+      : null;
+    const backgroundVideoUrl = config.backgroundVideoId
+      ? await ctx.storage.getUrl(config.backgroundVideoId)
+      : null;
+    return { backgroundImageUrl, backgroundVideoUrl };
+  },
+});
+
+export const generateBackgroundUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
 export const updateDisplayConfig = mutation({
   args: {
     id: v.id("events"),

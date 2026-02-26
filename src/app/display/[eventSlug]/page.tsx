@@ -12,6 +12,10 @@ export default function DisplayPage() {
     api.selfies.listApprovedByEvent,
     event ? { eventId: event._id } : "skip"
   );
+  const bgUrls = useQuery(
+    api.events.getDisplayBackgroundUrls,
+    event ? { id: event._id } : "skip"
+  );
 
   if (event === undefined || selfies === undefined) {
     return (
@@ -29,5 +33,12 @@ export default function DisplayPage() {
     );
   }
 
-  return <DisplayWall event={event} selfies={selfies} />;
+  return (
+    <DisplayWall
+      event={event}
+      selfies={selfies}
+      backgroundImageUrl={bgUrls?.backgroundImageUrl}
+      backgroundVideoUrl={bgUrls?.backgroundVideoUrl}
+    />
+  );
 }
