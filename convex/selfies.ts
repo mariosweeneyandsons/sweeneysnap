@@ -6,6 +6,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
 
 export const listApprovedByEvent = query({
@@ -531,10 +532,7 @@ export const getPublicById = query({
 export const listApprovedByEventPaginated = query({
   args: {
     eventId: v.id("events"),
-    paginationOpts: v.object({
-      numItems: v.number(),
-      cursor: v.union(v.string(), v.null()),
-    }),
+    paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
     const result = await ctx.db
