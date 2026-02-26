@@ -2,13 +2,14 @@
 
 import { QRCodeSVG } from "qrcode.react";
 import { PublicEvent } from "@/types/database";
+import { getSiteUrl } from "@/lib/config";
 
 interface EmptyStateProps {
   event: PublicEvent;
 }
 
 export function EmptyState({ event }: EmptyStateProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const siteUrl = getSiteUrl();
   const uploadUrl = `${siteUrl}/${event.slug}`;
 
   return (

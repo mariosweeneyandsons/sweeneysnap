@@ -6,6 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { CopyButton } from "@/components/admin/CopyButton";
+import { getSiteUrl } from "@/lib/config";
 
 export default function CrewDashboardPage() {
   const { token } = useParams<{ token: string }>();
@@ -46,7 +47,7 @@ export default function CrewDashboardPage() {
   const isViewer = crewMember?.permission === "viewer";
   const canModerate = !isViewer;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteUrl();
   const uploadUrl = `${siteUrl}/${event.slug}`;
   const displayUrl = `${siteUrl}/display/${event.slug}`;
 

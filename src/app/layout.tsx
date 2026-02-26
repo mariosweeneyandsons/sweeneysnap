@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { getSiteUrl } from "@/lib/config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-  ),
+  metadataBase: new URL(getSiteUrl()),
   title: "SweeneySnap",
   description: "Live event selfie wall — upload, display, celebrate",
   manifest: "/manifest.json",

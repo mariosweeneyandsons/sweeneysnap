@@ -10,6 +10,7 @@ import { TickerBar } from "./TickerBar";
 import { EventCountdownOverlay } from "./EventCountdownOverlay";
 import { QRCodeSVG } from "qrcode.react";
 import { PublicEvent, SelfieWithUrls } from "@/types/database";
+import { getSiteUrl } from "@/lib/config";
 import { useEffect } from "react";
 
 interface DisplayWallProps {
@@ -110,7 +111,7 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
         {selfies.length > 0 && (
           <div className="absolute bottom-4 right-4 opacity-70 bg-white rounded-lg p-1.5">
             <QRCodeSVG
-              value={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${event.slug}`}
+              value={`${getSiteUrl()}/${event.slug}`}
               size={96}
             />
           </div>

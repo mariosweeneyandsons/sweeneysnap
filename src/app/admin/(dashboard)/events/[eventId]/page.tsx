@@ -23,6 +23,7 @@ import {
   SectionNav,
 } from "@/components/blueprint/BlueprintForm";
 import { useEventFormState } from "@/hooks/useEventFormState";
+import { getSiteUrl } from "@/lib/config";
 
 const sections = [
   { id: "event", label: "Event" },
@@ -63,8 +64,7 @@ export default function EventDetailPage() {
       </div>
     );
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteUrl();
   const uploadUrl = `${siteUrl}/${event.slug}`;
   const displayUrl = `${siteUrl}/display/${event.slug}`;
   const crewUrl = `${siteUrl}/crew/${event.crewToken}`;

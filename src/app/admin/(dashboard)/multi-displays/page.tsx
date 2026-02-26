@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { EventsListSkeleton } from "@/components/admin/skeletons/EventsListSkeleton";
+import { getSiteUrl } from "@/lib/config";
 
 export default function MultiDisplaysPage() {
   const { toast } = useToast();
@@ -79,7 +80,7 @@ export default function MultiDisplaysPage() {
     });
   };
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const siteUrl = getSiteUrl();
 
   return (
     <div>

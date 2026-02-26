@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { CopyButton } from "./CopyButton";
+import { getSiteUrl } from "@/lib/config";
 
 interface CrewMemberManagerProps {
   eventId: string;
@@ -28,7 +29,7 @@ export function CrewMemberManager({ eventId }: CrewMemberManagerProps) {
   const [newPermission, setNewPermission] = useState<Permission>("moderator");
   const [adding, setAdding] = useState(false);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteUrl();
 
   const handleAdd = async () => {
     if (!newName.trim()) return;

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { CopyButton } from "@/components/admin/CopyButton";
 import { CrewMemberManager } from "@/components/admin/CrewMemberManager";
+import { getSiteUrl } from "@/lib/config";
 
 export default function AdminCrewPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -16,7 +17,7 @@ export default function AdminCrewPage() {
   if (event === undefined) return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
   if (!event) return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteUrl();
   const legacyCrewUrl = `${siteUrl}/crew/${event.crewToken}`;
 
   return (
