@@ -1,15 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { DisplaySettingsForm } from "@/components/admin/DisplaySettingsForm";
+import { LivePreviewPanel } from "@/components/admin/LivePreviewPanel";
+import { DisplayConfig } from "@/types/database";
 import Link from "next/link";
 
 export default function AdminDisplaySettingsPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const event = useQuery(api.events.getById, { id: eventId as Id<"events"> });
+  const [liveConfig, setLiveConfig] = useState<DisplayConfig | null>(null);
 
   if (event === undefined) {
     return <div className="text-center py-12 text-white/50">Loading...</div>;
@@ -17,6 +21,8 @@ export default function AdminDisplaySettingsPage() {
   if (!event) {
     return <div className="text-center py-12 text-white/50">Event not found</div>;
   }
+
+  const previewConfig = liveConfig ?? event.displayConfig;
 
   return (
     <div>
@@ -28,7 +34,19 @@ export default function AdminDisplaySettingsPage() {
         </Link>
         <h1 className="text-2xl font-bold">Display Settings: {event.name}</h1>
       </div>
-      <DisplaySettingsForm event={event} backHref={`/admin/events/${eventId}`} />
+
+      <div className="flex gap-8">
+        <div className="w-[400px] shrink-0">
+          <LivePreviewPanel eventId={eventId} config={previewConfig} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <DisplaySettingsForm
+            event={event}
+            backHref={`/admin/events/${eventId}`}
+            onConfigChange={setLiveConfig}
+          />
+        </div>
+      </div>
     </div>
   );
 }

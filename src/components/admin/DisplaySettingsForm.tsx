@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Event } from "@/types/database";
+import { Event, DisplayConfig } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
 
 interface DisplaySettingsFormProps {
   event: Event;
   backHref: string;
+  onConfigChange?: (config: DisplayConfig) => void;
 }
 
 const selectClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
@@ -20,7 +21,7 @@ const inputClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-
 const labelClass = "block text-sm font-medium text-white/70 mb-1";
 const sectionClass = "border-t border-white/10 pt-4";
 
-export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProps) {
+export function DisplaySettingsForm({ event, backHref, onConfigChange }: DisplaySettingsFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const config = event.displayConfig;
@@ -49,31 +50,37 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
   const [newSelfieSound, setNewSelfieSound] = useState<"none" | "chime" | "shutter">(config.newSelfieSound || "none");
   const [celebrationEffect, setCelebrationEffect] = useState<"none" | "confetti" | "ripple" | "glow">(config.celebrationEffect || "none");
 
+  const buildConfig = useCallback((): DisplayConfig => ({
+    ...config,
+    gridColumns,
+    swapInterval,
+    backgroundColor,
+    showNames,
+    showMessages,
+    transition,
+    layoutMode,
+    animatedBackground,
+    spotlightEnabled,
+    spotlightInterval,
+    spotlightDuration,
+    tickerEnabled,
+    tickerText: tickerText || undefined,
+    countdownEnabled,
+    socialOverlay: socialOverlay || undefined,
+    newSelfieSound,
+    celebrationEffect,
+  }), [config, gridColumns, swapInterval, backgroundColor, showNames, showMessages, transition, layoutMode, animatedBackground, spotlightEnabled, spotlightInterval, spotlightDuration, tickerEnabled, tickerText, countdownEnabled, socialOverlay, newSelfieSound, celebrationEffect]);
+
+  useEffect(() => {
+    onConfigChange?.(buildConfig());
+  }, [buildConfig]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const displayConfig = {
-      ...config,
-      gridColumns,
-      swapInterval,
-      backgroundColor,
-      showNames,
-      showMessages,
-      transition,
-      layoutMode,
-      animatedBackground,
-      spotlightEnabled,
-      spotlightInterval,
-      spotlightDuration,
-      tickerEnabled,
-      tickerText: tickerText || undefined,
-      countdownEnabled,
-      socialOverlay: socialOverlay || undefined,
-      newSelfieSound,
-      celebrationEffect,
-    };
+    const displayConfig = buildConfig();
 
     try {
       // Cast needed: config spreads storage IDs as string, but mutation expects Id<"_storage">
@@ -96,7 +103,7 @@ export function DisplaySettingsForm({ event, backHref }: DisplaySettingsFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl">
+    <form onSubmit={handleSubmit}>
       <Card className="flex flex-col gap-5">
         {/* Layout Mode */}
         <div>
