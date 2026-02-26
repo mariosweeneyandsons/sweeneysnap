@@ -36,7 +36,7 @@ export function SelfieFrame({ selfie, config, index, isNew }: SelfieFrameProps) 
 
   return (
     <div
-      className="relative w-full aspect-square overflow-hidden rounded-lg bg-white/5"
+      className="selfie-frame relative w-full aspect-square overflow-hidden rounded-lg bg-white/5"
       style={{
         border: `${borderWidth}px solid ${borderColor}`,
       }}
@@ -64,7 +64,10 @@ export function SelfieFrame({ selfie, config, index, isNew }: SelfieFrameProps) 
                 className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent"
                 style={{ opacity: config.overlayOpacity ?? 0.8 }}
               >
-                <p className="text-white font-medium text-sm truncate">
+                <p
+                  className="font-medium text-sm truncate"
+                  style={{ color: `var(--ss-primary, #ffffff)` }}
+                >
                   {selfie.displayName}
                 </p>
                 {config.showMessages && selfie.message && (

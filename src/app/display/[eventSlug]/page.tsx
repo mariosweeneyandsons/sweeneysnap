@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { DisplayWall } from "@/components/display/DisplayWall";
+import { EventThemeProvider } from "@/components/EventThemeProvider";
 
 export default function DisplayPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>();
@@ -34,11 +35,13 @@ export default function DisplayPage() {
   }
 
   return (
-    <DisplayWall
-      event={event}
-      selfies={selfies}
-      backgroundImageUrl={bgUrls?.backgroundImageUrl}
-      backgroundVideoUrl={bgUrls?.backgroundVideoUrl}
-    />
+    <EventThemeProvider event={event}>
+      <DisplayWall
+        event={event}
+        selfies={selfies}
+        backgroundImageUrl={bgUrls?.backgroundImageUrl}
+        backgroundVideoUrl={bgUrls?.backgroundVideoUrl}
+      />
+    </EventThemeProvider>
   );
 }

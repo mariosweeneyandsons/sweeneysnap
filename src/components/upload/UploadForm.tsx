@@ -179,7 +179,7 @@ export function UploadForm({ event }: UploadFormProps) {
           size="lg"
           className="flex-1"
           disabled={state !== "idle"}
-          style={event.primaryColor ? { backgroundColor: event.primaryColor, color: "#fff" } : undefined}
+          style={event.primaryColor ? { backgroundColor: `var(--ss-primary, ${event.primaryColor})`, color: `var(--ss-primary-contrast, #fff)` } : undefined}
         >
           {config.buttonText || "Upload Selfie"}
         </Button>

@@ -56,11 +56,15 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
     }
   };
 
+  // Find background asset from brand assets
+  const bgAsset = (event.assets || []).find((a) => a.type === "background");
+
   return (
     <div
       className="fixed inset-0 overflow-hidden"
       style={{
         backgroundColor: config.backgroundColor || "#000000",
+        fontFamily: event.fontFamily ? `"${event.fontFamily}", sans-serif` : undefined,
         "--primary-color": event.primaryColor,
       } as React.CSSProperties}
     >
@@ -82,6 +86,14 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={backgroundImageUrl}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      {bgAsset && !backgroundImageUrl && !backgroundVideoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={bgAsset.url}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
