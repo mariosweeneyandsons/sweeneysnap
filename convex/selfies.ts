@@ -186,6 +186,8 @@ export const create = mutation({
     status: v.union(v.literal("pending"), v.literal("approved")),
     sessionId: v.optional(v.string()),
     fileSizeBytes: v.optional(v.number()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
@@ -209,9 +211,12 @@ export const create = mutation({
       }
     }
 
-    const selfieId = await ctx.db.insert("selfies", {
-      ...args,
-    });
+    const insertData: Record<string, unknown> = { ...args };
+    if (args.email || args.phone) {
+      insertData.deliveryStatus = "pending";
+    }
+
+    const selfieId = await ctx.db.insert("selfies", insertData as typeof args);
 
     // Schedule AI moderation if enabled on the event
     if (event.aiModerationEnabled) {
@@ -224,6 +229,30 @@ export const create = mutation({
     await ctx.scheduler.runAfter(0, internal.imageProcessing.generateResizedVersions, {
       selfieId,
     });
+
+    // Schedule delivery if approved immediately and has contact info
+    if (args.status === "approved" && (args.email || args.phone)) {
+      const imageUrl = await ctx.storage.getUrl(args.storageId);
+      if (imageUrl) {
+        if (args.email) {
+          await ctx.scheduler.runAfter(0, internal.delivery.sendEmail, {
+            selfieId,
+            email: args.email,
+            imageUrl,
+            displayName: args.displayName,
+            eventName: event.name,
+          });
+        }
+        if (args.phone) {
+          await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
+            selfieId,
+            phone: args.phone,
+            imageUrl,
+            eventName: event.name,
+          });
+        }
+      }
+    }
 
     // Dispatch webhook
     await ctx.scheduler.runAfter(0, internal.webhookDispatch.dispatch, {
@@ -259,6 +288,31 @@ export const updateStatus = mutation({
         trigger,
         payload: { selfieId: args.id, displayName: selfie.displayName, status: args.status },
       });
+    }
+
+    // Schedule delivery when approved and has contact info
+    if (args.status === "approved" && selfie.deliveryStatus === "pending") {
+      const event = await ctx.db.get(selfie.eventId);
+      const imageUrl = await ctx.storage.getUrl(selfie.storageId);
+      if (event && imageUrl) {
+        if (selfie.email) {
+          await ctx.scheduler.runAfter(0, internal.delivery.sendEmail, {
+            selfieId: args.id,
+            email: selfie.email,
+            imageUrl,
+            displayName: selfie.displayName,
+            eventName: event.name,
+          });
+        }
+        if (selfie.phone) {
+          await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
+            selfieId: args.id,
+            phone: selfie.phone,
+            imageUrl,
+            eventName: event.name,
+          });
+        }
+      }
     }
   },
 });

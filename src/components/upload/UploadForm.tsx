@@ -31,6 +31,8 @@ export function UploadForm({ event }: UploadFormProps) {
   const [editedFile, setEditedFile] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const isSubmittingRef = useRef(false);
 
@@ -75,7 +77,7 @@ export function UploadForm({ event }: UploadFormProps) {
     isSubmittingRef.current = true;
     setScreen("uploading");
     try {
-      await upload(fileToUpload, event._id, displayName, message, event.moderationEnabled);
+      await upload(fileToUpload, event._id, displayName, message, event.moderationEnabled, email, phone);
       setScreen("success");
     } catch {
       setScreen("details");
@@ -91,6 +93,8 @@ export function UploadForm({ event }: UploadFormProps) {
     setPreview(null);
     setDisplayName("");
     setMessage("");
+    setEmail("");
+    setPhone("");
     reset();
     setScreen("camera");
   };
@@ -196,6 +200,32 @@ export function UploadForm({ event }: UploadFormProps) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+      )}
+
+      {config.collectEmail && (
+        <Input
+          label="Email (optional)"
+          placeholder="your@email.com"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      )}
+
+      {config.collectPhone && (
+        <Input
+          label="Phone (optional)"
+          placeholder="+1 555-123-4567"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      )}
+
+      {(config.collectEmail || config.collectPhone) && (
+        <p className="text-xs text-center" style={{ opacity: 0.4 }}>
+          We&apos;ll send your selfie to you after it&apos;s approved. Your info won&apos;t be shared.
+        </p>
       )}
 
       {error && (

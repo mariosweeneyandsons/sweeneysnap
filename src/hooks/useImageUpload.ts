@@ -21,7 +21,7 @@ interface UseImageUploadReturn {
   uploadCount: number;
   limitReached: boolean;
   selfieId: string | null;
-  upload: (file: File, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
+  upload: (file: File, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean, email?: string, phone?: string) => Promise<void>;
   reset: () => void;
   setLimitReached: (v: boolean) => void;
 }
@@ -42,7 +42,9 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
     eventId: string,
     displayName?: string,
     message?: string,
-    moderationEnabled?: boolean
+    moderationEnabled?: boolean,
+    email?: string,
+    phone?: string
   ) => {
     try {
       setError(null);
@@ -106,6 +108,8 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
         status: moderationEnabled ? "pending" : "approved",
         fileSizeBytes: compressed.size,
         sessionId,
+        email: email || undefined,
+        phone: phone || undefined,
       });
 
       setSelfieId(id);
