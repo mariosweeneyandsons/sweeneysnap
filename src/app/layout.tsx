@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  ),
   title: "SweeneySnap",
   description: "Live event selfie wall — upload, display, celebrate",
   manifest: "/manifest.json",

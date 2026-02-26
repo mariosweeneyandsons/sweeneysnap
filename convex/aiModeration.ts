@@ -26,6 +26,7 @@ export const moderateWithAi = internalAction({
         "https://api.openai.com/v1/chat/completions",
         {
           method: "POST",
+          signal: AbortSignal.timeout(30_000),
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,

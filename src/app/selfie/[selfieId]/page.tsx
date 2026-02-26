@@ -1,72 +1,59 @@
-"use client";
+import type { Metadata } from "next";
+import SelfiePageClient from "./SelfiePageClient";
 
-import { useParams } from "next/navigation";
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
-import Link from "next/link";
+type Props = {
+  params: Promise<{ selfieId: string }>;
+};
 
-export default function SelfiePage() {
-  const { selfieId } = useParams<{ selfieId: string }>();
-  const selfie = useQuery(api.selfies.getPublicById, {
-    selfieId: selfieId as Id<"selfies">,
-  });
+async function fetchSelfie(selfieId: string) {
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!convexUrl) return null;
 
-  if (selfie === undefined) {
-    return (
-      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
-        <p style={{ opacity: 0.5 }}>Loading...</p>
-      </main>
-    );
+  try {
+    const apiUrl = convexUrl.replace("/.functions", "");
+    const res = await fetch(`${apiUrl}/api/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path: "selfies:getPublicById",
+        args: { selfieId },
+      }),
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.value ?? null;
+  } catch {
+    return null;
   }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { selfieId } = await params;
+  const selfie = await fetchSelfie(selfieId);
 
   if (!selfie) {
-    return (
-      <main className="min-h-dvh bg-background text-foreground flex items-center justify-center">
-        <p style={{ opacity: 0.5 }}>Selfie not found or not yet approved</p>
-      </main>
-    );
+    return {
+      title: "Selfie — SweeneySnap",
+      description: "Check out this selfie on SweeneySnap!",
+    };
   }
 
-  return (
-    <main className="min-h-dvh bg-background text-foreground flex flex-col items-center justify-center px-4 py-8">
-      <div className="w-full max-w-lg mx-auto">
-        {selfie.eventLogoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={selfie.eventLogoUrl}
-            alt=""
-            className="h-10 w-auto mb-4 mx-auto"
-          />
-        )}
-        <div className="rounded-xs overflow-hidden mb-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={selfie.imageUrl || ""}
-            alt={selfie.displayName || "Selfie"}
-            className="w-full aspect-square object-cover"
-          />
-        </div>
-        {selfie.displayName && (
-          <p className="text-lg font-semibold text-center mb-1">
-            {selfie.displayName}
-          </p>
-        )}
-        {selfie.message && (
-          <p className="text-center text-white/60 mb-4">{selfie.message}</p>
-        )}
-        <p className="text-center text-white/40 text-sm mb-6">
-          From {selfie.eventName}
-        </p>
-        <div className="text-center">
-          <Link
-            href={`/${selfie.eventSlug}`}
-            className="inline-block bg-foreground text-background px-6 py-3 rounded-xs font-semibold hover:bg-foreground/90 transition"
-          >
-            Take your own selfie!
-          </Link>
-        </div>
-      </div>
-    </main>
-  );
+  const title = selfie.displayName
+    ? `${selfie.displayName}'s selfie from ${selfie.eventName}`
+    : `Selfie from ${selfie.eventName}`;
+
+  return {
+    title,
+    description: selfie.message || `Check out this selfie from ${selfie.eventName} on SweeneySnap!`,
+    openGraph: {
+      title,
+      description: selfie.message || `Check out this selfie from ${selfie.eventName} on SweeneySnap!`,
+    },
+  };
+}
+
+export default function SelfiePage() {
+  return <SelfiePageClient />;
 }

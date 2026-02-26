@@ -4,6 +4,15 @@ import { internalAction, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export const updateDeliveryStatus = internalMutation({
   args: {
     selfieId: v.id("selfies"),
@@ -31,6 +40,7 @@ export const sendEmail = internalAction({
   handler: async (ctx, args) => {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
+      console.error("RESEND_API_KEY not set, email delivery failed");
       await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
@@ -43,8 +53,13 @@ export const sendEmail = internalAction({
       const resend = new Resend(apiKey);
 
       // Download image for attachment
-      const imageResponse = await fetch(args.imageUrl);
+      const imageResponse = await fetch(args.imageUrl, {
+        signal: AbortSignal.timeout(15_000),
+      });
       const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+
+      const safeName = args.displayName ? escapeHtml(args.displayName) : "";
+      const safeEvent = escapeHtml(args.eventName);
 
       await resend.emails.send({
         from: "SweeneySnap <noreply@sweeneysnap.com>",
@@ -54,7 +69,7 @@ export const sendEmail = internalAction({
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <h1 style="text-align: center;">Your SweeneySnap Selfie!</h1>
             <p style="text-align: center; color: #666;">
-              Hey${args.displayName ? ` ${args.displayName}` : ""}! Here's your selfie from <strong>${args.eventName}</strong>.
+              Hey${safeName ? ` ${safeName}` : ""}! Here's your selfie from <strong>${safeEvent}</strong>.
             </p>
             <div style="text-align: center; margin: 20px 0;">
               <img src="cid:selfie" alt="Your selfie" style="max-width: 100%; border-radius: 16px;" />
@@ -77,7 +92,8 @@ export const sendEmail = internalAction({
         selfieId: args.selfieId,
         deliveryStatus: "sent",
       });
-    } catch {
+    } catch (error) {
+      console.error("Email delivery failed:", error);
       await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
@@ -99,6 +115,7 @@ export const sendSms = internalAction({
     const fromNumber = process.env.TWILIO_PHONE_NUMBER;
 
     if (!accountSid || !authToken || !fromNumber) {
+      console.error("Twilio credentials not set (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER), SMS delivery failed");
       await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
@@ -121,7 +138,8 @@ export const sendSms = internalAction({
         selfieId: args.selfieId,
         deliveryStatus: "sent",
       });
-    } catch {
+    } catch (error) {
+      console.error("SMS delivery failed:", error);
       await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
