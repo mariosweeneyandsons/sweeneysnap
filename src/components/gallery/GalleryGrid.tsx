@@ -1,10 +1,10 @@
 "use client";
 
 import { DownloadButton } from "./DownloadButton";
-import { Selfie } from "@/types/database";
+import { SelfieWithUrls } from "@/types/database";
 
 interface GalleryGridProps {
-  selfies: Selfie[];
+  selfies: SelfieWithUrls[];
   allowDownload?: boolean;
   onSelfieClick: (index: number) => void;
 }

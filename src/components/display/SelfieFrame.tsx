@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, type Variants } from "motion/react";
-import { Selfie, DisplayConfig } from "@/types/database";
+import { SelfieWithUrls, DisplayConfig } from "@/types/database";
 
 const transitionVariants: Record<string, Variants> = {
   fade: {
@@ -22,7 +22,7 @@ const transitionVariants: Record<string, Variants> = {
 };
 
 interface SelfieFrameProps {
-  selfie: (Selfie & { eventName?: string; eventSlug?: string }) | null;
+  selfie: (SelfieWithUrls & { eventName?: string; eventSlug?: string }) | null;
   config: DisplayConfig;
   index: number;
   showEventBadge?: boolean;

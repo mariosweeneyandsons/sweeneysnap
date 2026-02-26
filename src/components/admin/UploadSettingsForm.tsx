@@ -6,10 +6,10 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Event, UploadConfig } from "@/types/database";
+import { PublicEvent, UploadConfig } from "@/types/database";
 
 interface UploadSettingsFormProps {
-  event: Event;
+  event: PublicEvent;
   crewToken?: string;
 }
 

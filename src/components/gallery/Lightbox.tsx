@@ -3,10 +3,10 @@
 import { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { DownloadButton } from "./DownloadButton";
-import { Selfie } from "@/types/database";
+import { SelfieWithUrls } from "@/types/database";
 
 interface LightboxProps {
-  selfie: Selfie | null;
+  selfie: SelfieWithUrls | null;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;

@@ -6,10 +6,10 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Event, BrandAsset } from "@/types/database";
+import { PublicEvent, BrandAsset } from "@/types/database";
 
 interface AssetManagerProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 type AssetTab = "frame" | "sticker";

@@ -4,13 +4,13 @@ import { useState, useCallback } from "react";
 import { usePaginatedQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { Event, Selfie } from "@/types/database";
+import { PublicEvent, SelfieWithUrls } from "@/types/database";
 import { GalleryGrid } from "./GalleryGrid";
 import { Lightbox } from "./Lightbox";
 import { Button } from "@/components/ui/Button";
 
 interface GalleryPageProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 export function GalleryPage({ event }: GalleryPageProps) {
@@ -22,7 +22,7 @@ export function GalleryPage({ event }: GalleryPageProps) {
     { initialNumItems: 24 }
   );
 
-  const selfies = results as Selfie[];
+  const selfies = results as SelfieWithUrls[];
   const allowDownload = event.uploadConfig.galleryAllowDownload !== false;
   const headerText = event.uploadConfig.galleryHeaderText || `${event.name} Photo Gallery`;
 

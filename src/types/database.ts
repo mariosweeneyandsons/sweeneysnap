@@ -117,7 +117,7 @@ export interface Event extends ConvexDocument {
   isActive: boolean;
   createdBy?: string;
   presetId?: string;
-  crewToken?: string;
+  crewToken: string;
   uploadConfig: UploadConfig;
   displayConfig: DisplayConfig;
   logoUrl?: string;
@@ -141,6 +141,9 @@ export interface Event extends ConvexDocument {
     printStationToken?: string;
   };
 }
+
+/** Event without crewToken — returned by public-facing Convex queries */
+export type PublicEvent = Omit<Event, "crewToken">;
 
 export type PrintJobStatus = "queued" | "printing" | "printed" | "failed";
 
@@ -177,7 +180,6 @@ export interface CrewActivityLogEntry extends ConvexDocument {
 export interface Selfie extends ConvexDocument {
   eventId: string;
   storageId: string;
-  imageUrl: string | null;
   displayName?: string;
   message?: string;
   status: SelfieStatus;
@@ -185,11 +187,43 @@ export interface Selfie extends ConvexDocument {
   fileSizeBytes?: number;
   aiModeration?: AiModeration;
   // Image optimization
-  thumbnailUrl?: string | null;
-  mediumUrl?: string | null;
+  thumbnailStorageId?: string;
+  mediumStorageId?: string;
   // Email/SMS delivery
   email?: string;
   phone?: string;
   deliveryStatus?: "pending" | "sent" | "failed";
   deliveredAt?: number;
+}
+
+/** Selfie enriched with computed URL fields from ctx.storage.getUrl() */
+export type SelfieWithUrls = Selfie & {
+  imageUrl: string | null;
+  thumbnailUrl?: string | null;
+  mediumUrl?: string | null;
+};
+
+export type WebhookTrigger =
+  | "selfie.created"
+  | "selfie.approved"
+  | "selfie.rejected";
+
+export interface Webhook extends ConvexDocument {
+  eventId: string;
+  url: string;
+  secret: string;
+  triggers: WebhookTrigger[];
+  isActive: boolean;
+  createdBy?: string;
+  updatedAt: number;
+}
+
+export interface MultiEventDisplay extends ConvexDocument {
+  name: string;
+  eventIds: string[];
+  slug: string;
+  displayConfig: DisplayConfig;
+  showEventBadges?: boolean;
+  createdBy?: string;
+  updatedAt: number;
 }

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 import { getEventThemeVars, getGoogleFontUrl, sanitizeCss } from "@/lib/theme";
 
 interface EventThemeProviderProps {
-  event: Event;
+  event: PublicEvent;
   children: React.ReactNode;
 }
 

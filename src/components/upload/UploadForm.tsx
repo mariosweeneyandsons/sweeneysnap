@@ -9,12 +9,12 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { useOfflineQueue } from "@/hooks/useOfflineQueue";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Event, BrandAsset } from "@/types/database";
+import { PublicEvent, BrandAsset } from "@/types/database";
 
 type Screen = "camera" | "editor" | "details" | "uploading" | "success";
 
 interface UploadFormProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 export function UploadForm({ event }: UploadFormProps) {

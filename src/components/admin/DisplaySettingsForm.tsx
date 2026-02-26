@@ -7,11 +7,11 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Event, DisplayConfig } from "@/types/database";
+import { PublicEvent, DisplayConfig } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
 
 interface DisplaySettingsFormProps {
-  event: Event;
+  event: PublicEvent;
   backHref: string;
   onConfigChange?: (config: DisplayConfig) => void;
   crewToken?: string;

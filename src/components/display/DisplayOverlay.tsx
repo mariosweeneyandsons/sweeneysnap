@@ -1,9 +1,9 @@
 "use client";
 
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 
 interface DisplayOverlayProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 export function DisplayOverlay({ event }: DisplayOverlayProps) {

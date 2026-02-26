@@ -9,12 +9,12 @@ import { AnimatedBackground } from "./AnimatedBackground";
 import { TickerBar } from "./TickerBar";
 import { CountdownOverlay } from "./CountdownOverlay";
 import { QRCodeSVG } from "qrcode.react";
-import { Event, Selfie } from "@/types/database";
+import { PublicEvent, SelfieWithUrls } from "@/types/database";
 import { useEffect } from "react";
 
 interface DisplayWallProps {
-  event: Event;
-  selfies: Selfie[];
+  event: PublicEvent;
+  selfies: SelfieWithUrls[];
   backgroundImageUrl?: string | null;
   backgroundVideoUrl?: string | null;
 }

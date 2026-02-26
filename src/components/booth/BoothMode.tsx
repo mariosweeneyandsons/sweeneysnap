@@ -5,12 +5,12 @@ import { useCamera } from "@/hooks/useCamera";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { CaptureCountdown } from "./CaptureCountdown";
 import { AutoResetTimer } from "./AutoResetTimer";
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 
 type BoothScreen = "idle" | "camera" | "countdown" | "preview" | "uploading" | "success";
 
 interface BoothModeProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 export function BoothMode({ event }: BoothModeProps) {

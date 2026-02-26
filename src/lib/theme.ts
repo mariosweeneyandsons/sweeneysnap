@@ -1,4 +1,4 @@
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 
 export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -24,7 +24,7 @@ export function getGoogleFontUrl(fontFamily: string): string | null {
   return `https://fonts.googleapis.com/css2?family=${encoded}:wght@400;500;600;700&display=swap`;
 }
 
-export function getEventThemeVars(event: Event): Record<string, string> {
+export function getEventThemeVars(event: PublicEvent): Record<string, string> {
   const primary = event.primaryColor || "#ffffff";
   const rgb = hexToRgb(primary);
   const contrast = getContrastColor(primary);

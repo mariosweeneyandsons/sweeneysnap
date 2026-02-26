@@ -1,10 +1,10 @@
 "use client";
 
 import { QRCodeSVG } from "qrcode.react";
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 
 interface EmptyStateProps {
-  event: Event;
+  event: PublicEvent;
 }
 
 export function EmptyState({ event }: EmptyStateProps) {

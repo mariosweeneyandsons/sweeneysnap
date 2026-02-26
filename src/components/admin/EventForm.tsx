@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
-import { Event } from "@/types/database";
+import { PublicEvent } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
 import { PresetPreview } from "./PresetPreview";
 
 interface EventFormProps {
-  event?: Event;
+  event?: PublicEvent;
 }
 
 function getScheduleStatus(startsAt?: number, endsAt?: number): { label: string; color: string } | null {

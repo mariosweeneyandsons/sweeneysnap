@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { SelfieFrame } from "./SelfieFrame";
 import { CelebrationEffect } from "./CelebrationEffect";
-import { Selfie, DisplayConfig } from "@/types/database";
+import { SelfieWithUrls, DisplayConfig } from "@/types/database";
 
 interface SelfieGridProps {
-  selfies: Selfie[];
+  selfies: SelfieWithUrls[];
   config: DisplayConfig;
 }
 
@@ -17,7 +17,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
   const totalSlots = columns * columns;
 
   // Visible frames — what's currently showing on screen
-  const [visibleSelfies, setVisibleSelfies] = useState<(Selfie | null)[]>(
+  const [visibleSelfies, setVisibleSelfies] = useState<(SelfieWithUrls | null)[]>(
     () => Array(totalSlots).fill(null)
   );
 
@@ -26,7 +26,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
   const poolIndexRef = useRef(0);
 
   // Spotlight state
-  const [spotlightSelfie, setSpotlightSelfie] = useState<Selfie | null>(null);
+  const [spotlightSelfie, setSpotlightSelfie] = useState<SelfieWithUrls | null>(null);
 
   // New selfie detection for sound + celebration
   const prevCountRef = useRef(selfies.length);
@@ -36,7 +36,7 @@ export function SelfieGrid({ selfies, config }: SelfieGridProps) {
   // Initialize visible frames when selfies first arrive
   useEffect(() => {
     if (selfies.length === 0) return;
-    const initial: (Selfie | null)[] = [];
+    const initial: (SelfieWithUrls | null)[] = [];
     const ids = new Set<string>();
     for (let i = 0; i < totalSlots; i++) {
       if (i < selfies.length) {

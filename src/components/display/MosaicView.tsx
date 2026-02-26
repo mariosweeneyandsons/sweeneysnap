@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
-import { Selfie, DisplayConfig } from "@/types/database";
+import { SelfieWithUrls, DisplayConfig } from "@/types/database";
 
 // Predefined tile size patterns: [colSpan, rowSpan]
 const tilePatterns: [number, number][] = [
@@ -37,7 +37,7 @@ const transitionVariants: Record<string, Variants> = {
 };
 
 interface MosaicViewProps {
-  selfies: Selfie[];
+  selfies: SelfieWithUrls[];
   config: DisplayConfig;
 }
 
@@ -50,7 +50,7 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
   const borderColor = config.frameBorderColor || "rgba(255,255,255,0.1)";
   const borderWidth = config.frameBorderWidth ?? 2;
 
-  const [visibleSelfies, setVisibleSelfies] = useState<(Selfie | null)[]>(
+  const [visibleSelfies, setVisibleSelfies] = useState<(SelfieWithUrls | null)[]>(
     () => Array(totalSlots).fill(null)
   );
   const poolIndexRef = useRef(0);
@@ -59,7 +59,7 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
   // Initialize
   useEffect(() => {
     if (selfies.length === 0) return;
-    const initial: (Selfie | null)[] = [];
+    const initial: (SelfieWithUrls | null)[] = [];
     const ids = new Set<string>();
     for (let i = 0; i < totalSlots; i++) {
       const s = i < selfies.length ? selfies[i] : null;
@@ -79,7 +79,7 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
       const slotIndex = Math.floor(Math.random() * totalSlots);
 
       // Find a selfie not already visible (with guard to prevent infinite loop)
-      let nextSelfie: Selfie | null = null;
+      let nextSelfie: SelfieWithUrls | null = null;
       for (let attempts = 0; attempts < selfies.length; attempts++) {
         const candidate = selfies[poolIndexRef.current % selfies.length];
         poolIndexRef.current = (poolIndexRef.current + 1) % selfies.length;
