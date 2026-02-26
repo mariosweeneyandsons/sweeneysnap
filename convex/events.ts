@@ -51,6 +51,32 @@ export const getByCrewToken = query({
   },
 });
 
+export const getByCrewTokenOrMember = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    // Try legacy crew token first
+    const eventByToken = await ctx.db
+      .query("events")
+      .withIndex("by_crewToken", (q) => q.eq("crewToken", args.token))
+      .unique();
+    if (eventByToken) {
+      return { event: eventByToken, crewMember: null };
+    }
+
+    // Try crew member token
+    const crewMember = await ctx.db
+      .query("crewMembers")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .unique();
+    if (crewMember) {
+      const event = await ctx.db.get(crewMember.eventId);
+      return { event, crewMember };
+    }
+
+    return { event: null, crewMember: null };
+  },
+});
+
 export const create = mutation({
   args: {
     slug: v.string(),
@@ -62,6 +88,8 @@ export const create = mutation({
     displayConfig: displayConfigValidator,
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
+    fontFamily: v.optional(v.string()),
+    customCss: v.optional(v.string()),
     moderationEnabled: v.boolean(),
     aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
@@ -89,6 +117,8 @@ export const update = mutation({
     displayConfig: displayConfigValidator,
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
+    fontFamily: v.optional(v.string()),
+    customCss: v.optional(v.string()),
     moderationEnabled: v.boolean(),
     aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
@@ -173,6 +203,9 @@ export const duplicate = mutation({
       displayConfig: event.displayConfig,
       logoUrl: event.logoUrl,
       primaryColor: event.primaryColor,
+      fontFamily: event.fontFamily,
+      customCss: event.customCss,
+      assets: event.assets,
       moderationEnabled: event.moderationEnabled,
       aiModerationEnabled: event.aiModerationEnabled,
       startsAt: event.startsAt,

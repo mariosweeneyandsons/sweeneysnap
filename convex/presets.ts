@@ -36,6 +36,7 @@ export const create = mutation({
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
     fontFamily: v.string(),
+    customCss: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -56,6 +57,7 @@ export const update = mutation({
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
     fontFamily: v.string(),
+    customCss: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
