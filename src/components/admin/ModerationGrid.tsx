@@ -6,6 +6,7 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { SelfieStatus } from "@/types/database";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 
 interface ModerationGridProps {
   eventId: string;
@@ -16,6 +17,7 @@ type FilterTab = "all" | SelfieStatus;
 
 export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
   const [filter, setFilter] = useState<FilterTab>("all");
+  const { toast } = useToast();
 
   const selfies = useQuery(api.selfies.listByEvent, {
     eventId: eventId as Id<"events">,
@@ -26,12 +28,22 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
   const removeSelfie = useMutation(api.selfies.remove);
 
   const handleUpdateStatus = async (selfieId: string, status: SelfieStatus) => {
-    await updateStatus({ id: selfieId as Id<"selfies">, status });
+    try {
+      await updateStatus({ id: selfieId as Id<"selfies">, status });
+      toast(`Selfie ${status}`, status === "approved" ? "success" : "warning");
+    } catch {
+      toast("Failed to update status", "error");
+    }
   };
 
   const handleDelete = async (selfieId: string) => {
     if (!confirm("Delete this selfie permanently?")) return;
-    await removeSelfie({ id: selfieId as Id<"selfies"> });
+    try {
+      await removeSelfie({ id: selfieId as Id<"selfies"> });
+      toast("Selfie deleted", "success");
+    } catch {
+      toast("Failed to delete selfie", "error");
+    }
   };
 
   const tabs: { label: string; value: FilterTab }[] = [

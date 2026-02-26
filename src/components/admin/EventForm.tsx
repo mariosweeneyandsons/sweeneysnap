@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Event } from "@/types/database";
+import { useToast } from "@/components/ui/Toast";
 
 interface EventFormProps {
   event?: Event;
@@ -24,6 +25,7 @@ function getScheduleStatus(startsAt?: number, endsAt?: number): { label: string;
 
 export function EventForm({ event }: EventFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const presets = useQuery(api.presets.listByName);
   const createEvent = useMutation(api.events.create);
   const updateEvent = useMutation(api.events.update);
@@ -114,12 +116,16 @@ export function EventForm({ event }: EventFormProps) {
     try {
       if (event) {
         await updateEvent({ id: event._id as Id<"events">, ...payload });
+        toast("Event saved successfully", "success");
       } else {
         await createEvent(payload);
+        toast("Event created successfully", "success");
       }
       router.push("/admin");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      toast(msg, "error");
     } finally {
       setLoading(false);
     }

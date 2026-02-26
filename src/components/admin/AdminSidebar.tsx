@@ -1,12 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { usePathname } from "next/navigation";
 import { AdminProfile } from "@/types/database";
+import { UserProfilePopover } from "./UserProfilePopover";
+
+interface UserIdentity {
+  name: string | null;
+  email: string | null;
+  image: string | null;
+}
 
 interface AdminSidebarProps {
   profile: AdminProfile;
+  userIdentity?: UserIdentity | null;
 }
 
 const navItems = [
@@ -15,15 +22,8 @@ const navItems = [
   { href: "/admin/accounts", label: "Accounts", icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" },
 ];
 
-export function AdminSidebar({ profile }: AdminSidebarProps) {
+export function AdminSidebar({ profile, userIdentity }: AdminSidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { signOut } = useAuthActions();
-
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/admin/login");
-  };
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white/5 border-r border-white/10 flex flex-col p-4">
@@ -55,13 +55,14 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
       </nav>
 
       <div className="border-t border-white/10 pt-4 mt-4">
-        <p className="text-sm text-white/70 mb-2">{profile.displayName}</p>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-white/40 hover:text-white/70 transition-colors"
-        >
-          Sign Out
-        </button>
+        {userIdentity ? (
+          <UserProfilePopover
+            identity={userIdentity}
+            displayName={profile.displayName}
+          />
+        ) : (
+          <p className="text-sm text-white/70">{profile.displayName}</p>
+        )}
       </div>
     </aside>
   );

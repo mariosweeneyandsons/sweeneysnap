@@ -5,6 +5,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { ToastProvider } from "@/components/ui/Toast";
 
 export default function AdminLayout({
   children,
@@ -15,6 +16,10 @@ export default function AdminLayout({
   const router = useRouter();
   const adminProfile = useQuery(
     api.adminProfiles.getByCurrentUser,
+    isAuthenticated ? {} : "skip"
+  );
+  const userIdentity = useQuery(
+    api.adminProfiles.getCurrentUserIdentity,
     isAuthenticated ? {} : "skip"
   );
 
@@ -41,9 +46,11 @@ export default function AdminLayout({
   if (!adminProfile) return null;
 
   return (
-    <div className="min-h-dvh bg-black text-white flex">
-      <AdminSidebar profile={adminProfile} />
-      <main className="flex-1 p-6 ml-64">{children}</main>
-    </div>
+    <ToastProvider>
+      <div className="min-h-dvh bg-black text-white flex">
+        <AdminSidebar profile={adminProfile} userIdentity={userIdentity} />
+        <main className="flex-1 p-6 ml-64">{children}</main>
+      </div>
+    </ToastProvider>
   );
 }

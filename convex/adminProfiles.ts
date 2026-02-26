@@ -2,6 +2,19 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
 
+export const getCurrentUserIdentity = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+    return {
+      name: identity.name ?? null,
+      email: identity.email ?? null,
+      image: identity.pictureUrl ?? null,
+    };
+  },
+});
+
 export const getByCurrentUser = query({
   args: {},
   handler: async (ctx) => {
