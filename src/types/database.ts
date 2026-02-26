@@ -91,6 +91,8 @@ export interface Event extends ConvexDocument {
   moderationEnabled: boolean;
   startsAt?: number;
   endsAt?: number;
+  archived?: boolean;
+  sortOrder?: number;
   updatedAt: number;
 }
 

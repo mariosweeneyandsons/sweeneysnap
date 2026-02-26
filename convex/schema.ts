@@ -46,6 +46,8 @@ export default defineSchema({
     moderationEnabled: v.boolean(),
     startsAt: v.optional(v.number()),
     endsAt: v.optional(v.number()),
+    archived: v.optional(v.boolean()),
+    sortOrder: v.optional(v.number()),
     updatedAt: v.number(),
   })
     .index("by_slug", ["slug"])
