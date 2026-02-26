@@ -12,6 +12,7 @@ import { QRCodeDisplay } from "@/components/admin/QRCodeDisplay";
 import { CopyButton } from "@/components/admin/CopyButton";
 import { EventForm } from "@/components/admin/EventForm";
 import { ExportSelfiesButton } from "@/components/admin/ExportSelfiesButton";
+import { EventDetailSkeleton } from "@/components/admin/skeletons/EventDetailSkeleton";
 
 export default function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -32,7 +33,7 @@ export default function EventDetailPage() {
   const [deleteProgress, setDeleteProgress] = useState<number | null>(null);
 
   if (event === undefined) {
-    return <div className="text-center py-12 text-white/50">Loading...</div>;
+    return <EventDetailSkeleton />;
   }
   if (!event) {
     return <div className="text-center py-12 text-white/50">Event not found</div>;

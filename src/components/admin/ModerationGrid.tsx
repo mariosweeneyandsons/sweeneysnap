@@ -7,6 +7,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { SelfieStatus } from "@/types/database";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { ModerationGridSkeleton } from "@/components/admin/skeletons/ModerationGridSkeleton";
 import { useNewPendingAlert } from "@/hooks/useNewPendingAlert";
 
 interface ModerationGridProps {
@@ -159,7 +160,7 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
       </div>
 
       {!selfies ? (
-        <div className="text-center py-12 text-white/50">Loading...</div>
+        <ModerationGridSkeleton />
       ) : selfies.length === 0 ? (
         <div className="text-center py-12 text-white/50">No selfies found</div>
       ) : (

@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Card } from "@/components/ui/Card";
 import { DeletePresetButton } from "@/components/admin/DeletePresetButton";
+import { EventsListSkeleton } from "@/components/admin/skeletons/EventsListSkeleton";
 
 export default function PresetsPage() {
   const presets = useQuery(api.presets.list);
@@ -25,7 +26,7 @@ export default function PresetsPage() {
       </div>
 
       {!presets ? (
-        <div className="text-center py-12 text-white/50">Loading...</div>
+        <EventsListSkeleton />
       ) : presets.length === 0 ? (
         <Card className="text-center py-12">
           <p className="text-white/50 mb-4">No presets yet</p>

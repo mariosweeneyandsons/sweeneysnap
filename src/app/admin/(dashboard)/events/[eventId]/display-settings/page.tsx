@@ -8,6 +8,7 @@ import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { DisplaySettingsForm } from "@/components/admin/DisplaySettingsForm";
 import { LivePreviewPanel } from "@/components/admin/LivePreviewPanel";
 import { DisplayConfig } from "@/types/database";
+import { Skeleton } from "@/components/ui/Skeleton";
 import Link from "next/link";
 
 export default function AdminDisplaySettingsPage() {
@@ -16,7 +17,19 @@ export default function AdminDisplaySettingsPage() {
   const [liveConfig, setLiveConfig] = useState<DisplayConfig | null>(null);
 
   if (event === undefined) {
-    return <div className="text-center py-12 text-white/50">Loading...</div>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-64" />
+        <div className="flex gap-8">
+          <Skeleton className="w-[400px] h-[300px] rounded-xl" />
+          <div className="flex-1 space-y-4">
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+    );
   }
   if (!event) {
     return <div className="text-center py-12 text-white/50">Event not found</div>;

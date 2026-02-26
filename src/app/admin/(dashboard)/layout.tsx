@@ -37,8 +37,11 @@ export default function AdminLayout({
 
   if (isLoading || !isAuthenticated || adminProfile === undefined) {
     return (
-      <div className="min-h-dvh bg-black flex items-center justify-center text-white/50">
-        Loading...
+      <div className="min-h-dvh bg-black flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
+          <p className="text-white/50 text-sm">Loading admin panel...</p>
+        </div>
       </div>
     );
   }

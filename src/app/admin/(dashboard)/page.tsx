@@ -8,6 +8,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { SortableEventGrid } from "@/components/admin/SortableEventGrid";
+import { EventsListSkeleton } from "@/components/admin/skeletons/EventsListSkeleton";
 
 function getScheduleBadge(event: { startsAt?: number; endsAt?: number; isActive: boolean }) {
   if (!event.startsAt && !event.endsAt) return null;
@@ -58,7 +59,7 @@ export default function AdminDashboard() {
       </div>
 
       {!events ? (
-        <div className="text-center py-12 text-white/50">Loading...</div>
+        <EventsListSkeleton />
       ) : events.length === 0 ? (
         <Card className="text-center py-12">
           <p className="text-white/50 mb-4">No events yet</p>
