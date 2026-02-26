@@ -5,20 +5,20 @@ export function EventsListSkeleton() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-10 w-32 rounded-lg" />
+        <Skeleton className="h-10 w-32 rounded-xs" />
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-card-border bg-card-bg p-6"
+            className="rounded-xs border border-card-border bg-card-bg p-6"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <Skeleton className="h-5 w-40 mb-2" />
                 <Skeleton className="h-4 w-24" />
               </div>
-              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-5 w-16 rounded-xs" />
             </div>
             <Skeleton className="h-4 w-28 mt-3" />
           </div>
