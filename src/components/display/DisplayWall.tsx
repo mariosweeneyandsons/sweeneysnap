@@ -11,6 +11,7 @@ import { EventCountdownOverlay } from "./EventCountdownOverlay";
 import { QRCodeSVG } from "qrcode.react";
 import { PublicEvent, SelfieWithUrls } from "@/types/database";
 import { getSiteUrl } from "@/lib/config";
+import { CURSOR_HIDE_DELAY_MS } from "@/lib/defaults";
 import { useEffect } from "react";
 
 interface DisplayWallProps {
@@ -33,7 +34,7 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
     const show = () => {
       document.body.style.cursor = "default";
       clearTimeout(timeout);
-      timeout = setTimeout(hide, 3000);
+      timeout = setTimeout(hide, CURSOR_HIDE_DELAY_MS);
     };
     document.addEventListener("mousemove", show);
     timeout = setTimeout(hide, 3000);

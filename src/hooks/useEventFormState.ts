@@ -6,6 +6,14 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useToast } from "@/components/ui/Toast";
 import { DisplayConfig } from "@/types/database";
+import {
+  DEFAULT_PRIMARY_COLOR,
+  DEFAULT_BG_COLOR,
+  DEFAULT_FONT,
+  DEFAULT_MAX_FILE_SIZE_MB,
+  DEFAULT_MAX_UPLOADS,
+  DEFAULT_COUNTDOWN_SECONDS,
+} from "@/lib/defaults";
 
 function toLocalDatetime(ts?: number): string {
   if (!ts) return "";
@@ -51,8 +59,8 @@ export function useEventFormState(event: any, selfieCount: number | undefined) {
   const [aiModerationEnabled, setAiModerationEnabled] = useState(false);
 
   // -- Branding --
-  const [primaryColor, setPrimaryColor] = useState("#4a7ab5");
-  const [fontFamily, setFontFamily] = useState("Inter");
+  const [primaryColor, setPrimaryColor] = useState(DEFAULT_PRIMARY_COLOR);
+  const [fontFamily, setFontFamily] = useState(DEFAULT_FONT);
   const [customCss, setCustomCss] = useState("");
 
   // -- Upload config --
@@ -61,10 +69,10 @@ export function useEventFormState(event: any, selfieCount: number | undefined) {
   const [successText, setSuccessText] = useState("");
   const [requireName, setRequireName] = useState(false);
   const [requireMessage, setRequireMessage] = useState(false);
-  const [maxFileSizeMb, setMaxFileSizeMb] = useState(10);
+  const [maxFileSizeMb, setMaxFileSizeMb] = useState(DEFAULT_MAX_FILE_SIZE_MB);
   const [allowGallery, setAllowGallery] = useState(true);
-  const [maxUploadsPerSession, setMaxUploadsPerSession] = useState(5);
-  const [countdownSeconds, setCountdownSeconds] = useState(3);
+  const [maxUploadsPerSession, setMaxUploadsPerSession] = useState(DEFAULT_MAX_UPLOADS);
+  const [countdownSeconds, setCountdownSeconds] = useState(DEFAULT_COUNTDOWN_SECONDS);
   const [multiPhotoEnabled, setMultiPhotoEnabled] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(true);
   const [allowCameraSwitch, setAllowCameraSwitch] = useState(true);
@@ -77,7 +85,7 @@ export function useEventFormState(event: any, selfieCount: number | undefined) {
   const [gridColumns, setGridColumns] = useState(4);
   const [swapInterval, setSwapInterval] = useState(5);
   const [transition, setTransition] = useState("fade");
-  const [backgroundColor, setBackgroundColor] = useState("#1a2744");
+  const [backgroundColor, setBackgroundColor] = useState(DEFAULT_BG_COLOR);
   const [animatedBackground, setAnimatedBackground] = useState("none");
   const [showNames, setShowNames] = useState(true);
   const [showMessages, setShowMessages] = useState(true);

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { BrandAsset } from "@/types/database";
+import { CANVAS_SIZE, IMAGE_QUALITY } from "@/lib/defaults";
 
 export interface FilterPreset {
   name: string;
@@ -64,7 +65,7 @@ export function usePhotoEditor(): UsePhotoEditorReturn {
 
   const exportComposite = useCallback(
     async (sourceImage: HTMLImageElement): Promise<File> => {
-      const size = 1080;
+      const size = CANVAS_SIZE;
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -103,7 +104,7 @@ export function usePhotoEditor(): UsePhotoEditorReturn {
 
       // Export as WebP
       const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((b) => resolve(b!), "image/webp", 0.9);
+        canvas.toBlob((b) => resolve(b!), "image/webp", IMAGE_QUALITY);
       });
       return new File([blob], "selfie-edited.webp", { type: "image/webp" });
     },

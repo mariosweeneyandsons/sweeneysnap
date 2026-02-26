@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import { CANVAS_SIZE, IMAGE_QUALITY } from "@/lib/defaults";
 
 type FacingMode = "user" | "environment";
 
@@ -31,8 +32,8 @@ export function useCamera(): UseCameraReturn {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: facingModeRef.current,
-          width: { ideal: 1080 },
-          height: { ideal: 1080 },
+          width: { ideal: CANVAS_SIZE },
+          height: { ideal: CANVAS_SIZE },
         },
         audio: false,
       });
@@ -75,8 +76,8 @@ export function useCamera(): UseCameraReturn {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: newMode,
-          width: { ideal: 1080 },
-          height: { ideal: 1080 },
+          width: { ideal: CANVAS_SIZE },
+          height: { ideal: CANVAS_SIZE },
         },
         audio: false,
       });
@@ -117,7 +118,7 @@ export function useCamera(): UseCameraReturn {
     // Reset transform
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    const dataUrl = canvas.toDataURL("image/webp", 0.9);
+    const dataUrl = canvas.toDataURL("image/webp", IMAGE_QUALITY);
     const byteString = atob(dataUrl.split(",")[1]);
     const mimeString = dataUrl.split(",")[0].split(":")[1].split(";")[0];
     const ab = new ArrayBuffer(byteString.length);
