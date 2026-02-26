@@ -23,6 +23,27 @@ export interface DisplayConfig {
   overlayOpacity?: number;
   frameBorderColor?: string;
   frameBorderWidth?: number;
+  // Layout mode
+  layoutMode?: "grid" | "slideshow" | "mosaic";
+  // Background
+  backgroundImageId?: string;
+  backgroundVideoId?: string;
+  animatedBackground?: "none" | "gradient";
+  // Spotlight
+  spotlightEnabled?: boolean;
+  spotlightInterval?: number;
+  spotlightDuration?: number;
+  // Ticker
+  tickerEnabled?: boolean;
+  tickerText?: string;
+  // Countdown
+  countdownEnabled?: boolean;
+  // Social overlay
+  socialOverlay?: string;
+  // Sound
+  newSelfieSound?: "none" | "chime" | "shutter";
+  // Celebration
+  celebrationEffect?: "none" | "confetti" | "ripple" | "glow";
 }
 
 export interface BrandAsset {

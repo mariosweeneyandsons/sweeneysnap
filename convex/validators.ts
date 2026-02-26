@@ -22,6 +22,40 @@ export const displayConfigValidator = v.object({
   overlayOpacity: v.optional(v.number()),
   frameBorderColor: v.optional(v.string()),
   frameBorderWidth: v.optional(v.number()),
+  // Layout mode
+  layoutMode: v.optional(
+    v.union(v.literal("grid"), v.literal("slideshow"), v.literal("mosaic"))
+  ),
+  // Background
+  backgroundImageId: v.optional(v.id("_storage")),
+  backgroundVideoId: v.optional(v.id("_storage")),
+  animatedBackground: v.optional(
+    v.union(v.literal("none"), v.literal("gradient"))
+  ),
+  // Spotlight
+  spotlightEnabled: v.optional(v.boolean()),
+  spotlightInterval: v.optional(v.number()),
+  spotlightDuration: v.optional(v.number()),
+  // Ticker
+  tickerEnabled: v.optional(v.boolean()),
+  tickerText: v.optional(v.string()),
+  // Countdown
+  countdownEnabled: v.optional(v.boolean()),
+  // Social overlay
+  socialOverlay: v.optional(v.string()),
+  // Sound
+  newSelfieSound: v.optional(
+    v.union(v.literal("none"), v.literal("chime"), v.literal("shutter"))
+  ),
+  // Celebration
+  celebrationEffect: v.optional(
+    v.union(
+      v.literal("none"),
+      v.literal("confetti"),
+      v.literal("ripple"),
+      v.literal("glow")
+    )
+  ),
 });
 
 export const brandAssetValidator = v.object({
