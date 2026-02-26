@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/Card";
 import { Preset } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
 import { BrandAssetManager } from "./BrandAssetManager";
+import { PresetPreview } from "./PresetPreview";
 
 interface PresetFormProps {
   preset?: Preset;
@@ -79,7 +80,8 @@ export function PresetForm({ preset }: PresetFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl">
+    <div className="flex gap-6 items-start">
+    <form onSubmit={handleSubmit} className="max-w-2xl flex-1">
       <Card className="flex flex-col gap-5">
         <Input label="Preset Name" value={name} onChange={(e) => setName(e.target.value)} required placeholder="e.g. Corporate Blue" />
         <Input label="Logo URL" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://..." />
@@ -179,5 +181,18 @@ export function PresetForm({ preset }: PresetFormProps) {
         </div>
       </Card>
     </form>
+    <div className="w-80 shrink-0 sticky top-6">
+      <Card>
+        <PresetPreview
+          primaryColor={primaryColor}
+          fontFamily={fontFamily}
+          backgroundColor={backgroundColor}
+          gridColumns={gridColumns}
+          showNames={showNames}
+          logoUrl={logoUrl || undefined}
+        />
+      </Card>
+    </div>
+    </div>
   );
 }

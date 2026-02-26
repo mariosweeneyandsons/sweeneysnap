@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Event } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
+import { PresetPreview } from "./PresetPreview";
 
 interface EventFormProps {
   event?: Event;
@@ -153,6 +154,22 @@ export function EventForm({ event }: EventFormProps) {
                 <option key={p._id} value={p._id} className="bg-gray-900">{p.name}</option>
               ))}
             </select>
+            {(() => {
+              const selectedPreset = presetId ? (presets || []).find((p) => p._id === presetId) : null;
+              if (!selectedPreset) return null;
+              return (
+                <div className="mt-3">
+                  <PresetPreview
+                    primaryColor={selectedPreset.primaryColor}
+                    fontFamily={selectedPreset.fontFamily}
+                    backgroundColor={selectedPreset.displayConfig.backgroundColor || "#000000"}
+                    gridColumns={selectedPreset.displayConfig.gridColumns ?? 3}
+                    showNames={selectedPreset.displayConfig.showNames ?? true}
+                    logoUrl={selectedPreset.logoUrl}
+                  />
+                </div>
+              );
+            })()}
           </div>
         )}
 
