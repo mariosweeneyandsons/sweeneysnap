@@ -101,6 +101,9 @@
   --success-bg: color-mix(in srgb, var(--bp-success-500) 10%, var(--bp-navy-900));
   --warning: var(--bp-warning-500);
   --warning-bg: color-mix(in srgb, var(--bp-warning-500) 10%, var(--bp-navy-900));
+  --destructive-bg: color-mix(in srgb, var(--bp-alert-500) 10%, var(--bp-navy-900));
+  --info: var(--bp-line-500);
+  --info-bg: color-mix(in srgb, var(--bp-line-500) 15%, var(--bp-navy-900));
 
   /* Blueprint-specific */
   --line: var(--bp-line-500);
@@ -159,6 +162,9 @@
   --success-bg: rgba(56, 161, 105, 0.08);
   --warning: #d69e2e;
   --warning-bg: rgba(214, 158, 46, 0.08);
+  --destructive-bg: rgba(229, 62, 62, 0.08);
+  --info: var(--bp-line-500);
+  --info-bg: rgba(74, 122, 181, 0.10);
 
   /* Blueprint-specific */
   --line: var(--bp-line-500);
@@ -213,6 +219,9 @@
   --color-success-bg: var(--success-bg);
   --color-warning: var(--warning);
   --color-warning-bg: var(--warning-bg);
+  --color-destructive-bg: var(--destructive-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
 
   --color-line: var(--line);
   --color-line-muted: var(--line-muted);
