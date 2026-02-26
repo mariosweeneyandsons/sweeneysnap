@@ -9,6 +9,19 @@ import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
 
+/** Enrich a selfie doc with signed URLs for image, thumbnail, and medium. */
+async function enrichWithUrls(
+  ctx: { storage: { getUrl: (id: string) => Promise<string | null> } },
+  selfie: { storageId: string; thumbnailStorageId?: string; mediumStorageId?: string }
+) {
+  const [imageUrl, thumbnailUrl, mediumUrl] = await Promise.all([
+    ctx.storage.getUrl(selfie.storageId),
+    selfie.thumbnailStorageId ? ctx.storage.getUrl(selfie.thumbnailStorageId) : null,
+    selfie.mediumStorageId ? ctx.storage.getUrl(selfie.mediumStorageId) : null,
+  ]);
+  return { ...selfie, imageUrl, thumbnailUrl, mediumUrl };
+}
+
 export const listApprovedByEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
@@ -23,18 +36,7 @@ export const listApprovedByEvent = query({
       .order("desc")
       .collect();
 
-    return Promise.all(
-      selfies.map(async (selfie) => ({
-        ...selfie,
-        imageUrl: await ctx.storage.getUrl(selfie.storageId),
-        thumbnailUrl: selfie.thumbnailStorageId
-          ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
-          : null,
-        mediumUrl: selfie.mediumStorageId
-          ? await ctx.storage.getUrl(selfie.mediumStorageId)
-          : null,
-      }))
-    );
+    return Promise.all(selfies.map((selfie) => enrichWithUrls(ctx, selfie)));
   },
 });
 
@@ -69,18 +71,7 @@ export const listByEvent = query({
         .collect();
     }
 
-    return Promise.all(
-      selfies.map(async (selfie) => ({
-        ...selfie,
-        imageUrl: await ctx.storage.getUrl(selfie.storageId),
-        thumbnailUrl: selfie.thumbnailStorageId
-          ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
-          : null,
-        mediumUrl: selfie.mediumStorageId
-          ? await ctx.storage.getUrl(selfie.mediumStorageId)
-          : null,
-      }))
-    );
+    return Promise.all(selfies.map((selfie) => enrichWithUrls(ctx, selfie)));
   },
 });
 
@@ -545,18 +536,7 @@ export const listApprovedByEventPaginated = query({
 
     return {
       ...result,
-      page: await Promise.all(
-        result.page.map(async (selfie) => ({
-          ...selfie,
-          imageUrl: await ctx.storage.getUrl(selfie.storageId),
-          thumbnailUrl: selfie.thumbnailStorageId
-            ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
-            : null,
-          mediumUrl: selfie.mediumStorageId
-            ? await ctx.storage.getUrl(selfie.mediumStorageId)
-            : null,
-        }))
-      ),
+      page: await Promise.all(result.page.map((selfie) => enrichWithUrls(ctx, selfie))),
     };
   },
 });
@@ -574,17 +554,11 @@ export const listApprovedByMultipleEvents = query({
         )
         .order("desc")
         .collect();
+      const event = await ctx.db.get(eventId);
       for (const selfie of selfies) {
-        const event = await ctx.db.get(eventId);
+        const enriched = await enrichWithUrls(ctx, selfie);
         allSelfies.push({
-          ...selfie,
-          imageUrl: await ctx.storage.getUrl(selfie.storageId),
-          thumbnailUrl: selfie.thumbnailStorageId
-            ? await ctx.storage.getUrl(selfie.thumbnailStorageId)
-            : null,
-          mediumUrl: selfie.mediumStorageId
-            ? await ctx.storage.getUrl(selfie.mediumStorageId)
-            : null,
+          ...enriched,
           eventName: event?.name,
           eventSlug: event?.slug,
         });
