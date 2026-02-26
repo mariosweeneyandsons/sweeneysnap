@@ -14,10 +14,10 @@ function getScheduleBadge(event: { startsAt?: number; endsAt?: number; isActive:
   if (!event.startsAt && !event.endsAt) return null;
   const now = Date.now();
   if (event.startsAt && now < event.startsAt)
-    return { label: "Scheduled", color: "bg-blue-500/20 text-blue-400" };
+    return { label: "Scheduled", color: "bg-info-bg text-info" };
   if (event.endsAt && now > event.endsAt)
     return { label: "Ended", color: "bg-secondary text-foreground-muted" };
-  return { label: "Live", color: "bg-green-500/20 text-green-400" };
+  return { label: "Live", color: "bg-success-bg text-success" };
 }
 
 export default function AdminDashboard() {

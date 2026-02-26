@@ -839,6 +839,11 @@ export default function EventDetailPage() {
           <SaveButton onClick={handleSave} loading={saving} />
         </div>
 
+        {/* Webhooks */}
+        <div className="mt-12 border-t border-border-separator pt-6">
+          <WebhookManager eventId={eventId} />
+        </div>
+
         {/* Danger zone */}
         <div className="mt-12 border-t border-border-separator pt-6">
           <button

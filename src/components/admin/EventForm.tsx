@@ -19,9 +19,9 @@ interface EventFormProps {
 function getScheduleStatus(startsAt?: number, endsAt?: number): { label: string; color: string } | null {
   if (!startsAt && !endsAt) return null;
   const now = Date.now();
-  if (startsAt && now < startsAt) return { label: "Upcoming", color: "bg-blue-500/20 text-blue-400" };
+  if (startsAt && now < startsAt) return { label: "Upcoming", color: "bg-info-bg text-info" };
   if (endsAt && now > endsAt) return { label: "Ended", color: "bg-secondary text-foreground-muted" };
-  return { label: "Live", color: "bg-green-500/20 text-green-400" };
+  return { label: "Live", color: "bg-success-bg text-success" };
 }
 
 export function EventForm({ event }: EventFormProps) {
@@ -227,7 +227,7 @@ export function EventForm({ event }: EventFormProps) {
               </div>
             </div>
           </div>
-          {dateError && <p className="text-red-400 text-xs mt-1">{dateError}</p>}
+          {dateError && <p className="text-destructive text-xs mt-1">{dateError}</p>}
           {(startsAt || endsAt) && (
             <p className="text-foreground-faint text-xs mt-2">
               Events with dates are automatically activated/deactivated by the scheduler.
@@ -252,7 +252,7 @@ export function EventForm({ event }: EventFormProps) {
           )}
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-destructive text-sm">{error}</p>}
 
         <div className="flex gap-3 justify-end">
           <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>

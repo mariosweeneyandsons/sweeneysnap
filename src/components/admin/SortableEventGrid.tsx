@@ -73,13 +73,13 @@ function SortableEventCard({
   return (
     <div ref={setNodeRef} style={style}>
       <Card
-        className={`hover:bg-white/10 transition-colors ${
+        className={`hover:bg-secondary transition-colors ${
           event.archived ? "opacity-50" : ""
         }`}
       >
         <div className="flex items-start gap-2">
           <button
-            className="mt-1 cursor-grab active:cursor-grabbing text-white/30 hover:text-white/60 touch-none"
+            className="mt-1 cursor-grab active:cursor-grabbing text-foreground-faint hover:text-foreground-muted touch-none"
             {...attributes}
             {...listeners}
           >
@@ -92,11 +92,11 @@ function SortableEventCard({
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-lg">{event.name}</h3>
-                <p className="text-white/50 text-sm font-mono">/{event.slug}</p>
+                <p className="text-foreground-faint text-sm font-mono">/{event.slug}</p>
               </div>
               <div className="flex items-center gap-2">
                 {event.archived && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/10 text-white/50">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-foreground-faint">
                     Archived
                   </span>
                 )}
@@ -108,8 +108,8 @@ function SortableEventCard({
                 <span
                   className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                     event.isActive
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-white/10 text-white/50"
+                      ? "bg-success-bg text-success"
+                      : "bg-secondary text-foreground-faint"
                   }`}
                 >
                   {event.isActive ? "Active" : "Inactive"}
@@ -117,7 +117,7 @@ function SortableEventCard({
               </div>
             </div>
 
-            <div className="flex items-center gap-4 text-sm text-white/50">
+            <div className="flex items-center gap-4 text-sm text-foreground-faint">
               {event.startsAt && (
                 <span>{new Date(event.startsAt).toLocaleDateString()}</span>
               )}
@@ -125,10 +125,10 @@ function SortableEventCard({
                 <div className="flex items-center gap-2 text-xs">
                   <span>{counts.total} selfies</span>
                   {counts.approved > 0 && (
-                    <span className="text-green-400">{counts.approved} approved</span>
+                    <span className="text-success">{counts.approved} approved</span>
                   )}
                   {counts.pending > 0 && (
-                    <span className="text-yellow-400">{counts.pending} pending</span>
+                    <span className="text-warning">{counts.pending} pending</span>
                   )}
                 </div>
               )}
