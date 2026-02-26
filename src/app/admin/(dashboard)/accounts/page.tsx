@@ -115,7 +115,7 @@ export default function AccountsPage() {
         <h2 className="text-xl font-bold mb-6">Active Sessions</h2>
 
         {sessionsData?.unlinkedCount ? (
-          <div className="bg-warning-bg border border-warning/30 rounded-lg px-4 py-3 mb-6">
+          <div className="bg-warning-bg border border-warning/30 rounded-xs px-4 py-3 mb-6">
             <p className="text-warning text-sm">
               {sessionsData.unlinkedCount} admin profile
               {sessionsData.unlinkedCount > 1 ? "s are" : " is"} not linked to a
@@ -157,12 +157,12 @@ export default function AccountsPage() {
                 {userSessions.map((session) => (
                   <div
                     key={session.sessionId}
-                    className="flex items-center justify-between rounded-lg border border-border bg-input-bg px-4 py-3"
+                    className="flex items-center justify-between rounded-xs border border-border bg-input-bg px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       {session.isCurrentSession && (
-                        <span className="flex items-center gap-1.5 text-xs text-emerald-400">
-                          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="flex items-center gap-1.5 text-xs text-success">
+                          <span className="inline-block w-2 h-2 rounded-full bg-success" />
                           (you)
                         </span>
                       )}
@@ -245,7 +245,7 @@ export default function AccountsPage() {
       >
         <div className="flex flex-col gap-4">
           {confirmTarget?.type === "session" && confirmTarget.isCurrentSession && (
-            <div className="bg-destructive-bg border border-destructive/30 rounded-lg px-4 py-3">
+            <div className="bg-destructive-bg border border-destructive/30 rounded-xs px-4 py-3">
               <p className="text-destructive text-sm font-medium">
                 This is your current session. You will be logged out immediately.
               </p>

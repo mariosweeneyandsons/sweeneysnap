@@ -217,7 +217,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-card-bg border border-card-border rounded-xs p-6 ${className}`}>
+    <div className={`bg-surface border border-card-border rounded-xs p-6 ${className}`}>
       {children}
     </div>
   );
