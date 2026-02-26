@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { ShareButtons } from "./ShareButtons";
 
 interface UploadSuccessProps {
   successText?: string;
@@ -11,6 +12,12 @@ interface UploadSuccessProps {
   multiPhotoEnabled?: boolean;
   limitReached?: boolean;
   primaryColor?: string;
+  selfieId?: string;
+  imageUrl?: string;
+  shareEnabled?: boolean;
+  shareText?: string;
+  shareHashtag?: string;
+  eventName?: string;
 }
 
 export function UploadSuccess({
@@ -22,6 +29,12 @@ export function UploadSuccess({
   multiPhotoEnabled = true,
   limitReached = false,
   primaryColor,
+  selfieId,
+  imageUrl,
+  shareEnabled,
+  shareText,
+  shareHashtag,
+  eventName,
 }: UploadSuccessProps) {
   return (
     <div className="flex flex-col items-center gap-6 py-12 text-center">
@@ -52,6 +65,17 @@ export function UploadSuccess({
           ? "Your selfie will appear once it's been approved."
           : "Look for it on the big screen."}
       </p>
+
+      {shareEnabled && selfieId && imageUrl && eventName && (
+        <ShareButtons
+          selfieId={selfieId}
+          imageUrl={imageUrl}
+          shareText={shareText}
+          shareHashtag={shareHashtag}
+          eventName={eventName}
+        />
+      )}
+
       {limitReached ? (
         <p className="text-sm font-medium" style={{ opacity: 0.6 }}>
           You&apos;ve reached the upload limit. Thanks for participating!

@@ -20,7 +20,7 @@ interface UploadFormProps {
 export function UploadForm({ event }: UploadFormProps) {
   const config = event.uploadConfig;
   const { enqueueUpload } = useOfflineQueue();
-  const { state, progress, error, uploadCount, limitReached, upload, reset } =
+  const { state, progress, error, uploadCount, limitReached, selfieId, upload, reset } =
     useImageUpload({
       maxFileSizeMb: config.maxFileSizeMb,
       onOfflineQueue: enqueueUpload,
@@ -113,6 +113,7 @@ export function UploadForm({ event }: UploadFormProps) {
   }
 
   if (screen === "success" || state === "done") {
+    const editedPreviewUrl = editedFile ? URL.createObjectURL(editedFile) : preview;
     return (
       <UploadSuccess
         successText={config.successText}
@@ -123,6 +124,12 @@ export function UploadForm({ event }: UploadFormProps) {
         multiPhotoEnabled={multiPhotoEnabled}
         limitReached={limitReached}
         primaryColor={event.primaryColor}
+        selfieId={selfieId ?? undefined}
+        imageUrl={editedPreviewUrl ?? undefined}
+        shareEnabled={config.shareEnabled}
+        shareText={config.shareText}
+        shareHashtag={config.shareHashtag}
+        eventName={event.name}
       />
     );
   }
