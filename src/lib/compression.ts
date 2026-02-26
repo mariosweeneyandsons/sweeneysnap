@@ -1,14 +1,16 @@
 import imageCompression from "browser-image-compression";
 
-const COMPRESSION_OPTIONS = {
-  maxSizeMB: 0.2, // 200KB target
-  maxWidthOrHeight: 1080,
-  useWebWorker: true,
-  fileType: "image/webp" as const,
-};
+interface CompressOptions {
+  maxSizeMB?: number;
+}
 
-export async function compressImage(file: File): Promise<File> {
-  const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+export async function compressImage(file: File, options?: CompressOptions): Promise<File> {
+  const compressed = await imageCompression(file, {
+    maxSizeMB: options?.maxSizeMB ?? 0.2,
+    maxWidthOrHeight: 1080,
+    useWebWorker: true,
+    fileType: "image/webp" as const,
+  });
   return compressed;
 }
 

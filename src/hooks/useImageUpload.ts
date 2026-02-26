@@ -4,24 +4,34 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { compressImage } from "@/lib/compression";
+import { getSessionId } from "@/lib/session";
 import { Id } from "../../convex/_generated/dataModel";
 
 type UploadState = "idle" | "compressing" | "uploading" | "saving" | "done" | "error";
+
+interface UseImageUploadOptions {
+  maxFileSizeMb?: number;
+}
 
 interface UseImageUploadReturn {
   state: UploadState;
   progress: string;
   error: string | null;
+  uploadCount: number;
+  limitReached: boolean;
   upload: (file: File, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
   reset: () => void;
+  setLimitReached: (v: boolean) => void;
 }
 
-export function useImageUpload(): UseImageUploadReturn {
+export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadReturn {
   const [state, setState] = useState<UploadState>("idle");
   const [progress, setProgress] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [uploadCount, setUploadCount] = useState(0);
+  const [limitReached, setLimitReached] = useState(false);
 
-  const generateUploadUrl = useMutation(api.selfies.generateUploadUrl);
+  const generateUploadUrlForEvent = useMutation(api.selfies.generateUploadUrlForEvent);
   const createSelfie = useMutation(api.selfies.create);
 
   const upload = async (
@@ -37,12 +47,29 @@ export function useImageUpload(): UseImageUploadReturn {
       // Compress
       setState("compressing");
       setProgress("Compressing image...");
-      const compressed = await compressImage(file);
+      const compressed = await compressImage(file, {
+        maxSizeMB: options?.maxFileSizeMb ?? 0.2,
+      });
 
-      // Upload to Convex storage
+      // Upload to Convex storage (rate-limited)
       setState("uploading");
       setProgress("Uploading...");
-      const uploadUrl = await generateUploadUrl();
+      const sessionId = getSessionId();
+
+      let uploadUrl: string;
+      try {
+        uploadUrl = await generateUploadUrlForEvent({
+          eventId: eventId as Id<"events">,
+          sessionId,
+        });
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Upload limit reached")) {
+          setLimitReached(true);
+          throw err;
+        }
+        throw err;
+      }
+
       const result = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": compressed.type },
@@ -55,16 +82,6 @@ export function useImageUpload(): UseImageUploadReturn {
       setState("saving");
       setProgress("Saving...");
 
-      const sessionId =
-        typeof window !== "undefined"
-          ? (sessionStorage.getItem("selfie_session_id") ??
-            (() => {
-              const id = crypto.randomUUID();
-              sessionStorage.setItem("selfie_session_id", id);
-              return id;
-            })())
-          : undefined;
-
       await createSelfie({
         eventId: eventId as Id<"events">,
         storageId,
@@ -75,6 +92,7 @@ export function useImageUpload(): UseImageUploadReturn {
         sessionId,
       });
 
+      setUploadCount((c) => c + 1);
       setState("done");
       setProgress("Done!");
     } catch (err) {
@@ -89,5 +107,5 @@ export function useImageUpload(): UseImageUploadReturn {
     setError(null);
   };
 
-  return { state, progress, error, upload, reset };
+  return { state, progress, error, uploadCount, limitReached, upload, reset, setLimitReached };
 }
