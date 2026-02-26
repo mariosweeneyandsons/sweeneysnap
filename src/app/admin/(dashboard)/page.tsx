@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const events = useQuery(api.events.list, { includeArchived: showArchived });
 
   const eventIds = useMemo(
-    () => (events || []).map((e) => e._id as Id<"events">"),
+    () => (events || []).map((e) => e._id as Id<"events">),
     [events]
   );
 
