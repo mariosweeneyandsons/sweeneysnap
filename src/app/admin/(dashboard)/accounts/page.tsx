@@ -99,10 +99,10 @@ export default function AccountsPage() {
           <Card key={profile._id} className="flex items-center justify-between">
             <div>
               <p className="font-medium">{profile.displayName}</p>
-              <p className="text-white/50 text-sm">{profile.email}</p>
-              <p className="text-white/50 text-sm">{profile.role}</p>
+              <p className="text-foreground-muted text-sm">{profile.email}</p>
+              <p className="text-foreground-muted text-sm">{profile.role}</p>
             </div>
-            <p className="text-white/30 text-sm">
+            <p className="text-foreground-faint text-sm">
               {new Date(profile._creationTime).toLocaleDateString()}
             </p>
           </Card>
@@ -124,7 +124,7 @@ export default function AccountsPage() {
         ) : null}
 
         {sessionsData?.sessions.length === 0 && (
-          <p className="text-white/40 text-sm">No active sessions.</p>
+          <p className="text-foreground-faint text-sm">No active sessions.</p>
         )}
 
         <div className="grid gap-4">
@@ -133,7 +133,7 @@ export default function AccountsPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="font-medium">{userSessions[0].displayName}</p>
-                  <p className="text-white/50 text-sm">{userSessions[0].email}</p>
+                  <p className="text-foreground-muted text-sm">{userSessions[0].email}</p>
                 </div>
                 {userSessions.length > 1 && (
                   <Button
@@ -156,7 +156,7 @@ export default function AccountsPage() {
                 {userSessions.map((session) => (
                   <div
                     key={session.sessionId}
-                    className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3"
+                    className="flex items-center justify-between rounded-lg border border-border bg-input-bg px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       {session.isCurrentSession && (
@@ -165,7 +165,7 @@ export default function AccountsPage() {
                           (you)
                         </span>
                       )}
-                      <div className="text-sm text-white/40">
+                      <div className="text-sm text-foreground-faint">
                         <span>
                           Created{" "}
                           {new Date(session.createdAt).toLocaleDateString(
@@ -250,7 +250,7 @@ export default function AccountsPage() {
               </p>
             </div>
           )}
-          <p className="text-white/70">
+          <p className="text-foreground-muted">
             {confirmTarget?.type === "allUserSessions"
               ? `Remove all sessions for ${confirmTarget.label}? They will need to sign in again.`
               : `Force logout ${confirmTarget?.label}? Their session will be terminated immediately.`}

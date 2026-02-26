@@ -15,7 +15,7 @@ export default function AdminModeratePage() {
     return <ModerationGridSkeleton />;
   }
   if (!event) {
-    return <div className="text-center py-12 text-white/50">Event not found</div>;
+    return <div className="text-center py-12 text-foreground-muted">Event not found</div>;
   }
 
   return (

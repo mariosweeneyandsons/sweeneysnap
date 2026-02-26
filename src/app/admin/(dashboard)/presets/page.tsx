@@ -16,7 +16,7 @@ export default function PresetsPage() {
         <h1 className="text-2xl font-bold">Presets</h1>
         <Link
           href="/admin/presets/new"
-          className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+          className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-lg font-medium hover:bg-surface-hover transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -29,8 +29,8 @@ export default function PresetsPage() {
         <EventsListSkeleton />
       ) : presets.length === 0 ? (
         <Card className="text-center py-12">
-          <p className="text-white/50 mb-4">No presets yet</p>
-          <Link href="/admin/presets/new" className="text-white underline hover:no-underline">
+          <p className="text-foreground-muted mb-4">No presets yet</p>
+          <Link href="/admin/presets/new" className="text-foreground underline hover:no-underline">
             Create your first preset
           </Link>
         </Card>
@@ -41,12 +41,12 @@ export default function PresetsPage() {
               <Link href={`/admin/presets/${preset._id}`} className="block">
                 <div className="flex items-center gap-3 mb-3">
                   <div
-                    className="w-8 h-8 rounded-full border-2 border-white/20"
+                    className="w-8 h-8 rounded-full border-2 border-border"
                     style={{ backgroundColor: preset.primaryColor }}
                   />
                   <h3 className="font-semibold text-lg">{preset.name}</h3>
                 </div>
-                <p className="text-white/50 text-sm">
+                <p className="text-foreground-muted text-sm">
                   {preset.fontFamily} &middot; {preset.displayConfig.gridColumns || 3}x grid
                 </p>
               </Link>

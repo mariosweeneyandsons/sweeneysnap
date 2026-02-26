@@ -20,7 +20,7 @@ function getScheduleStatus(startsAt?: number, endsAt?: number): { label: string;
   if (!startsAt && !endsAt) return null;
   const now = Date.now();
   if (startsAt && now < startsAt) return { label: "Upcoming", color: "bg-blue-500/20 text-blue-400" };
-  if (endsAt && now > endsAt) return { label: "Ended", color: "bg-white/10 text-white/50" };
+  if (endsAt && now > endsAt) return { label: "Ended", color: "bg-secondary text-foreground-muted" };
   return { label: "Live", color: "bg-green-500/20 text-green-400" };
 }
 
@@ -143,15 +143,15 @@ export function EventForm({ event }: EventFormProps) {
 
         {!event && (presets || []).length > 0 && (
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Start from Preset</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Start from Preset</label>
             <select
               value={presetId}
               onChange={(e) => setPresetId(e.target.value)}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
             >
-              <option value="" className="bg-gray-900">No preset (defaults)</option>
+              <option value="" className="bg-surface">No preset (defaults)</option>
               {(presets || []).map((p) => (
-                <option key={p._id} value={p._id} className="bg-gray-900">{p.name}</option>
+                <option key={p._id} value={p._id} className="bg-surface">{p.name}</option>
               ))}
             </select>
             {(() => {
@@ -175,8 +175,8 @@ export function EventForm({ event }: EventFormProps) {
 
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-sm font-medium text-white/70">Schedule</span>
-            <span className="text-xs text-white/40">Times in {timezone}</span>
+            <span className="text-sm font-medium text-foreground-muted">Schedule</span>
+            <span className="text-xs text-foreground-faint">Times in {timezone}</span>
             {scheduleStatus && (
               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${scheduleStatus.color}`}>
                 {scheduleStatus.label}
@@ -185,19 +185,19 @@ export function EventForm({ event }: EventFormProps) {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-1">Starts At</label>
+              <label className="block text-sm font-medium text-foreground-muted mb-1">Starts At</label>
               <div className="relative">
                 <input
                   type="datetime-local"
                   value={startsAt}
                   onChange={(e) => setStartsAt(e.target.value)}
-                  className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white pr-8"
+                  className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
                 />
                 {startsAt && (
                   <button
                     type="button"
                     onClick={() => setStartsAt("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground-faint hover:text-foreground-muted text-sm"
                   >
                     &times;
                   </button>
@@ -205,19 +205,19 @@ export function EventForm({ event }: EventFormProps) {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-1">Ends At</label>
+              <label className="block text-sm font-medium text-foreground-muted mb-1">Ends At</label>
               <div className="relative">
                 <input
                   type="datetime-local"
                   value={endsAt}
                   onChange={(e) => setEndsAt(e.target.value)}
-                  className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white pr-8"
+                  className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground pr-8"
                 />
                 {endsAt && (
                   <button
                     type="button"
                     onClick={() => setEndsAt("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground-faint hover:text-foreground-muted text-sm"
                   >
                     &times;
                   </button>
@@ -227,7 +227,7 @@ export function EventForm({ event }: EventFormProps) {
           </div>
           {dateError && <p className="text-red-400 text-xs mt-1">{dateError}</p>}
           {(startsAt || endsAt) && (
-            <p className="text-white/30 text-xs mt-2">
+            <p className="text-foreground-faint text-xs mt-2">
               Events with dates are automatically activated/deactivated by the scheduler.
             </p>
           )}
@@ -236,16 +236,16 @@ export function EventForm({ event }: EventFormProps) {
         <div className="flex flex-col gap-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Event is active</span>
+            <span className="text-sm text-foreground-muted">Event is active</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={moderationEnabled} onChange={(e) => setModerationEnabled(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Enable moderation (selfies need approval)</span>
+            <span className="text-sm text-foreground-muted">Enable moderation (selfies need approval)</span>
           </label>
           {moderationEnabled && (
             <label className="flex items-center gap-2 cursor-pointer ml-6">
               <input type="checkbox" checked={aiModerationEnabled} onChange={(e) => setAiModerationEnabled(e.target.checked)} className="rounded" />
-              <span className="text-sm text-white/70">Enable AI content moderation</span>
+              <span className="text-sm text-foreground-muted">Enable AI content moderation</span>
             </label>
           )}
         </div>

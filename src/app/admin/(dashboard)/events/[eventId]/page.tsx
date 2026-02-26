@@ -36,7 +36,7 @@ export default function EventDetailPage() {
     return <EventDetailSkeleton />;
   }
   if (!event) {
-    return <div className="text-center py-12 text-white/50">Event not found</div>;
+    return <div className="text-center py-12 text-foreground-muted">Event not found</div>;
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -95,41 +95,41 @@ export default function EventDetailPage() {
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold">{event.name}</h1>
             {event.archived && (
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/10 text-white/50">
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-foreground-muted">
                 Archived
               </span>
             )}
           </div>
-          <p className="text-white/50">/{event.slug}</p>
+          <p className="text-foreground-muted">/{event.slug}</p>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/admin/events/${event._id}/analytics`}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors"
           >
             Analytics
           </Link>
           <Link
             href={`/admin/events/${event._id}/moderate`}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors"
           >
             Moderate ({selfieCount ?? 0})
           </Link>
           <Link
             href={`/admin/events/${event._id}/branding`}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors"
           >
             Branding
           </Link>
           <Link
             href={`/admin/events/${event._id}/upload-settings`}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors"
           >
             Upload Settings
           </Link>
           <Link
             href={`/admin/events/${event._id}/display-settings`}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors"
           >
             Display Settings
           </Link>
@@ -149,9 +149,9 @@ export default function EventDetailPage() {
         </Card>
         <Card>
           <h3 className="font-semibold mb-3">Display Wall</h3>
-          <p className="text-white/50 text-sm mb-3">Open this on the big screen</p>
+          <p className="text-foreground-muted text-sm mb-3">Open this on the big screen</p>
           <div className="flex items-center gap-2">
-            <code className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded flex-1 truncate">{displayUrl}</code>
+            <code className="text-xs text-foreground-muted bg-input-bg px-2 py-1 rounded flex-1 truncate">{displayUrl}</code>
             <CopyButton text={displayUrl} />
           </div>
           <a href={displayUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-400 hover:underline mt-2 inline-block">
@@ -160,9 +160,9 @@ export default function EventDetailPage() {
         </Card>
         <Card>
           <h3 className="font-semibold mb-3">Crew Console</h3>
-          <p className="text-white/50 text-sm mb-3">Share with your AV crew (secret link)</p>
+          <p className="text-foreground-muted text-sm mb-3">Share with your AV crew (secret link)</p>
           <div className="flex items-center gap-2">
-            <code className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded flex-1 truncate">{crewUrl}</code>
+            <code className="text-xs text-foreground-muted bg-input-bg px-2 py-1 rounded flex-1 truncate">{crewUrl}</code>
             <CopyButton text={crewUrl} />
           </div>
         </Card>
@@ -179,7 +179,7 @@ export default function EventDetailPage() {
 
       <Card className="border-red-500/30">
         <h3 className="text-red-400 font-semibold mb-3">Danger Zone</h3>
-        <p className="text-white/50 text-sm mb-4">
+        <p className="text-foreground-muted text-sm mb-4">
           Permanently delete all selfies for this event. This action cannot be undone.
         </p>
         <Button

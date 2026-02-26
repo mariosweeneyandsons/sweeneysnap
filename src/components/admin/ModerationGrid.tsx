@@ -131,16 +131,16 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
             }}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
               filter === tab.value
-                ? "bg-white text-black"
-                : "bg-white/10 text-white/60 hover:text-white"
+                ? "bg-foreground text-background"
+                : "bg-secondary text-foreground-muted hover:text-foreground"
             }`}
           >
             {tab.label}
             <span
               className={`text-xs px-1.5 py-0.5 rounded-full ${
                 filter === tab.value
-                  ? "bg-black/10 text-black/70"
-                  : "bg-white/10 text-white/40"
+                  ? "bg-secondary text-foreground-muted"
+                  : "bg-secondary text-foreground-faint"
               }`}
             >
               {tab.count}
@@ -150,7 +150,7 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
 
         {/* Select All checkbox */}
         {selfies && selfies.length > 0 && (
-          <label className="ml-auto flex items-center gap-2 cursor-pointer text-sm text-white/50 hover:text-white/70">
+          <label className="ml-auto flex items-center gap-2 cursor-pointer text-sm text-foreground-muted hover:text-foreground-muted">
             <input
               type="checkbox"
               checked={
@@ -167,16 +167,16 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
       {!selfies ? (
         <ModerationGridSkeleton />
       ) : selfies.length === 0 ? (
-        <div className="text-center py-12 text-white/50">No selfies found</div>
+        <div className="text-center py-12 text-foreground-muted">No selfies found</div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {selfies.map((selfie) => (
             <div
               key={selfie._id}
-              className={`rounded-xl border overflow-hidden bg-white/5 transition-colors ${
+              className={`rounded-xl border overflow-hidden bg-input-bg transition-colors ${
                 selectedIds.has(selfie._id)
                   ? "border-blue-500 ring-1 ring-blue-500/50"
-                  : "border-white/10"
+                  : "border-border"
               }`}
             >
               <div className="relative">
@@ -193,7 +193,7 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
                 {/* AI Flagged badge */}
                 {selfie.aiModeration?.flagged && (
                   <span
-                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-500/90 text-white"
+                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-500/90 text-foreground"
                     title={`AI flagged: ${selfie.aiModeration.categories.join(", ")} (${Math.round(selfie.aiModeration.confidence * 100)}% confidence)`}
                   >
                     AI Flagged
@@ -267,8 +267,8 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
 
       {/* Floating bulk action bar */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900 border border-white/20 rounded-xl px-5 py-3 flex items-center gap-4 shadow-2xl">
-          <span className="text-sm text-white/70 font-medium">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xl px-5 py-3 flex items-center gap-4 shadow-2xl">
+          <span className="text-sm text-foreground-muted font-medium">
             {selectedIds.size} selected
           </span>
           <Button
@@ -287,7 +287,7 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
           </Button>
           <button
             onClick={() => setSelectedIds(new Set())}
-            className="text-sm text-white/50 hover:text-white/80"
+            className="text-sm text-foreground-muted hover:text-foreground"
           >
             Clear
           </button>

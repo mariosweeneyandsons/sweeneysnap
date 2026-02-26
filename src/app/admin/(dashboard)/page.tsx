@@ -16,7 +16,7 @@ function getScheduleBadge(event: { startsAt?: number; endsAt?: number; isActive:
   if (event.startsAt && now < event.startsAt)
     return { label: "Scheduled", color: "bg-blue-500/20 text-blue-400" };
   if (event.endsAt && now > event.endsAt)
-    return { label: "Ended", color: "bg-white/10 text-white/50" };
+    return { label: "Ended", color: "bg-secondary text-foreground-muted" };
   return { label: "Live", color: "bg-green-500/20 text-green-400" };
 }
 
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
           </Button>
           <Link
             href="/admin/events/new"
-            className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-lg font-medium hover:bg-surface-hover transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -62,8 +62,8 @@ export default function AdminDashboard() {
         <EventsListSkeleton />
       ) : events.length === 0 ? (
         <Card className="text-center py-12">
-          <p className="text-white/50 mb-4">No events yet</p>
-          <Link href="/admin/events/new" className="text-white underline hover:no-underline">
+          <p className="text-foreground-muted mb-4">No events yet</p>
+          <Link href="/admin/events/new" className="text-foreground underline hover:no-underline">
             Create your first event
           </Link>
         </Card>

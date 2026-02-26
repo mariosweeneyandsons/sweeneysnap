@@ -16,10 +16,10 @@ interface DisplaySettingsFormProps {
   onConfigChange?: (config: DisplayConfig) => void;
 }
 
-const selectClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
-const inputClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
-const labelClass = "block text-sm font-medium text-white/70 mb-1";
-const sectionClass = "border-t border-white/10 pt-4";
+const selectClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
+const inputClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
+const labelClass = "block text-sm font-medium text-foreground-muted mb-1";
+const sectionClass = "border-t border-border pt-4";
 
 export function DisplaySettingsForm({ event, backHref, onConfigChange }: DisplaySettingsFormProps) {
   const router = useRouter();
@@ -113,9 +113,9 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
             onChange={(e) => setLayoutMode(e.target.value as "grid" | "slideshow" | "mosaic")}
             className={selectClass}
           >
-            <option value="grid" className="bg-gray-900">Grid</option>
-            <option value="slideshow" className="bg-gray-900">Slideshow</option>
-            <option value="mosaic" className="bg-gray-900">Mosaic</option>
+            <option value="grid" className="bg-surface">Grid</option>
+            <option value="slideshow" className="bg-surface">Slideshow</option>
+            <option value="mosaic" className="bg-surface">Mosaic</option>
           </select>
         </div>
 
@@ -129,7 +129,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
               className={selectClass}
             >
               {[2, 3, 4, 5].map((n) => (
-                <option key={n} value={n} className="bg-gray-900">{n}x{n} ({n * n} frames)</option>
+                <option key={n} value={n} className="bg-surface">{n}x{n} ({n * n} frames)</option>
               ))}
             </select>
           </div>
@@ -154,21 +154,21 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
             onChange={(e) => setTransition(e.target.value as "fade" | "slide" | "zoom")}
             className={selectClass}
           >
-            <option value="fade" className="bg-gray-900">Fade</option>
-            <option value="slide" className="bg-gray-900">Slide</option>
-            <option value="zoom" className="bg-gray-900">Zoom</option>
+            <option value="fade" className="bg-surface">Fade</option>
+            <option value="slide" className="bg-surface">Slide</option>
+            <option value="zoom" className="bg-surface">Zoom</option>
           </select>
         </div>
 
         {/* Background */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Background</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Background</h3>
           <div className="flex flex-col gap-3">
             <div>
               <label className={labelClass}>Background Color</label>
               <div className="flex items-center gap-2">
                 <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0" />
-                <span className="text-white/50 font-mono text-sm">{backgroundColor}</span>
+                <span className="text-foreground-muted font-mono text-sm">{backgroundColor}</span>
               </div>
             </div>
             <div>
@@ -178,8 +178,8 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
                 onChange={(e) => setAnimatedBackground(e.target.value as "none" | "gradient")}
                 className={selectClass}
               >
-                <option value="none" className="bg-gray-900">None</option>
-                <option value="gradient" className="bg-gray-900">Animated Gradient</option>
+                <option value="none" className="bg-surface">None</option>
+                <option value="gradient" className="bg-surface">Animated Gradient</option>
               </select>
             </div>
           </div>
@@ -187,25 +187,25 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
 
         {/* Display Options */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Display Options</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Display Options</h3>
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
-              <span className="text-sm text-white/70">Show names on display</span>
+              <span className="text-sm text-foreground-muted">Show names on display</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={showMessages} onChange={(e) => setShowMessages(e.target.checked)} className="rounded" />
-              <span className="text-sm text-white/70">Show messages on display</span>
+              <span className="text-sm text-foreground-muted">Show messages on display</span>
             </label>
           </div>
         </div>
 
         {/* Spotlight */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Spotlight</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Spotlight</h3>
           <label className="flex items-center gap-2 cursor-pointer mb-3">
             <input type="checkbox" checked={spotlightEnabled} onChange={(e) => setSpotlightEnabled(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Enable spotlight mode</span>
+            <span className="text-sm text-foreground-muted">Enable spotlight mode</span>
           </label>
           {spotlightEnabled && (
             <div className="grid grid-cols-2 gap-4">
@@ -237,10 +237,10 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
 
         {/* Ticker */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Ticker Bar</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Ticker Bar</h3>
           <label className="flex items-center gap-2 cursor-pointer mb-3">
             <input type="checkbox" checked={tickerEnabled} onChange={(e) => setTickerEnabled(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Enable scrolling ticker</span>
+            <span className="text-sm text-foreground-muted">Enable scrolling ticker</span>
           </label>
           {tickerEnabled && (
             <div>
@@ -258,16 +258,16 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
 
         {/* Countdown */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Countdown</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Countdown</h3>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={countdownEnabled} onChange={(e) => setCountdownEnabled(e.target.checked)} className="rounded" />
-            <span className="text-sm text-white/70">Show countdown timer (uses event start/end dates)</span>
+            <span className="text-sm text-foreground-muted">Show countdown timer (uses event start/end dates)</span>
           </label>
         </div>
 
         {/* Social Overlay */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Social Overlay</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Social Overlay</h3>
           <div>
             <label className={labelClass}>Hashtag / Handle</label>
             <input
@@ -282,7 +282,7 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
 
         {/* Sound & Effects */}
         <div className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/90 mb-3 uppercase tracking-wider">Sound & Effects</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Sound & Effects</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>New Selfie Sound</label>
@@ -291,9 +291,9 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
                 onChange={(e) => setNewSelfieSound(e.target.value as "none" | "chime" | "shutter")}
                 className={selectClass}
               >
-                <option value="none" className="bg-gray-900">None</option>
-                <option value="chime" className="bg-gray-900">Chime</option>
-                <option value="shutter" className="bg-gray-900">Shutter</option>
+                <option value="none" className="bg-surface">None</option>
+                <option value="chime" className="bg-surface">Chime</option>
+                <option value="shutter" className="bg-surface">Shutter</option>
               </select>
             </div>
             <div>
@@ -303,10 +303,10 @@ export function DisplaySettingsForm({ event, backHref, onConfigChange }: Display
                 onChange={(e) => setCelebrationEffect(e.target.value as "none" | "confetti" | "ripple" | "glow")}
                 className={selectClass}
               >
-                <option value="none" className="bg-gray-900">None</option>
-                <option value="confetti" className="bg-gray-900">Confetti</option>
-                <option value="ripple" className="bg-gray-900">Ripple</option>
-                <option value="glow" className="bg-gray-900">Glow</option>
+                <option value="none" className="bg-surface">None</option>
+                <option value="confetti" className="bg-surface">Confetti</option>
+                <option value="ripple" className="bg-surface">Ripple</option>
+                <option value="glow" className="bg-surface">Glow</option>
               </select>
             </div>
           </div>

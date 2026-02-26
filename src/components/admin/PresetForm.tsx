@@ -88,60 +88,60 @@ export function PresetForm({ preset }: PresetFormProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Primary Color</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Primary Color</label>
             <div className="flex items-center gap-2">
               <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0" />
-              <span className="text-white/50 font-mono text-sm">{primaryColor}</span>
+              <span className="text-foreground-muted font-mono text-sm">{primaryColor}</span>
             </div>
           </div>
           <Input label="Font Family" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} />
         </div>
 
-        <hr className="border-white/10" />
+        <hr className="border-border" />
         <h3 className="font-semibold">Display Settings</h3>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Grid Columns</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Grid Columns</label>
             <select
               value={gridColumns}
               onChange={(e) => setGridColumns(Number(e.target.value))}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
             >
               {[2, 3, 4, 5].map((n) => (
-                <option key={n} value={n} className="bg-gray-900">{n}x{n}</option>
+                <option key={n} value={n} className="bg-surface">{n}x{n}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Swap Interval (seconds)</label>
+            <label className="block text-sm font-medium text-foreground-muted mb-1">Swap Interval (seconds)</label>
             <input
               type="number"
               min={2}
               max={30}
               value={swapInterval}
               onChange={(e) => setSwapInterval(Number(e.target.value))}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
+              className="w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1">Background Color</label>
+          <label className="block text-sm font-medium text-foreground-muted mb-1">Background Color</label>
           <div className="flex items-center gap-2">
             <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0" />
-            <span className="text-white/50 font-mono text-sm">{backgroundColor}</span>
+            <span className="text-foreground-muted font-mono text-sm">{backgroundColor}</span>
           </div>
         </div>
 
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
-          <span className="text-sm text-white/70">Show names on display</span>
+          <span className="text-sm text-foreground-muted">Show names on display</span>
         </label>
 
         {preset && (
           <>
-            <hr className="border-white/10" />
+            <hr className="border-border" />
             <BrandAssetManager
               target={{ type: "preset", id: preset._id }}
               assets={preset.assets}
@@ -149,12 +149,12 @@ export function PresetForm({ preset }: PresetFormProps) {
           </>
         )}
 
-        <hr className="border-white/10" />
+        <hr className="border-border" />
         <div>
           <button
             type="button"
             onClick={() => setCssOpen(!cssOpen)}
-            className="flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
           >
             <svg className={`w-4 h-4 transition-transform ${cssOpen ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -166,7 +166,7 @@ export function PresetForm({ preset }: PresetFormProps) {
               value={customCss}
               onChange={(e) => setCustomCss(e.target.value)}
               placeholder={`.selfie-frame { border-radius: 50%; }`}
-              className="mt-2 w-full h-32 rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white font-mono text-sm resize-y"
+              className="mt-2 w-full h-32 rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground font-mono text-sm resize-y"
             />
           )}
         </div>
