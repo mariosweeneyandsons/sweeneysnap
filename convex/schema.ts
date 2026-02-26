@@ -49,6 +49,7 @@ export default defineSchema({
     endsAt: v.optional(v.number()),
     archived: v.optional(v.boolean()),
     sortOrder: v.optional(v.number()),
+    assets: v.optional(v.array(brandAssetValidator)),
     updatedAt: v.number(),
   })
     .index("by_slug", ["slug"])
@@ -77,5 +78,6 @@ export default defineSchema({
     ),
   })
     .index("by_eventId", ["eventId"])
-    .index("by_eventId_status", ["eventId", "status"]),
+    .index("by_eventId_status", ["eventId", "status"])
+    .index("by_eventId_sessionId", ["eventId", "sessionId"]),
 });

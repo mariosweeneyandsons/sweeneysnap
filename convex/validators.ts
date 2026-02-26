@@ -8,6 +8,14 @@ export const uploadConfigValidator = v.object({
   welcomeText: v.optional(v.string()),
   buttonText: v.optional(v.string()),
   successText: v.optional(v.string()),
+  maxUploadsPerSession: v.optional(v.number()),
+  countdownSeconds: v.optional(v.number()),
+  flashEnabled: v.optional(v.boolean()),
+  allowCameraSwitch: v.optional(v.boolean()),
+  multiPhotoEnabled: v.optional(v.boolean()),
+  filtersEnabled: v.optional(v.boolean()),
+  framesEnabled: v.optional(v.boolean()),
+  stickersEnabled: v.optional(v.boolean()),
 });
 
 export const displayConfigValidator = v.object({
@@ -63,7 +71,10 @@ export const brandAssetValidator = v.object({
   type: v.union(
     v.literal("logo"),
     v.literal("background"),
-    v.literal("overlay")
+    v.literal("overlay"),
+    v.literal("frame"),
+    v.literal("sticker")
   ),
   name: v.string(),
+  storageId: v.optional(v.id("_storage")),
 });

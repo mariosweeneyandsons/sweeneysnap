@@ -104,6 +104,47 @@ export const generateUploadUrl = mutation({
   },
 });
 
+export const countBySessionAndEvent = query({
+  args: {
+    eventId: v.id("events"),
+    sessionId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const selfies = await ctx.db
+      .query("selfies")
+      .withIndex("by_eventId_sessionId", (q) =>
+        q.eq("eventId", args.eventId).eq("sessionId", args.sessionId)
+      )
+      .collect();
+    return selfies.length;
+  },
+});
+
+export const generateUploadUrlForEvent = mutation({
+  args: {
+    eventId: v.id("events"),
+    sessionId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const event = await ctx.db.get(args.eventId);
+    if (!event) throw new Error("Event not found");
+
+    const maxUploads = event.uploadConfig.maxUploadsPerSession ?? 10;
+    const existing = await ctx.db
+      .query("selfies")
+      .withIndex("by_eventId_sessionId", (q) =>
+        q.eq("eventId", args.eventId).eq("sessionId", args.sessionId)
+      )
+      .collect();
+
+    if (existing.length >= maxUploads) {
+      throw new Error("Upload limit reached for this session");
+    }
+
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
 export const create = mutation({
   args: {
     eventId: v.id("events"),
@@ -115,13 +156,29 @@ export const create = mutation({
     fileSizeBytes: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const event = await ctx.db.get(args.eventId);
+    if (!event) throw new Error("Event not found");
+
+    // Enforce rate limit
+    if (args.sessionId) {
+      const maxUploads = event.uploadConfig.maxUploadsPerSession ?? 10;
+      const existing = await ctx.db
+        .query("selfies")
+        .withIndex("by_eventId_sessionId", (q) =>
+          q.eq("eventId", args.eventId).eq("sessionId", args.sessionId)
+        )
+        .collect();
+      if (existing.length >= maxUploads) {
+        throw new Error("Upload limit reached for this session");
+      }
+    }
+
     const selfieId = await ctx.db.insert("selfies", {
       ...args,
     });
 
     // Schedule AI moderation if enabled on the event
-    const event = await ctx.db.get(args.eventId);
-    if (event?.aiModerationEnabled) {
+    if (event.aiModerationEnabled) {
       await ctx.scheduler.runAfter(0, internal.aiModeration.moderateWithAi, {
         selfieId,
       });

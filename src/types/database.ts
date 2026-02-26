@@ -19,6 +19,14 @@ export interface UploadConfig {
   welcomeText?: string;
   buttonText?: string;
   successText?: string;
+  maxUploadsPerSession?: number;
+  countdownSeconds?: number;
+  flashEnabled?: boolean;
+  allowCameraSwitch?: boolean;
+  multiPhotoEnabled?: boolean;
+  filtersEnabled?: boolean;
+  framesEnabled?: boolean;
+  stickersEnabled?: boolean;
 }
 
 export interface DisplayConfig {
@@ -56,8 +64,9 @@ export interface DisplayConfig {
 
 export interface BrandAsset {
   url: string;
-  type: "logo" | "background" | "overlay";
+  type: "logo" | "background" | "overlay" | "frame" | "sticker";
   name: string;
+  storageId?: string;
 }
 
 interface ConvexDocument {
@@ -102,6 +111,7 @@ export interface Event extends ConvexDocument {
   endsAt?: number;
   archived?: boolean;
   sortOrder?: number;
+  assets?: BrandAsset[];
   updatedAt: number;
 }
 

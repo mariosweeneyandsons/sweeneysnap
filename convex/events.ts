@@ -1,7 +1,7 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
-import { uploadConfigValidator, displayConfigValidator } from "./validators";
+import { uploadConfigValidator, displayConfigValidator, brandAssetValidator } from "./validators";
 
 export const list = query({
   args: { includeArchived: v.optional(v.boolean()) },
@@ -200,6 +200,66 @@ export const archive = mutation({
     }
     await ctx.db.patch(args.id, patch);
     return { archived: nowArchived };
+  },
+});
+
+export const updateUploadConfig = mutation({
+  args: {
+    id: v.id("events"),
+    uploadConfig: uploadConfigValidator,
+  },
+  handler: async (ctx, args) => {
+    // No admin check — crew can also update upload settings
+    await ctx.db.patch(args.id, {
+      uploadConfig: args.uploadConfig,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+export const addAsset = mutation({
+  args: {
+    id: v.id("events"),
+    asset: brandAssetValidator,
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const event = await ctx.db.get(args.id);
+    if (!event) throw new Error("Event not found");
+    const assets = event.assets ?? [];
+    assets.push(args.asset);
+    await ctx.db.patch(args.id, { assets, updatedAt: Date.now() });
+  },
+});
+
+export const removeAsset = mutation({
+  args: {
+    id: v.id("events"),
+    assetIndex: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const event = await ctx.db.get(args.id);
+    if (!event) throw new Error("Event not found");
+    const assets = event.assets ?? [];
+    if (args.assetIndex < 0 || args.assetIndex >= assets.length) {
+      throw new Error("Invalid asset index");
+    }
+    const removed = assets[args.assetIndex];
+    // Delete from storage if it has a storageId
+    if (removed.storageId) {
+      await ctx.storage.delete(removed.storageId);
+    }
+    assets.splice(args.assetIndex, 1);
+    await ctx.db.patch(args.id, { assets, updatedAt: Date.now() });
+  },
+});
+
+export const generateAssetUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return await ctx.storage.generateUploadUrl();
   },
 });
 
