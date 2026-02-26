@@ -34,7 +34,7 @@ export function AssetPicker({
       {type === "frame" && showNoneOption && (
         <button
           onClick={() => onSelectFrame?.(null)}
-          className="aspect-square rounded-lg overflow-hidden border-2 transition-colors bg-white/5 p-1 flex items-center justify-center"
+          className="aspect-square rounded-xs overflow-hidden border-2 transition-colors bg-secondary p-1 flex items-center justify-center"
           style={{
             borderColor: !activeFrame ? (primaryColor || "#ffffff") : "transparent",
           }}
@@ -54,7 +54,7 @@ export function AssetPicker({
                 onAddSticker(asset);
               }
             }}
-            className="aspect-square rounded-lg overflow-hidden border-2 transition-colors bg-white/5 p-1"
+            className="aspect-square rounded-xs overflow-hidden border-2 transition-colors bg-secondary p-1"
             style={{
               borderColor: isActive ? (primaryColor || "#ffffff") : "transparent",
             }}

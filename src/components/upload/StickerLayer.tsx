@@ -120,7 +120,7 @@ function DraggableSticker({ sticker, onMove, onRemove }: DraggableStickerProps) 
           e.stopPropagation();
           onRemove(sticker.id);
         }}
-        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-black/70 text-white flex items-center justify-center text-xs hover:bg-red-500 transition-colors"
+        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-black/70 text-white flex items-center justify-center text-xs hover:bg-destructive transition-colors"
       >
         ×
       </button>

@@ -91,7 +91,7 @@ export function PhotoEditor({
   return (
     <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
       {/* Preview with overlays */}
-      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-black">
+      <div className="relative w-full aspect-square rounded-xs overflow-hidden bg-black">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={imgRef}
@@ -134,7 +134,7 @@ export function PhotoEditor({
             {allFrames.length > 0 && (
               <button
                 onClick={() => setActiveTab("frames")}
-                className="px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                className="px-3 py-1 rounded-xs text-sm font-medium transition-colors"
                 style={{
                   backgroundColor:
                     activeTab === "frames"
@@ -150,7 +150,7 @@ export function PhotoEditor({
             {allStickers.length > 0 && (
               <button
                 onClick={() => setActiveTab("stickers")}
-                className="px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                className="px-3 py-1 rounded-xs text-sm font-medium transition-colors"
                 style={{
                   backgroundColor:
                     activeTab === "stickers"

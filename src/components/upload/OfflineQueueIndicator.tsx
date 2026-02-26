@@ -16,7 +16,7 @@ export function OfflineQueueIndicator({
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
       {!isOnline && (
-        <div className="bg-yellow-600 text-white text-center text-sm py-1.5 px-4">
+        <div className="bg-warning text-foreground-emphasis text-center text-sm py-1.5 px-4">
           <svg
             className="inline-block w-4 h-4 mr-1.5 -mt-0.5"
             fill="none"
@@ -35,7 +35,7 @@ export function OfflineQueueIndicator({
         </div>
       )}
       {isOnline && queueCount > 0 && (
-        <div className="bg-blue-600 text-white text-center text-sm py-1.5 px-4">
+        <div className="bg-primary text-foreground-emphasis text-center text-sm py-1.5 px-4">
           {flushing
             ? `Uploading ${queueCount} queued photo${queueCount > 1 ? "s" : ""}...`
             : `${queueCount} photo${queueCount > 1 ? "s" : ""} queued — will upload shortly`}

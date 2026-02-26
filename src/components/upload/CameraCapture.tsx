@@ -110,7 +110,7 @@ export function CameraCapture({
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative w-full aspect-square max-w-sm overflow-hidden rounded-2xl">
+      <div className="relative w-full aspect-square max-w-sm overflow-hidden rounded-xs">
         <video
           ref={videoRef}
           autoPlay
