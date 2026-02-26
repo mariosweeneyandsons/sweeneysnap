@@ -9,7 +9,10 @@ import { CopyButton } from "@/components/admin/CopyButton";
 
 export default function CrewDashboardPage() {
   const { token } = useParams<{ token: string }>();
-  const event = useQuery(api.events.getByCrewToken, { token });
+  const result = useQuery(api.events.getByCrewTokenOrMember, { token });
+
+  const event = result?.event;
+  const crewMember = result?.crewMember;
 
   const totalSelfies = useQuery(
     api.selfies.countByEvent,
@@ -24,7 +27,7 @@ export default function CrewDashboardPage() {
     event ? { eventId: event._id, status: "approved" as const } : "skip"
   );
 
-  if (event === undefined) {
+  if (result === undefined) {
     return (
       <main className="min-h-dvh bg-black text-white flex items-center justify-center">
         <p className="text-white/50">Loading...</p>
@@ -40,6 +43,9 @@ export default function CrewDashboardPage() {
     );
   }
 
+  const isViewer = crewMember?.permission === "viewer";
+  const canModerate = !isViewer;
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const uploadUrl = `${siteUrl}/${event.slug}`;
   const displayUrl = `${siteUrl}/display/${event.slug}`;
@@ -50,15 +56,22 @@ export default function CrewDashboardPage() {
         <div className="mb-8">
           <p className="text-white/50 text-sm mb-1">Crew Console</p>
           <h1 className="text-2xl font-bold">{event.name}</h1>
-          <span
-            className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-              event.isActive
-                ? "bg-green-500/20 text-green-400"
-                : "bg-white/10 text-white/50"
-            }`}
-          >
-            {event.isActive ? "Live" : "Inactive"}
-          </span>
+          <div className="flex items-center gap-2 mt-2">
+            <span
+              className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                event.isActive
+                  ? "bg-green-500/20 text-green-400"
+                  : "bg-white/10 text-white/50"
+              }`}
+            >
+              {event.isActive ? "Live" : "Inactive"}
+            </span>
+            {crewMember && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                {crewMember.name} ({crewMember.permission})
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -100,22 +113,40 @@ export default function CrewDashboardPage() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Link
-            href={`/crew/${token}/moderate`}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-white text-black px-4 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-          >
-            Moderate Selfies
-            {(pendingSelfies || 0) > 0 && (
-              <span className="bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
-                {pendingSelfies}
-              </span>
-            )}
-          </Link>
+          {canModerate ? (
+            <Link
+              href={`/crew/${token}/moderate`}
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-white text-black px-4 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            >
+              Moderate Selfies
+              {(pendingSelfies || 0) > 0 && (
+                <span className="bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
+                  {pendingSelfies}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <div className="flex-1 inline-flex items-center justify-center gap-2 bg-white/10 text-white/40 px-4 py-3 rounded-lg font-medium cursor-not-allowed">
+              Moderate (Viewer Only)
+            </div>
+          )}
           <Link
             href={`/crew/${token}/display-settings`}
             className="flex-1 inline-flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-colors"
           >
             Display Settings
+          </Link>
+        </div>
+
+        <div className="mt-4">
+          <Link
+            href={`/crew/${token}/activity`}
+            className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Activity Log
           </Link>
         </div>
       </div>

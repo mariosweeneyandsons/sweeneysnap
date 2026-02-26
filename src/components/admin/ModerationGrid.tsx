@@ -13,11 +13,13 @@ import { useNewPendingAlert } from "@/hooks/useNewPendingAlert";
 interface ModerationGridProps {
   eventId: string;
   mode: "admin" | "crew";
+  crewToken?: string;
+  crewMemberId?: string;
 }
 
 type FilterTab = "all" | SelfieStatus;
 
-export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
+export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: ModerationGridProps) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
@@ -48,6 +50,7 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
   const totalCount = pendingCount + approvedCount + rejectedCount;
 
   const updateStatus = useMutation(api.selfies.updateStatus);
+  const updateStatusWithLog = useMutation(api.selfies.updateStatusWithLog);
   const bulkUpdateStatus = useMutation(api.selfies.bulkUpdateStatus);
   const removeSelfie = useMutation(api.selfies.remove);
 
@@ -59,7 +62,16 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
     status: SelfieStatus
   ) => {
     try {
-      await updateStatus({ id: selfieId as Id<"selfies">, status });
+      if (crewToken) {
+        await updateStatusWithLog({
+          id: selfieId as Id<"selfies">,
+          status,
+          crewToken,
+          crewMemberId: crewMemberId ? crewMemberId as Id<"crewMembers"> : undefined,
+        });
+      } else {
+        await updateStatus({ id: selfieId as Id<"selfies">, status });
+      }
       toast(`Selfie ${status}`, status === "approved" ? "success" : "warning");
     } catch {
       toast("Failed to update status", "error");

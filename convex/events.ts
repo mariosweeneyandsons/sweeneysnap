@@ -1,6 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin } from "./lib";
+import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
 import { uploadConfigValidator, displayConfigValidator, brandAssetValidator } from "./validators";
 
 export const list = query({
@@ -37,17 +37,21 @@ export const getBySlug = query({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
     if (!event || !event.isActive) return null;
-    return event;
+    const { crewToken: _ct, ...publicEvent } = event;
+    return publicEvent;
   },
 });
 
 export const getByCrewToken = query({
   args: { token: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const event = await ctx.db
       .query("events")
       .withIndex("by_crewToken", (q) => q.eq("crewToken", args.token))
       .unique();
+    if (!event) return null;
+    const { crewToken: _ct, ...publicEvent } = event;
+    return publicEvent;
   },
 });
 
@@ -60,7 +64,8 @@ export const getByCrewTokenOrMember = query({
       .withIndex("by_crewToken", (q) => q.eq("crewToken", args.token))
       .unique();
     if (eventByToken) {
-      return { event: eventByToken, crewMember: null };
+      const { crewToken: _ct, ...publicEvent } = eventByToken;
+      return { event: publicEvent, crewMember: null };
     }
 
     // Try crew member token
@@ -70,7 +75,11 @@ export const getByCrewTokenOrMember = query({
       .unique();
     if (crewMember) {
       const event = await ctx.db.get(crewMember.eventId);
-      return { event, crewMember };
+      if (event) {
+        const { crewToken: _ct, ...publicEvent } = event;
+        return { event: publicEvent, crewMember };
+      }
+      return { event: null, crewMember };
     }
 
     return { event: null, crewMember: null };
@@ -97,6 +106,9 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    validateStringLength(args.slug, "slug", 100);
+    validateStringLength(args.name, "name", 200);
+    validateStringLength(args.customCss, "customCss", 10000);
     return await ctx.db.insert("events", {
       ...args,
       crewToken: crypto.randomUUID(),
@@ -126,6 +138,9 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    validateStringLength(args.slug, "slug", 100);
+    validateStringLength(args.name, "name", 200);
+    validateStringLength(args.customCss, "customCss", 10000);
     const { id, ...data } = args;
     await ctx.db.patch(id, { ...data, updatedAt: Date.now() });
   },
@@ -150,6 +165,7 @@ export const getDisplayBackgroundUrls = query({
 export const generateBackgroundUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -158,9 +174,12 @@ export const updateDisplayConfig = mutation({
   args: {
     id: v.id("events"),
     displayConfig: displayConfigValidator,
+    crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // No admin check — crew can also update display settings
+    await requireAdminOrCrew(ctx, args.id, args.crewToken);
+    validateStringLength(args.displayConfig.tickerText, "tickerText", 500);
+    validateStringLength(args.displayConfig.socialOverlay, "socialOverlay", 200);
     await ctx.db.patch(args.id, {
       displayConfig: args.displayConfig,
       updatedAt: Date.now(),
@@ -240,9 +259,10 @@ export const updateUploadConfig = mutation({
   args: {
     id: v.id("events"),
     uploadConfig: uploadConfigValidator,
+    crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // No admin check — crew can also update upload settings
+    await requireAdminOrCrew(ctx, args.id, args.crewToken);
     await ctx.db.patch(args.id, {
       uploadConfig: args.uploadConfig,
       updatedAt: Date.now(),

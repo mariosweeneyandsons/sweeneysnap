@@ -7,10 +7,11 @@ import { compressImage } from "@/lib/compression";
 import { getSessionId } from "@/lib/session";
 import { Id } from "../../convex/_generated/dataModel";
 
-type UploadState = "idle" | "compressing" | "uploading" | "saving" | "done" | "error";
+type UploadState = "idle" | "compressing" | "uploading" | "saving" | "done" | "error" | "queued";
 
 interface UseImageUploadOptions {
   maxFileSizeMb?: number;
+  onOfflineQueue?: (blob: Blob, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
 }
 
 interface UseImageUploadReturn {
@@ -19,6 +20,7 @@ interface UseImageUploadReturn {
   error: string | null;
   uploadCount: number;
   limitReached: boolean;
+  selfieId: string | null;
   upload: (file: File, eventId: string, displayName?: string, message?: string, moderationEnabled?: boolean) => Promise<void>;
   reset: () => void;
   setLimitReached: (v: boolean) => void;
@@ -30,6 +32,7 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
   const [error, setError] = useState<string | null>(null);
   const [uploadCount, setUploadCount] = useState(0);
   const [limitReached, setLimitReached] = useState(false);
+  const [selfieId, setSelfieId] = useState<string | null>(null);
 
   const generateUploadUrlForEvent = useMutation(api.selfies.generateUploadUrlForEvent);
   const createSelfie = useMutation(api.selfies.create);

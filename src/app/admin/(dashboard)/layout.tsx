@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
+import { ThemeProvider } from "@/components/admin/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 
 export default function AdminLayout({
@@ -38,10 +39,10 @@ export default function AdminLayout({
 
   if (isLoading || !isAuthenticated || adminProfile === undefined) {
     return (
-      <div className="min-h-dvh bg-black flex items-center justify-center">
+      <div className="min-h-dvh bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
-          <p className="text-white/50 text-sm">Loading admin panel...</p>
+          <div className="w-8 h-8 border-2 border-border border-t-foreground-muted rounded-full animate-spin" />
+          <p className="text-foreground-muted text-sm">Loading admin panel...</p>
         </div>
       </div>
     );
@@ -50,14 +51,16 @@ export default function AdminLayout({
   if (!adminProfile) return null;
 
   return (
-    <ToastProvider>
-      <div className="min-h-dvh bg-black text-white flex">
-        <AdminSidebar profile={adminProfile} userIdentity={userIdentity} />
-        <main className="flex-1 p-6 ml-64">
-          <AdminBreadcrumbs />
-          {children}
-        </main>
-      </div>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <div className="min-h-dvh bg-background text-foreground flex">
+          <AdminSidebar profile={adminProfile} userIdentity={userIdentity} />
+          <main className="flex-1 p-6 ml-64">
+            <AdminBreadcrumbs />
+            {children}
+          </main>
+        </div>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }

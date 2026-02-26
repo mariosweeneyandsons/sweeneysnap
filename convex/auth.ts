@@ -8,6 +8,7 @@ export const { auth, signIn, signOut, store } = convexAuth({
       if (args.profile.email) {
         const adminProfile = await ctx.db
           .query("adminProfiles")
+          // @ts-expect-error — auth callback ctx doesn't carry full DataModel index types
           .withIndex("by_email", (q) => q.eq("email", args.profile.email!))
           .unique();
         if (adminProfile && adminProfile.userId !== args.userId) {

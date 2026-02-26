@@ -6,11 +6,14 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { requireAdmin } from "./lib";
+import { requireAdmin, validateStringLength } from "./lib";
 
 export const listApprovedByEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
+    const event = await ctx.db.get(args.eventId);
+    if (!event || !event.isActive) return [];
+
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId_status", (q) =>
@@ -40,6 +43,7 @@ export const listByEvent = query({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     let selfies;
     if (args.status) {
       selfies = await ctx.db
@@ -69,6 +73,7 @@ export const listByEvent = query({
 export const countByEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId", (q) => q.eq("eventId", args.eventId))
@@ -87,6 +92,7 @@ export const countByEventAndStatus = query({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId_status", (q) =>
@@ -98,8 +104,16 @@ export const countByEventAndStatus = query({
 });
 
 export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
+  args: { eventId: v.optional(v.id("events")) },
+  handler: async (ctx, args) => {
+    // Validate event exists and is active when eventId provided
+    if (args.eventId) {
+      const event = await ctx.db.get(args.eventId);
+      if (!event || !event.isActive) throw new Error("Event not found or not active");
+    } else {
+      // If no eventId, require admin auth (legacy usage)
+      await requireAdmin(ctx);
+    }
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -110,6 +124,9 @@ export const countBySessionAndEvent = query({
     sessionId: v.string(),
   },
   handler: async (ctx, args) => {
+    const event = await ctx.db.get(args.eventId);
+    if (!event || !event.isActive) return 0;
+
     const selfies = await ctx.db
       .query("selfies")
       .withIndex("by_eventId_sessionId", (q) =>
@@ -128,6 +145,7 @@ export const generateUploadUrlForEvent = mutation({
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
+    if (!event.isActive) throw new Error("Event is not active");
 
     const maxUploads = event.uploadConfig.maxUploadsPerSession ?? 10;
     const existing = await ctx.db
@@ -158,6 +176,10 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
+    if (!event.isActive) throw new Error("Event is not active");
+
+    validateStringLength(args.displayName, "displayName", 100);
+    validateStringLength(args.message, "message", 500);
 
     // Enforce rate limit
     if (args.sessionId) {
@@ -198,6 +220,7 @@ export const updateStatus = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     await ctx.db.patch(args.id, { status: args.status });
   },
 });
@@ -249,6 +272,7 @@ export const updateStatusWithLog = mutation({
 export const remove = mutation({
   args: { id: v.id("selfies") },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const selfie = await ctx.db.get(args.id);
     if (!selfie) throw new Error("Selfie not found");
     await ctx.storage.delete(selfie.storageId);
@@ -311,6 +335,7 @@ export const bulkUpdateStatus = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     for (const id of args.ids) {
       await ctx.db.patch(id, { status: args.status });
     }

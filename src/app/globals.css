@@ -118,6 +118,64 @@
 }
 
 /* ------------------------------------------------------------
+   LIGHT THEME — Layer 2 overrides only
+   ------------------------------------------------------------ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --background: #f5f7fa;
+  --background-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #e8ecf2;
+  --surface-active: #dce1ea;
+  --surface-overlay: rgba(255, 255, 255, 0.95);
+
+  /* Foreground */
+  --foreground: #1a2744;
+  --foreground-emphasis: #111d35;
+  --foreground-muted: rgba(26, 39, 68, 0.60);
+  --foreground-faint: rgba(26, 39, 68, 0.40);
+
+  /* Borders */
+  --border: rgba(26, 39, 68, 0.15);
+  --border-strong: rgba(26, 39, 68, 0.25);
+  --border-focus: var(--bp-line-500);
+  --border-separator: rgba(26, 39, 68, 0.10);
+
+  /* Primary */
+  --primary: var(--bp-navy-700);
+  --primary-foreground: #ffffff;
+  --primary-hover: var(--bp-navy-600);
+  --primary-active: var(--bp-navy-800);
+
+  /* Secondary */
+  --secondary: rgba(26, 39, 68, 0.08);
+  --secondary-foreground: #1a2744;
+  --secondary-hover: rgba(26, 39, 68, 0.12);
+
+  /* Status — slightly adjusted for white bg */
+  --destructive: #e53e3e;
+  --destructive-foreground: #ffffff;
+  --success: #38a169;
+  --success-bg: rgba(56, 161, 105, 0.08);
+  --warning: #d69e2e;
+  --warning-bg: rgba(214, 158, 46, 0.08);
+
+  /* Blueprint-specific */
+  --line: var(--bp-line-500);
+  --line-muted: rgba(74, 122, 181, 0.40);
+  --line-faint: rgba(74, 122, 181, 0.15);
+  --grid-line: rgba(74, 122, 181, 0.06);
+
+  /* Components */
+  --input-bg: #ffffff;
+  --input-border: rgba(26, 39, 68, 0.20);
+  --input-text: #111d35;
+  --card-bg: #ffffff;
+  --card-border: rgba(26, 39, 68, 0.12);
+  --label-color: var(--bp-navy-700);
+}
+
+/* ------------------------------------------------------------
    LAYER 3: @theme inline REGISTRATION
    Maps semantic tokens → Tailwind utility classes
    ------------------------------------------------------------ */

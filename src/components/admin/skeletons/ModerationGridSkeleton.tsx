@@ -12,7 +12,7 @@ export function ModerationGridSkeleton() {
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-white/10 overflow-hidden bg-white/5"
+            className="rounded-xl border border-card-border overflow-hidden bg-card-bg"
           >
             <Skeleton className="w-full aspect-square rounded-none" />
             <div className="p-3">

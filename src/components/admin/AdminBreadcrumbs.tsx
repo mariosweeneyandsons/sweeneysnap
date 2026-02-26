@@ -14,6 +14,8 @@ const labelMap: Record<string, string> = {
   new: "New",
   moderate: "Moderate",
   "display-settings": "Display Settings",
+  "upload-settings": "Upload Settings",
+  branding: "Branding",
   analytics: "Analytics",
 };
 

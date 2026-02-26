@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AdminProfile } from "@/types/database";
 import { UserProfilePopover } from "./UserProfilePopover";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface UserIdentity {
   name: string | null;
@@ -26,10 +27,10 @@ export function AdminSidebar({ profile, userIdentity }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white/5 border-r border-white/10 flex flex-col p-4">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-secondary border-r border-border flex flex-col p-4">
       <div className="mb-8">
-        <h2 className="text-lg font-bold">SweeneySnap</h2>
-        <p className="text-white/50 text-sm">Admin Panel</p>
+        <h2 className="text-lg font-bold text-foreground">SweeneySnap</h2>
+        <p className="text-foreground-muted text-sm">Admin Panel</p>
       </div>
 
       <nav className="flex-1 flex flex-col gap-1">
@@ -41,8 +42,8 @@ export function AdminSidebar({ profile, userIdentity }: AdminSidebarProps) {
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 isActive
-                  ? "bg-white/10 text-white"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  ? "bg-surface text-foreground-emphasis"
+                  : "text-foreground-muted hover:text-foreground hover:bg-surface"
               }`}
             >
               <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -54,15 +55,18 @@ export function AdminSidebar({ profile, userIdentity }: AdminSidebarProps) {
         })}
       </nav>
 
-      <div className="border-t border-white/10 pt-4 mt-4">
-        {userIdentity ? (
-          <UserProfilePopover
-            identity={userIdentity}
-            displayName={profile.displayName}
-          />
-        ) : (
-          <p className="text-sm text-white/70">{profile.displayName}</p>
-        )}
+      <div className="border-t border-border pt-4 mt-4 flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          {userIdentity ? (
+            <UserProfilePopover
+              identity={userIdentity}
+              displayName={profile.displayName}
+            />
+          ) : (
+            <p className="text-sm text-foreground-muted">{profile.displayName}</p>
+          )}
+        </div>
+        <ThemeToggle />
       </div>
     </aside>
   );

@@ -11,7 +11,7 @@ export function EventsListSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-white/10 bg-white/5 p-6"
+            className="rounded-xl border border-card-border bg-card-bg p-6"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">

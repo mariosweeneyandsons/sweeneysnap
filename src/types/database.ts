@@ -101,7 +101,7 @@ export interface Event extends ConvexDocument {
   isActive: boolean;
   createdBy?: string;
   presetId?: string;
-  crewToken: string;
+  crewToken?: string;
   uploadConfig: UploadConfig;
   displayConfig: DisplayConfig;
   logoUrl?: string;

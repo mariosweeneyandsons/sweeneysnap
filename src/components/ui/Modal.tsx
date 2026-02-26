@@ -28,7 +28,7 @@ export function Modal({ open, onClose, children, title }: ModalProps) {
       onClose={onClose}
       className="backdrop:bg-black/70 bg-transparent p-0 m-auto"
     >
-      <div className="rounded-xl border border-white/10 bg-gray-900 p-6 text-white min-w-80 max-w-lg">
+      <div className="rounded-xl border border-border bg-surface p-6 text-foreground min-w-80 max-w-lg">
         {title && <h2 className="text-lg font-semibold mb-4">{title}</h2>}
         {children}
       </div>
