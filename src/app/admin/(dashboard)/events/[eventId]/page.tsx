@@ -122,6 +122,12 @@ export default function EventDetailPage() {
             Branding
           </Link>
           <Link
+            href={`/admin/events/${event._id}/upload-settings`}
+            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
+          >
+            Upload Settings
+          </Link>
+          <Link
             href={`/admin/events/${event._id}/display-settings`}
             className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors"
           >
