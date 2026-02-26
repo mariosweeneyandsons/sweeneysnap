@@ -11,8 +11,21 @@ export const { auth, signIn, signOut, store } = convexAuth({
           // @ts-expect-error — auth callback ctx doesn't carry full DataModel index types
           .withIndex("by_email", (q) => q.eq("email", args.profile.email!))
           .unique();
-        if (adminProfile && adminProfile.userId !== args.userId) {
-          await ctx.db.patch(adminProfile._id, { userId: args.userId });
+        if (adminProfile) {
+          const patch: Record<string, unknown> = {};
+          if (adminProfile.userId !== args.userId) {
+            patch.userId = args.userId;
+          }
+          // Auto-populate displayName from Google profile on first sign-in
+          // Updates if displayName is still just the email prefix (placeholder)
+          const profileName = args.profile.name as string | undefined;
+          const emailPrefix = adminProfile.email?.split("@")[0]?.toLowerCase();
+          if (profileName && adminProfile.displayName.toLowerCase() === emailPrefix) {
+            patch.displayName = profileName;
+          }
+          if (Object.keys(patch).length > 0) {
+            await ctx.db.patch(adminProfile._id, patch);
+          }
         }
       }
     },
