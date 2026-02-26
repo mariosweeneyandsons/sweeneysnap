@@ -292,11 +292,12 @@ export const updateAiModeration = internalMutation({
     }),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.selfieId, {
+    const patch: Record<string, unknown> = {
       aiModeration: args.aiModeration,
-    });
+    };
     if (args.aiModeration.flagged) {
-      await ctx.db.patch(args.selfieId, { status: "rejected" });
+      patch.status = "rejected";
     }
+    await ctx.db.patch(args.selfieId, patch);
   },
 });

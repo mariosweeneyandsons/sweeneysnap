@@ -99,11 +99,16 @@ export function ModerationGrid({ eventId, mode }: ModerationGridProps) {
 
   const handleBulkAction = async (status: SelfieStatus) => {
     if (selectedIds.size === 0) return;
-    await bulkUpdateStatus({
-      ids: Array.from(selectedIds) as Id<"selfies">[],
-      status,
-    });
-    setSelectedIds(new Set());
+    try {
+      await bulkUpdateStatus({
+        ids: Array.from(selectedIds) as Id<"selfies">[],
+        status,
+      });
+      toast(`${selectedIds.size} selfies ${status}`, "success");
+      setSelectedIds(new Set());
+    } catch {
+      toast("Failed to update selfies", "error");
+    }
   };
 
   const tabs: { label: string; value: FilterTab; count: number }[] = [
