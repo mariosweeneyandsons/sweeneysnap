@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useCamera } from "@/hooks/useCamera";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { CaptureCountdown } from "./CaptureCountdown";
+import { CaptureCountdownOverlay } from "@/components/upload/CaptureCountdownOverlay";
 import { AutoResetTimer } from "./AutoResetTimer";
 import { PublicEvent } from "@/types/database";
 
@@ -153,7 +153,7 @@ export function BoothMode({ event }: BoothModeProps) {
           style={{ transform: "scaleX(-1)" }}
         />
         <canvas ref={canvasRef} className="hidden" />
-        <CaptureCountdown onComplete={handleCountdownComplete} />
+        <CaptureCountdownOverlay onComplete={handleCountdownComplete} variant="fullscreen" />
       </div>
     );
   }
