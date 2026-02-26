@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { UploadForm } from "@/components/upload/UploadForm";
+import { deriveBackground, deriveTextColor } from "@/lib/color-utils";
 
 export default function UploadPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>();
@@ -12,7 +13,7 @@ export default function UploadPage() {
   if (event === undefined) {
     return (
       <main className="min-h-dvh bg-black text-white flex items-center justify-center">
-        <p className="text-white/50">Loading...</p>
+        <p style={{ opacity: 0.5 }}>Loading...</p>
       </main>
     );
   }
@@ -20,23 +21,34 @@ export default function UploadPage() {
   if (!event) {
     return (
       <main className="min-h-dvh bg-black text-white flex items-center justify-center">
-        <p className="text-white/50">Event not found</p>
+        <p style={{ opacity: 0.5 }}>Event not found</p>
       </main>
     );
   }
 
+  const bgColor = deriveBackground(event.primaryColor);
+  const textColor = deriveTextColor(event.primaryColor);
+
   return (
-    <main className="min-h-dvh bg-black text-white flex flex-col">
+    <main
+      className="min-h-dvh flex flex-col"
+      style={{
+        backgroundColor: bgColor,
+        color: textColor,
+        // @ts-expect-error -- CSS custom property
+        "--event-primary": event.primaryColor,
+      }}
+    >
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         {event.logoUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={event.logoUrl} alt="" className="h-12 w-auto mb-6" />
+          <img src={event.logoUrl} alt="" className="h-16 md:h-20 w-auto mb-6" />
         )}
         <h1 className="text-2xl font-bold mb-2 text-center">{event.name}</h1>
-        <p className="text-white/60 mb-8 text-center">
+        <p className="mb-8 text-center" style={{ opacity: 0.6 }}>
           {event.uploadConfig.welcomeText || "Take a selfie and see it on the big screen!"}
         </p>
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm md:max-w-md mx-auto">
           <UploadForm event={event} />
         </div>
       </div>
