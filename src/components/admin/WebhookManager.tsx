@@ -104,7 +104,7 @@ export function WebhookManager({ eventId }: WebhookManagerProps) {
           {webhooks.map((wh) => (
             <div
               key={wh._id}
-              className="flex items-start gap-3 p-3 rounded-lg bg-surface border border-border"
+              className="flex items-start gap-3 p-3 rounded-xs bg-surface border border-border"
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-mono truncate">{wh.url}</p>

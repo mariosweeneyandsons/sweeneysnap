@@ -99,7 +99,7 @@ export function AssetManager({ event }: AssetManagerProps) {
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setActiveTab("frame")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2 rounded-xs text-sm font-medium transition-colors ${
             activeTab === "frame"
               ? "bg-foreground text-background"
               : "bg-secondary text-foreground-muted hover:bg-secondary-hover"
@@ -109,7 +109,7 @@ export function AssetManager({ event }: AssetManagerProps) {
         </button>
         <button
           onClick={() => setActiveTab("sticker")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2 rounded-xs text-sm font-medium transition-colors ${
             activeTab === "sticker"
               ? "bg-foreground text-background"
               : "bg-secondary text-foreground-muted hover:bg-secondary-hover"
@@ -131,7 +131,7 @@ export function AssetManager({ event }: AssetManagerProps) {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="w-full border-2 border-dashed border-border rounded-lg py-8 px-4 text-center text-foreground-faint hover:border-border-strong hover:text-foreground-muted transition-colors disabled:opacity-50"
+          className="w-full border-2 border-dashed border-border rounded-xs py-8 px-4 text-center text-foreground-faint hover:border-border-strong hover:text-foreground-muted transition-colors disabled:opacity-50"
         >
           {uploading ? (
             "Uploading..."
@@ -156,7 +156,7 @@ export function AssetManager({ event }: AssetManagerProps) {
           {filteredAssets.map((asset) => (
             <div
               key={`${asset.url}-${asset.originalIndex}`}
-              className="relative aspect-square rounded-lg overflow-hidden bg-surface border border-border p-2 group"
+              className="relative aspect-square rounded-xs overflow-hidden bg-surface border border-border p-2 group"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -166,7 +166,7 @@ export function AssetManager({ event }: AssetManagerProps) {
               />
               <button
                 onClick={() => handleRemove(asset.originalIndex)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-destructive/80 text-foreground-emphasis flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+                className="absolute top-1 right-1 w-6 h-6 rounded-xs bg-destructive/80 text-foreground-emphasis flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
               >
                 ×
               </button>

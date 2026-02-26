@@ -10,7 +10,7 @@ interface QRCodeDisplayProps {
 export function QRCodeDisplay({ url, size = 200 }: QRCodeDisplayProps) {
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="bg-white p-4 rounded-xl">
+      <div className="bg-white p-4 rounded-xs">
         <QRCodeSVG value={url} size={size} />
       </div>
       <p className="text-foreground-muted text-sm font-mono break-all text-center max-w-xs">

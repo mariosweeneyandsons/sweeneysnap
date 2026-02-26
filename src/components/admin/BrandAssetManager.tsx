@@ -89,7 +89,7 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value as AssetType)}
-            className="rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
+            className="rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
           >
             {assetTypes.map((t) => (
               <option key={t.value} value={t.value} className="bg-surface">{t.label}</option>
@@ -119,7 +119,7 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
       {assets.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
           {assets.map((asset, i) => (
-            <div key={i} className="relative group rounded-lg border border-border overflow-hidden bg-surface">
+            <div key={i} className="relative group rounded-xs border border-border overflow-hidden bg-surface">
               <img
                 src={asset.url}
                 alt={asset.name}

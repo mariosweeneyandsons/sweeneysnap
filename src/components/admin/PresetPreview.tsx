@@ -47,7 +47,7 @@ export function PresetPreview({
     <div>
       <h3 className="font-semibold mb-3">Live Preview</h3>
       <div
-        className="rounded-lg overflow-hidden border border-border-separator"
+        className="rounded-xs overflow-hidden border border-border-separator"
         style={{
           backgroundColor,
           fontFamily: fontFamily ? `"${fontFamily}", sans-serif` : undefined,
