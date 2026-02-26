@@ -22,12 +22,13 @@ const transitionVariants: Record<string, Variants> = {
 };
 
 interface SelfieFrameProps {
-  selfie: Selfie | null;
+  selfie: (Selfie & { eventName?: string; eventSlug?: string }) | null;
   config: DisplayConfig;
   index: number;
+  showEventBadge?: boolean;
 }
 
-export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
+export function SelfieFrame({ selfie, config, index, showEventBadge }: SelfieFrameProps) {
   const borderColor = config.frameBorderColor || "rgba(255,255,255,0.1)";
   const borderWidth = config.frameBorderWidth ?? 2;
   const transition = config.transition || "fade";
@@ -51,6 +52,12 @@ export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="absolute inset-0"
           >
+            {/* Event badge for multi-event displays */}
+            {showEventBadge && selfie.eventName && (
+              <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/60 text-white backdrop-blur-sm">
+                {selfie.eventName}
+              </span>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selfie.thumbnailUrl || selfie.imageUrl || ""}

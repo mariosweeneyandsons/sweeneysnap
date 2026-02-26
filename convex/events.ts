@@ -72,6 +72,21 @@ export const getBySlugs = query({
   },
 });
 
+export const getByIds = query({
+  args: { ids: v.array(v.id("events")) },
+  handler: async (ctx, args) => {
+    const events = [];
+    for (const id of args.ids) {
+      const event = await ctx.db.get(id);
+      if (event && event.isActive) {
+        const { crewToken: _ct, ...publicEvent } = event;
+        events.push(publicEvent);
+      }
+    }
+    return events;
+  },
+});
+
 export const getBySlugForGallery = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
