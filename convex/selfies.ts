@@ -1,4 +1,9 @@
-import { query, mutation, internalMutation } from "./_generated/server";
+import {
+  query,
+  mutation,
+  internalMutation,
+  internalQuery,
+} from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
@@ -208,6 +213,13 @@ export const bulkUpdateStatus = mutation({
     for (const id of args.ids) {
       await ctx.db.patch(id, { status: args.status });
     }
+  },
+});
+
+export const getById = internalQuery({
+  args: { selfieId: v.id("selfies") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.selfieId);
   },
 });
 
