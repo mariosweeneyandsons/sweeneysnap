@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -12,6 +12,14 @@ import { Event } from "@/types/database";
 
 interface EventFormProps {
   event?: Event;
+}
+
+function getScheduleStatus(startsAt?: number, endsAt?: number): { label: string; color: string } | null {
+  if (!startsAt && !endsAt) return null;
+  const now = Date.now();
+  if (startsAt && now < startsAt) return { label: "Upcoming", color: "bg-blue-500/20 text-blue-400" };
+  if (endsAt && now > endsAt) return { label: "Ended", color: "bg-white/10 text-white/50" };
+  return { label: "Live", color: "bg-green-500/20 text-green-400" };
 }
 
 export function EventForm({ event }: EventFormProps) {
@@ -35,6 +43,23 @@ export function EventForm({ event }: EventFormProps) {
     event?.endsAt ? new Date(event.endsAt).toISOString().slice(0, 16) : ""
   );
 
+  const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
+
+  const scheduleStatus = useMemo(() => {
+    const s = startsAt ? new Date(startsAt).getTime() : undefined;
+    const e = endsAt ? new Date(endsAt).getTime() : undefined;
+    return getScheduleStatus(s, e);
+  }, [startsAt, endsAt]);
+
+  const dateError = useMemo(() => {
+    if (startsAt && endsAt) {
+      const s = new Date(startsAt).getTime();
+      const e = new Date(endsAt).getTime();
+      if (e <= s) return "End time must be after start time";
+    }
+    return null;
+  }, [startsAt, endsAt]);
+
   const handleNameChange = (value: string) => {
     setName(value);
     if (!event) {
@@ -49,6 +74,10 @@ export function EventForm({ event }: EventFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (dateError) {
+      setError(dateError);
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -119,25 +148,64 @@ export function EventForm({ event }: EventFormProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Starts At</label>
-            <input
-              type="datetime-local"
-              value={startsAt}
-              onChange={(e) => setStartsAt(e.target.value)}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
-            />
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-sm font-medium text-white/70">Schedule</span>
+            <span className="text-xs text-white/40">Times in {timezone}</span>
+            {scheduleStatus && (
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${scheduleStatus.color}`}>
+                {scheduleStatus.label}
+              </span>
+            )}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-white/70 mb-1">Ends At</label>
-            <input
-              type="datetime-local"
-              value={endsAt}
-              onChange={(e) => setEndsAt(e.target.value)}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-1">Starts At</label>
+              <div className="relative">
+                <input
+                  type="datetime-local"
+                  value={startsAt}
+                  onChange={(e) => setStartsAt(e.target.value)}
+                  className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white pr-8"
+                />
+                {startsAt && (
+                  <button
+                    type="button"
+                    onClick={() => setStartsAt("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-sm"
+                  >
+                    &times;
+                  </button>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-white/70 mb-1">Ends At</label>
+              <div className="relative">
+                <input
+                  type="datetime-local"
+                  value={endsAt}
+                  onChange={(e) => setEndsAt(e.target.value)}
+                  className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white pr-8"
+                />
+                {endsAt && (
+                  <button
+                    type="button"
+                    onClick={() => setEndsAt("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-sm"
+                  >
+                    &times;
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
+          {dateError && <p className="text-red-400 text-xs mt-1">{dateError}</p>}
+          {(startsAt || endsAt) && (
+            <p className="text-white/30 text-xs mt-2">
+              Events with dates are automatically activated/deactivated by the scheduler.
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -155,7 +223,7 @@ export function EventForm({ event }: EventFormProps) {
 
         <div className="flex gap-3 justify-end">
           <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
-          <Button type="submit" loading={loading}>
+          <Button type="submit" loading={loading} disabled={!!dateError}>
             {event ? "Save Changes" : "Create Event"}
           </Button>
         </div>
