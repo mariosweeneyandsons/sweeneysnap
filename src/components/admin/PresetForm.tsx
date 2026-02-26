@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Preset } from "@/types/database";
 import { useToast } from "@/components/ui/Toast";
+import { BrandAssetManager } from "./BrandAssetManager";
 
 interface PresetFormProps {
   preset?: Preset;
@@ -33,6 +34,8 @@ export function PresetForm({ preset }: PresetFormProps) {
     preset?.displayConfig.backgroundColor || "#000000"
   );
   const [showNames, setShowNames] = useState(preset?.displayConfig.showNames ?? true);
+  const [customCss, setCustomCss] = useState(preset?.customCss || "");
+  const [cssOpen, setCssOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +55,7 @@ export function PresetForm({ preset }: PresetFormProps) {
       primaryColor,
       fontFamily,
       logoUrl: logoUrl || undefined,
+      customCss: customCss || undefined,
       displayConfig,
       uploadConfig: {},
     };
@@ -132,6 +136,38 @@ export function PresetForm({ preset }: PresetFormProps) {
           <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="rounded" />
           <span className="text-sm text-white/70">Show names on display</span>
         </label>
+
+        {preset && (
+          <>
+            <hr className="border-white/10" />
+            <BrandAssetManager
+              target={{ type: "preset", id: preset._id }}
+              assets={preset.assets}
+            />
+          </>
+        )}
+
+        <hr className="border-white/10" />
+        <div>
+          <button
+            type="button"
+            onClick={() => setCssOpen(!cssOpen)}
+            className="flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
+          >
+            <svg className={`w-4 h-4 transition-transform ${cssOpen ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            Custom CSS
+          </button>
+          {cssOpen && (
+            <textarea
+              value={customCss}
+              onChange={(e) => setCustomCss(e.target.value)}
+              placeholder={`.selfie-frame { border-radius: 50%; }`}
+              className="mt-2 w-full h-32 rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white font-mono text-sm resize-y"
+            />
+          )}
+        </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
 
