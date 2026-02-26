@@ -171,7 +171,7 @@ export function PresetForm({ preset }: PresetFormProps) {
           )}
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-destructive text-sm">{error}</p>}
 
         <div className="flex gap-3 justify-end">
           <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>

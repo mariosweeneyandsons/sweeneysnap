@@ -13,9 +13,9 @@ interface UploadSettingsFormProps {
   crewToken?: string;
 }
 
-const inputClass = "w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white";
-const labelClass = "block text-sm font-medium text-white/70 mb-1";
-const sectionClass = "border-t border-white/10 pt-4";
+const inputClass = "w-full rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground";
+const labelClass = "block text-sm font-medium text-foreground-muted mb-1";
+const sectionClass = "border-t border-border pt-4";
 
 export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps) {
   const config = event.uploadConfig;
@@ -92,7 +92,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
       <div className="space-y-6">
         {/* Copy & Messaging */}
         <section>
-          <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
             Copy & Messaging
           </h3>
           <div className="space-y-4">
@@ -128,7 +128,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Upload Rules */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
             Upload Rules
           </h3>
           <div className="space-y-4">
@@ -152,7 +152,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Session Limits */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
             Session Limits
           </h3>
           <div className="space-y-4">
@@ -173,7 +173,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Camera Features */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
             Camera Features
           </h3>
           <div className="space-y-4">
@@ -195,7 +195,7 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
 
         {/* Photo Editor */}
         <section className={sectionClass}>
-          <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-foreground-faint uppercase tracking-wide mb-3">
             Photo Editor
           </h3>
           <div className="space-y-4">
@@ -205,8 +205,8 @@ export function UploadSettingsForm({ event, crewToken }: UploadSettingsFormProps
           </div>
         </section>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
-        {saved && <p className="text-green-400 text-sm">Settings saved!</p>}
+        {error && <p className="text-destructive text-sm">{error}</p>}
+        {saved && <p className="text-success text-sm">Settings saved!</p>}
 
         <Button onClick={handleSave} loading={loading} disabled={loading}>
           Save Upload Settings
@@ -227,14 +227,14 @@ function Toggle({
 }) {
   return (
     <label className="flex items-center justify-between cursor-pointer">
-      <span className="text-sm text-white/70">{label}</span>
+      <span className="text-sm text-foreground-muted">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={value}
         onClick={() => onChange(!value)}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-          value ? "bg-blue-500" : "bg-white/20"
+          value ? "bg-primary" : "bg-secondary-hover"
         }`}
       >
         <span
