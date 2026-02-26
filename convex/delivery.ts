@@ -1,6 +1,6 @@
 "use node";
 
-import { action, internalAction, internalMutation } from "./_generated/server";
+import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -34,22 +34,6 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#39;");
 }
 
-export const updateDeliveryStatus = internalMutation({
-  args: {
-    selfieId: v.id("selfies"),
-    deliveryStatus: v.union(v.literal("sent"), v.literal("failed")),
-  },
-  handler: async (ctx, args) => {
-    const patch: Record<string, unknown> = {
-      deliveryStatus: args.deliveryStatus,
-    };
-    if (args.deliveryStatus === "sent") {
-      patch.deliveredAt = Date.now();
-    }
-    await ctx.db.patch(args.selfieId, patch);
-  },
-});
-
 export const sendEmail = internalAction({
   args: {
     selfieId: v.id("selfies"),
@@ -62,7 +46,7 @@ export const sendEmail = internalAction({
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       console.error("RESEND_API_KEY not set, email delivery failed");
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
       });
@@ -109,13 +93,13 @@ export const sendEmail = internalAction({
         ],
       });
 
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "sent",
       });
     } catch (error) {
       console.error("Email delivery failed:", error);
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
       });
@@ -137,7 +121,7 @@ export const sendSms = internalAction({
 
     if (!accountSid || !authToken || !fromNumber) {
       console.error("Twilio credentials not set (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER), SMS delivery failed");
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
       });
@@ -155,13 +139,13 @@ export const sendSms = internalAction({
         mediaUrl: [args.imageUrl],
       });
 
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "sent",
       });
     } catch (error) {
       console.error("SMS delivery failed:", error);
-      await ctx.runMutation(internal.delivery.updateDeliveryStatus, {
+      await ctx.runMutation(internal.deliveryMutations.updateDeliveryStatus, {
         selfieId: args.selfieId,
         deliveryStatus: "failed",
       });

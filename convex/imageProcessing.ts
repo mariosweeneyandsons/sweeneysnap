@@ -8,6 +8,7 @@ import sharp from "sharp";
 export const generateResizedVersions = internalAction({
   args: { selfieId: v.id("selfies") },
   handler: async (ctx, args) => {
+
     // Get the selfie record
     const selfie = await ctx.runQuery(internal.selfies.getById, {
       selfieId: args.selfieId,
