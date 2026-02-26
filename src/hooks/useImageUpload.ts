@@ -48,12 +48,17 @@ export function useImageUpload(options?: UseImageUploadOptions): UseImageUploadR
       setError(null);
       setSelfieId(null);
 
-      // Compress
-      setState("compressing");
-      setProgress("Compressing image...");
-      const compressed = await compressImage(file, {
-        maxSizeMB: options?.maxFileSizeMb ?? 0.2,
-      });
+      // Compress (skip if already under target size)
+      const targetMB = options?.maxFileSizeMb ?? 0.2;
+      const alreadySmall = file.size <= targetMB * 1024 * 1024;
+      let compressed: Blob;
+      if (alreadySmall) {
+        compressed = file;
+      } else {
+        setState("compressing");
+        setProgress("Compressing image...");
+        compressed = await compressImage(file, { maxSizeMB: targetMB });
+      }
 
       // Upload to Convex storage (rate-limited)
       setState("uploading");

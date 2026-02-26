@@ -9,6 +9,7 @@ interface AssetPickerProps {
   onSelectFrame?: (asset: BrandAsset | null) => void;
   onAddSticker?: (asset: BrandAsset) => void;
   primaryColor?: string;
+  showNoneOption?: boolean;
 }
 
 export function AssetPicker({
@@ -18,6 +19,7 @@ export function AssetPicker({
   onSelectFrame,
   onAddSticker,
   primaryColor,
+  showNoneOption,
 }: AssetPickerProps) {
   if (assets.length === 0) {
     return (
@@ -29,6 +31,17 @@ export function AssetPicker({
 
   return (
     <div className="grid grid-cols-4 gap-2">
+      {type === "frame" && showNoneOption && (
+        <button
+          onClick={() => onSelectFrame?.(null)}
+          className="aspect-square rounded-lg overflow-hidden border-2 transition-colors bg-white/5 p-1 flex items-center justify-center"
+          style={{
+            borderColor: !activeFrame ? (primaryColor || "#ffffff") : "transparent",
+          }}
+        >
+          <span className="text-xs font-medium" style={{ opacity: 0.5 }}>None</span>
+        </button>
+      )}
       {assets.map((asset, i) => {
         const isActive = type === "frame" && activeFrame?.url === asset.url;
         return (

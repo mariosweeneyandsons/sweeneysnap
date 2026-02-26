@@ -25,10 +25,9 @@ interface SelfieFrameProps {
   selfie: Selfie | null;
   config: DisplayConfig;
   index: number;
-  isNew?: boolean;
 }
 
-export function SelfieFrame({ selfie, config, index, isNew }: SelfieFrameProps) {
+export function SelfieFrame({ selfie, config, index }: SelfieFrameProps) {
   const borderColor = config.frameBorderColor || "rgba(255,255,255,0.1)";
   const borderWidth = config.frameBorderWidth ?? 2;
   const transition = config.transition || "fade";

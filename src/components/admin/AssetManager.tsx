@@ -101,8 +101,8 @@ export function AssetManager({ event }: AssetManagerProps) {
           onClick={() => setActiveTab("frame")}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeTab === "frame"
-              ? "bg-white text-black"
-              : "bg-white/10 text-white/60 hover:bg-white/20"
+              ? "bg-foreground text-background"
+              : "bg-secondary text-foreground-muted hover:bg-secondary-hover"
           }`}
         >
           Frames
@@ -111,8 +111,8 @@ export function AssetManager({ event }: AssetManagerProps) {
           onClick={() => setActiveTab("sticker")}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeTab === "sticker"
-              ? "bg-white text-black"
-              : "bg-white/10 text-white/60 hover:bg-white/20"
+              ? "bg-foreground text-background"
+              : "bg-secondary text-foreground-muted hover:bg-secondary-hover"
           }`}
         >
           Stickers
@@ -131,7 +131,7 @@ export function AssetManager({ event }: AssetManagerProps) {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="w-full border-2 border-dashed border-white/20 rounded-lg py-8 px-4 text-center text-white/40 hover:border-white/40 hover:text-white/60 transition-colors disabled:opacity-50"
+          className="w-full border-2 border-dashed border-border rounded-lg py-8 px-4 text-center text-foreground-faint hover:border-border-strong hover:text-foreground-muted transition-colors disabled:opacity-50"
         >
           {uploading ? (
             "Uploading..."
@@ -144,11 +144,11 @@ export function AssetManager({ event }: AssetManagerProps) {
         </button>
       </div>
 
-      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+      {error && <p className="text-destructive text-sm mb-4">{error}</p>}
 
       {/* Asset grid */}
       {filteredAssets.length === 0 ? (
-        <p className="text-white/30 text-sm text-center py-4">
+        <p className="text-foreground-faint text-sm text-center py-4">
           No {activeTab}s uploaded yet
         </p>
       ) : (
@@ -156,7 +156,7 @@ export function AssetManager({ event }: AssetManagerProps) {
           {filteredAssets.map((asset) => (
             <div
               key={`${asset.url}-${asset.originalIndex}`}
-              className="relative aspect-square rounded-lg overflow-hidden bg-white/5 border border-white/10 p-2 group"
+              className="relative aspect-square rounded-lg overflow-hidden bg-surface border border-border p-2 group"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -166,11 +166,11 @@ export function AssetManager({ event }: AssetManagerProps) {
               />
               <button
                 onClick={() => handleRemove(asset.originalIndex)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500/80 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-destructive/80 text-foreground-emphasis flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
               >
                 ×
               </button>
-              <p className="absolute bottom-1 left-1 right-1 text-[10px] text-white/50 truncate">
+              <p className="absolute bottom-1 left-1 right-1 text-[10px] text-foreground-faint truncate">
                 {asset.name}
               </p>
             </div>

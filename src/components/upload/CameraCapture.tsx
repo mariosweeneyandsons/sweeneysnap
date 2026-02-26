@@ -69,7 +69,7 @@ export function CameraCapture({
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          capture="user"
+
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -87,7 +87,7 @@ export function CameraCapture({
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          capture="user"
+
           onChange={handleFileSelect}
           className="hidden"
         />

@@ -8,6 +8,7 @@ import { DisplayOverlay } from "./DisplayOverlay";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { TickerBar } from "./TickerBar";
 import { CountdownOverlay } from "./CountdownOverlay";
+import { QRCodeSVG } from "qrcode.react";
 import { Event, Selfie } from "@/types/database";
 import { useEffect } from "react";
 
@@ -106,6 +107,14 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
           <CountdownOverlay startsAt={event.startsAt} endsAt={event.endsAt} />
         )}
         {renderLayout()}
+        {selfies.length > 0 && (
+          <div className="absolute bottom-4 right-4 opacity-70 bg-white rounded-lg p-1.5">
+            <QRCodeSVG
+              value={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${event.slug}`}
+              size={96}
+            />
+          </div>
+        )}
       </div>
 
       {/* Ticker bar */}

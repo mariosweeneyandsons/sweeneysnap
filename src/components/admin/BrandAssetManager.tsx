@@ -85,14 +85,14 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
 
       <div className="flex items-end gap-3">
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1">Asset Type</label>
+          <label className="block text-sm font-medium text-foreground-muted mb-1">Asset Type</label>
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value as AssetType)}
-            className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-white text-sm"
+            className="rounded-lg border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
           >
             {assetTypes.map((t) => (
-              <option key={t.value} value={t.value} className="bg-gray-900">{t.label}</option>
+              <option key={t.value} value={t.value} className="bg-surface">{t.label}</option>
             ))}
           </select>
         </div>
@@ -119,18 +119,18 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
       {assets.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
           {assets.map((asset, i) => (
-            <div key={i} className="relative group rounded-lg border border-white/10 overflow-hidden bg-white/5">
+            <div key={i} className="relative group rounded-lg border border-border overflow-hidden bg-surface">
               <img
                 src={asset.url}
                 alt={asset.name}
                 className="w-full aspect-square object-contain p-2"
               />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                <span className="text-xs text-white/80 px-1 text-center truncate w-full">{asset.name}</span>
-                <span className="text-[10px] uppercase tracking-wider text-white/50">{asset.type}</span>
+              <div className="absolute inset-0 bg-surface-overlay opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                <span className="text-xs text-foreground px-1 text-center truncate w-full">{asset.name}</span>
+                <span className="text-[10px] uppercase tracking-wider text-foreground-faint">{asset.type}</span>
                 <button
                   onClick={() => handleRemove(i)}
-                  className="mt-1 text-xs text-red-400 hover:text-red-300"
+                  className="mt-1 text-xs text-destructive hover:text-destructive/80"
                 >
                   Remove
                 </button>
@@ -141,7 +141,7 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
       )}
 
       {assets.length === 0 && (
-        <p className="text-sm text-white/40">No assets uploaded yet.</p>
+        <p className="text-sm text-foreground-faint">No assets uploaded yet.</p>
       )}
     </div>
   );

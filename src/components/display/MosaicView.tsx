@@ -54,15 +54,20 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
     () => Array(totalSlots).fill(null)
   );
   const poolIndexRef = useRef(0);
+  const visibleIdsRef = useRef<Set<string>>(new Set());
 
   // Initialize
   useEffect(() => {
     if (selfies.length === 0) return;
     const initial: (Selfie | null)[] = [];
+    const ids = new Set<string>();
     for (let i = 0; i < totalSlots; i++) {
-      initial.push(i < selfies.length ? selfies[i] : null);
+      const s = i < selfies.length ? selfies[i] : null;
+      initial.push(s);
+      if (s) ids.add(s._id);
     }
     setVisibleSelfies(initial);
+    visibleIdsRef.current = ids;
     poolIndexRef.current = Math.min(totalSlots, selfies.length);
   }, [selfies.length === 0, totalSlots]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -72,8 +77,27 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
     setVisibleSelfies((prev) => {
       const next = [...prev];
       const slotIndex = Math.floor(Math.random() * totalSlots);
-      const nextSelfie = selfies[poolIndexRef.current % selfies.length];
-      poolIndexRef.current = (poolIndexRef.current + 1) % selfies.length;
+
+      // Find a selfie not already visible (with guard to prevent infinite loop)
+      let nextSelfie: Selfie | null = null;
+      for (let attempts = 0; attempts < selfies.length; attempts++) {
+        const candidate = selfies[poolIndexRef.current % selfies.length];
+        poolIndexRef.current = (poolIndexRef.current + 1) % selfies.length;
+        if (!visibleIdsRef.current.has(candidate._id)) {
+          nextSelfie = candidate;
+          break;
+        }
+      }
+      if (!nextSelfie) {
+        nextSelfie = selfies[poolIndexRef.current % selfies.length];
+        poolIndexRef.current = (poolIndexRef.current + 1) % selfies.length;
+      }
+
+      // Remove old ID, add new
+      const oldSelfie = next[slotIndex];
+      if (oldSelfie) visibleIdsRef.current.delete(oldSelfie._id);
+      visibleIdsRef.current.add(nextSelfie._id);
+
       next[slotIndex] = nextSelfie;
       return next;
     });
@@ -130,6 +154,9 @@ export function MosaicView({ selfies, config }: MosaicViewProps) {
                       <p className="text-white font-medium text-sm truncate">
                         {selfie.displayName}
                       </p>
+                      {config.showMessages && selfie.message && (
+                        <p className="text-white/70 text-xs truncate">{selfie.message}</p>
+                      )}
                     </div>
                   )}
                 </motion.div>

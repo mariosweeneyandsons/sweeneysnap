@@ -174,6 +174,7 @@ export function PhotoEditor({
               activeFrame={activeFrame}
               onSelectFrame={setActiveFrame}
               primaryColor={primaryColor}
+              showNoneOption
             />
           )}
           {activeTab === "stickers" && allStickers.length > 0 && (
