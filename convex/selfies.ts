@@ -8,6 +8,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { requireAdmin, requireAdminOrCrew, validateStringLength } from "./lib";
+import { selfieStatusValidator } from "./validators";
 
 /** Enrich a selfie doc with signed URLs for image, thumbnail, and medium. */
 async function enrichWithUrls(
@@ -43,13 +44,7 @@ export const listApprovedByEvent = query({
 export const listByEvent = query({
   args: {
     eventId: v.id("events"),
-    status: v.optional(
-      v.union(
-        v.literal("pending"),
-        v.literal("approved"),
-        v.literal("rejected")
-      )
-    ),
+    status: v.optional(selfieStatusValidator),
     crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -90,11 +85,7 @@ export const countByEvent = query({
 export const countByEventAndStatus = query({
   args: {
     eventId: v.id("events"),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected")
-    ),
+    status: selfieStatusValidator,
     crewToken: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -260,11 +251,7 @@ export const create = mutation({
 export const updateStatus = mutation({
   args: {
     id: v.id("selfies"),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected")
-    ),
+    status: selfieStatusValidator,
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -324,11 +311,7 @@ export const updateStatus = mutation({
 export const updateStatusWithLog = mutation({
   args: {
     id: v.id("selfies"),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected")
-    ),
+    status: selfieStatusValidator,
     crewToken: v.string(),
     crewMemberId: v.optional(v.id("crewMembers")),
   },
@@ -431,11 +414,7 @@ export const removeAllByEvent = mutation({
 export const bulkUpdateStatus = mutation({
   args: {
     ids: v.array(v.id("selfies")),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected")
-    ),
+    status: selfieStatusValidator,
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);

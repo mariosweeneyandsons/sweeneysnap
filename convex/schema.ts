@@ -7,6 +7,8 @@ import {
   brandAssetValidator,
   crewPermissionValidator,
   crewActionValidator,
+  selfieStatusValidator,
+  webhookTriggerValidator,
 } from "./validators";
 
 export default defineSchema({
@@ -76,11 +78,7 @@ export default defineSchema({
     storageId: v.id("_storage"),
     displayName: v.optional(v.string()),
     message: v.optional(v.string()),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected")
-    ),
+    status: selfieStatusValidator,
     sessionId: v.optional(v.string()),
     fileSizeBytes: v.optional(v.number()),
     aiModeration: v.optional(
@@ -121,13 +119,7 @@ export default defineSchema({
     eventId: v.id("events"),
     url: v.string(),
     secret: v.string(),
-    triggers: v.array(
-      v.union(
-        v.literal("selfie.created"),
-        v.literal("selfie.approved"),
-        v.literal("selfie.rejected")
-      )
-    ),
+    triggers: v.array(webhookTriggerValidator),
     isActive: v.boolean(),
     createdBy: v.optional(v.id("users")),
     updatedAt: v.number(),
