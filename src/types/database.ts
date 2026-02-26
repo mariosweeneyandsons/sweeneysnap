@@ -3,6 +3,14 @@
 
 export type SelfieStatus = "pending" | "approved" | "rejected";
 
+export interface AiModeration {
+  flagged: boolean;
+  categories: string[];
+  confidence: number;
+  autoRejected: boolean;
+  analyzedAt: number;
+}
+
 export interface UploadConfig {
   maxFileSizeMb?: number;
   allowGallery?: boolean;
@@ -89,6 +97,7 @@ export interface Event extends ConvexDocument {
   logoUrl?: string;
   primaryColor: string;
   moderationEnabled: boolean;
+  aiModerationEnabled?: boolean;
   startsAt?: number;
   endsAt?: number;
   archived?: boolean;
@@ -105,4 +114,5 @@ export interface Selfie extends ConvexDocument {
   status: SelfieStatus;
   sessionId?: string;
   fileSizeBytes?: number;
+  aiModeration?: AiModeration;
 }
