@@ -154,6 +154,19 @@ export default defineSchema({
     .index("by_eventId_status", ["eventId", "status"])
     .index("by_selfieId", ["selfieId"]),
 
+  accessRequests: defineTable({
+    email: v.string(),
+    displayName: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("denied")
+    ),
+    requestedAt: v.number(),
+  })
+    .index("by_email", ["email"])
+    .index("by_status", ["status"]),
+
   // Multi-event displays (Feature 94)
   multiEventDisplays: defineTable({
     name: v.string(),

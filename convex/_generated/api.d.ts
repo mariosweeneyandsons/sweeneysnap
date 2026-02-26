@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as accessRequests from "../accessRequests.js";
 import type * as adminProfiles from "../adminProfiles.js";
 import type * as aiModeration from "../aiModeration.js";
 import type * as analytics from "../analytics.js";
@@ -40,6 +41,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  accessRequests: typeof accessRequests;
   adminProfiles: typeof adminProfiles;
   aiModeration: typeof aiModeration;
   analytics: typeof analytics;

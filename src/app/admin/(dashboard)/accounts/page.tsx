@@ -14,7 +14,10 @@ export default function AccountsPage() {
   const { toast } = useToast();
   const profiles = useQuery(api.adminProfiles.list);
   const sessionsData = useQuery(api.sessions.listAdminSessions);
+  const pendingRequests = useQuery(api.accessRequests.listPending);
   const createAdmin = useMutation(api.adminProfiles.create);
+  const approveRequest = useMutation(api.accessRequests.approve);
+  const denyRequest = useMutation(api.accessRequests.deny);
   const forceDeleteSession = useMutation(api.sessions.forceDeleteSession);
   const forceDeleteAllUserSessions = useMutation(
     api.sessions.forceDeleteAllUserSessions
@@ -93,6 +96,72 @@ export default function AccountsPage() {
         <h1 className="text-2xl font-bold">Admin Accounts</h1>
         <Button onClick={() => setShowModal(true)}>New Account</Button>
       </div>
+
+      {/* Pending Access Requests */}
+      {pendingRequests && pendingRequests.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">
+            Pending Requests ({pendingRequests.length})
+          </h2>
+          <div className="grid gap-3">
+            {pendingRequests.map((request) => (
+              <Card
+                key={request._id}
+                className="flex items-center justify-between border-warning/30"
+              >
+                <div>
+                  <p className="font-medium">{request.displayName}</p>
+                  <p className="text-foreground-muted text-sm">{request.email}</p>
+                  <p className="text-foreground-faint text-xs">
+                    Requested{" "}
+                    {new Date(request.requestedAt).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        await approveRequest({ requestId: request._id });
+                        toast("Access approved — admin profile created", "success");
+                      } catch (err) {
+                        toast(
+                          err instanceof Error ? err.message : "Failed to approve",
+                          "error"
+                        );
+                      }
+                    }}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={async () => {
+                      try {
+                        await denyRequest({ requestId: request._id });
+                        toast("Request denied", "success");
+                      } catch (err) {
+                        toast(
+                          err instanceof Error ? err.message : "Failed to deny",
+                          "error"
+                        );
+                      }
+                    }}
+                  >
+                    Deny
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Admin Profiles */}
       <div className="grid gap-4">

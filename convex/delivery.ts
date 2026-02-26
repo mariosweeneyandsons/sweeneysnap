@@ -107,6 +107,52 @@ export const sendEmail = internalAction({
   },
 });
 
+export const sendAccessRequestEmail = internalAction({
+  args: {
+    email: v.string(),
+    displayName: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY not set, access request email failed");
+      return;
+    }
+
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(apiKey);
+
+      const safeName = escapeHtml(args.displayName);
+      const safeEmail = escapeHtml(args.email);
+      const accountsUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://sweeneysnap.com"}/admin/accounts`;
+
+      await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: "mario@sweeneyandsons.tv",
+        subject: `SweeneySnap: Access request from ${args.displayName}`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="text-align: center;">New Access Request</h1>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p style="margin-top: 20px;">
+              <a href="${accountsUrl}" style="display: inline-block; padding: 12px 24px; background: #2563eb; color: #fff; border-radius: 8px; text-decoration: none;">
+                Review in Admin
+              </a>
+            </p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">
+              Powered by SweeneySnap
+            </p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error("Access request email failed:", error);
+    }
+  },
+});
+
 export const sendSms = internalAction({
   args: {
     selfieId: v.id("selfies"),
