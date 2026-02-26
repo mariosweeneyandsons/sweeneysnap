@@ -106,3 +106,9 @@ export const crewActionValidator = v.union(
   v.literal("reset"),
   v.literal("delete")
 );
+
+export const webhookTriggerValidator = v.union(
+  v.literal("selfie.created"),
+  v.literal("selfie.approved"),
+  v.literal("selfie.rejected")
+);

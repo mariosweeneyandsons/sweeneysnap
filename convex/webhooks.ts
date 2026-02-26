@@ -1,12 +1,7 @@
 import { query, mutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib";
-
-const triggerValidator = v.union(
-  v.literal("selfie.created"),
-  v.literal("selfie.approved"),
-  v.literal("selfie.rejected")
-);
+import { webhookTriggerValidator } from "./validators";
 
 export const listByEvent = query({
   args: { eventId: v.id("events") },
@@ -23,7 +18,7 @@ export const create = mutation({
   args: {
     eventId: v.id("events"),
     url: v.string(),
-    triggers: v.array(triggerValidator),
+    triggers: v.array(webhookTriggerValidator),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -42,7 +37,7 @@ export const update = mutation({
   args: {
     id: v.id("webhooks"),
     url: v.optional(v.string()),
-    triggers: v.optional(v.array(triggerValidator)),
+    triggers: v.optional(v.array(webhookTriggerValidator)),
     isActive: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
@@ -63,7 +58,7 @@ export const remove = mutation({
 export const getWebhooksForTrigger = internalQuery({
   args: {
     eventId: v.id("events"),
-    trigger: triggerValidator,
+    trigger: webhookTriggerValidator,
   },
   handler: async (ctx, args) => {
     const webhooks = await ctx.db

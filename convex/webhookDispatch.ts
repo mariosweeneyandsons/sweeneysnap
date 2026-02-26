@@ -3,15 +3,12 @@
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { webhookTriggerValidator } from "./validators";
 
 export const dispatch = internalAction({
   args: {
     eventId: v.id("events"),
-    trigger: v.union(
-      v.literal("selfie.created"),
-      v.literal("selfie.approved"),
-      v.literal("selfie.rejected")
-    ),
+    trigger: webhookTriggerValidator,
     payload: v.any(),
   },
   handler: async (ctx, args) => {
