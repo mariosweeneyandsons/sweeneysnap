@@ -44,6 +44,7 @@ export default defineSchema({
     logoUrl: v.optional(v.string()),
     primaryColor: v.string(),
     moderationEnabled: v.boolean(),
+    aiModerationEnabled: v.optional(v.boolean()),
     startsAt: v.optional(v.number()),
     endsAt: v.optional(v.number()),
     archived: v.optional(v.boolean()),
@@ -65,6 +66,15 @@ export default defineSchema({
     ),
     sessionId: v.optional(v.string()),
     fileSizeBytes: v.optional(v.number()),
+    aiModeration: v.optional(
+      v.object({
+        flagged: v.boolean(),
+        categories: v.array(v.string()),
+        confidence: v.number(),
+        autoRejected: v.boolean(),
+        analyzedAt: v.number(),
+      })
+    ),
   })
     .index("by_eventId", ["eventId"])
     .index("by_eventId_status", ["eventId", "status"]),
