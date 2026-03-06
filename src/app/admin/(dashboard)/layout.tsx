@@ -2,7 +2,7 @@
 
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
@@ -20,12 +20,13 @@ export default function AdminLayout({
   const { isAuthenticated, isLoading } = useConvexAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shortcutHelpOpen, setShortcutHelpOpen] = useState(false);
 
   // Don't redirect while an OAuth code exchange is in progress
-  const hasAuthCode = searchParams.has("code");
+  const [hasAuthCode] = useState(
+    () => typeof window !== "undefined" && window.location.search.includes("code=")
+  );
 
   const adminProfile = useQuery(
     api.adminProfiles.getByCurrentUser,
