@@ -32,7 +32,7 @@ vi.mock("next/server", () => {
   };
 });
 
-import { middleware, config } from "./middleware";
+import { proxy, config } from "./proxy";
 import { NextRequest, NextResponse } from "next/server";
 
 function makeRequest(host: string, pathname = "/") {
@@ -41,34 +41,34 @@ function makeRequest(host: string, pathname = "/") {
   }) as any;
 }
 
-describe("middleware", () => {
+describe("proxy", () => {
   it("passes through for localhost", () => {
     const req = makeRequest("localhost:3000");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.next).toHaveBeenCalled();
   });
 
   it("passes through for sweeneysnap.com", () => {
     const req = makeRequest("sweeneysnap.com");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.next).toHaveBeenCalled();
   });
 
   it("passes through for www.sweeneysnap.com", () => {
     const req = makeRequest("www.sweeneysnap.com");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.next).toHaveBeenCalled();
   });
 
   it("passes through for sweeneysnap.vercel.app", () => {
     const req = makeRequest("sweeneysnap.vercel.app");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.next).toHaveBeenCalled();
   });
 
   it("rewrites custom domain to /_custom-domain/{hostname}", () => {
     const req = makeRequest("myevent.example.com");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.rewrite).toHaveBeenCalled();
     const call = (NextResponse.rewrite as any).mock.calls.at(-1)[0];
     expect(call.pathname).toBe("/_custom-domain/myevent.example.com");
@@ -76,14 +76,14 @@ describe("middleware", () => {
 
   it("rewrites custom domain with path", () => {
     const req = makeRequest("myevent.example.com", "/gallery");
-    middleware(req);
+    proxy(req);
     const call = (NextResponse.rewrite as any).mock.calls.at(-1)[0];
     expect(call.pathname).toBe("/_custom-domain/myevent.example.com/gallery");
   });
 
   it("is case-insensitive for hostname", () => {
     const req = makeRequest("SWEENEYSNAP.COM");
-    middleware(req);
+    proxy(req);
     expect(NextResponse.next).toHaveBeenCalled();
   });
 

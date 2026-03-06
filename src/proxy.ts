@@ -7,7 +7,7 @@ const APP_DOMAINS = [
   "sweeneysnap.vercel.app",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hostname = (request.headers.get("host")?.split(":")[0] ?? "").toLowerCase();
 
   // Skip for app's own domains
