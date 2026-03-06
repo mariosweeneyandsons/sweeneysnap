@@ -23,11 +23,6 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shortcutHelpOpen, setShortcutHelpOpen] = useState(false);
 
-  // Don't redirect while an OAuth code exchange is in progress
-  const [hasAuthCode] = useState(
-    () => typeof window !== "undefined" && window.location.search.includes("code=")
-  );
-
   const adminProfile = useQuery(
     api.adminProfiles.getByCurrentUser,
     isAuthenticated ? {} : "skip"
@@ -38,10 +33,10 @@ export default function AdminLayout({
   );
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && !hasAuthCode) {
+    if (!isLoading && !isAuthenticated) {
       router.push("/admin/login");
     }
-  }, [isLoading, isAuthenticated, hasAuthCode, router]);
+  }, [isLoading, isAuthenticated, router]);
 
   useEffect(() => {
     if (adminProfile === null) {
