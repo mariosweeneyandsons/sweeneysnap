@@ -99,10 +99,10 @@ function LoginContent() {
   const showRequestAccess = errorCode === "no_admin_profile";
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    if (!authLoading && isAuthenticated && !errorCode) {
       router.replace("/admin");
     }
-  }, [authLoading, isAuthenticated, router]);
+  }, [authLoading, isAuthenticated, errorCode, router]);
 
   const handleGoogleLogin = async () => {
     setLoading(true);
