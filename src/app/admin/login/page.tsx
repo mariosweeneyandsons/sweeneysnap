@@ -99,6 +99,7 @@ function LoginContent() {
   const showRequestAccess = errorCode === "no_admin_profile";
 
   useEffect(() => {
+    console.log("[auth-debug] state:", { authLoading, isAuthenticated, errorCode });
     if (!authLoading && isAuthenticated && !errorCode) {
       router.replace("/admin");
     }
@@ -106,7 +107,13 @@ function LoginContent() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    await signIn("google", { redirectTo: "/admin" });
+    try {
+      const result = await signIn("google", { redirectTo: "/admin" });
+      console.log("[auth-debug] signIn result:", result);
+    } catch (error) {
+      console.error("[auth-debug] signIn error:", error);
+      setLoading(false);
+    }
   };
 
   return (
