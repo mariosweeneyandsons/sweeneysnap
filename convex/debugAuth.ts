@@ -1,31 +1,18 @@
-// Temporary diagnostic file — delete after OAuth is fixed
-// This runs in Convex's DEFAULT V8 runtime (no "use node")
-import { action } from "./_generated/server";
+// Temporary — delete after OAuth fix
+import { query } from "./_generated/server";
 
-// Captured at module init time (when the module is first loaded)
-const initTimeEnv = {
-  hasGoogleId: typeof process !== "undefined" && !!process.env?.AUTH_GOOGLE_ID,
-  hasGoogleSecret: typeof process !== "undefined" && !!process.env?.AUTH_GOOGLE_SECRET,
-  googleIdPrefix: typeof process !== "undefined" ? process.env?.AUTH_GOOGLE_ID?.substring(0, 12) ?? "MISSING" : "NO_PROCESS",
-  hasConvexSiteUrl: typeof process !== "undefined" && !!process.env?.CONVEX_SITE_URL,
-  envKeyCount: typeof process !== "undefined" ? Object.keys(process.env ?? {}).length : -1,
-};
+// Capture at module init (same time as convexAuth runs)
+const initGoogleId = process.env.AUTH_GOOGLE_ID?.substring(0, 12) ?? "MISSING";
+const initEnvKeys = Object.keys(process.env).length;
 
-export const checkEnv = action({
+export const checkEnv = query({
   args: {},
   handler: async () => {
-    // Captured at function invocation time
-    const runtimeEnv = {
-      hasGoogleId: typeof process !== "undefined" && !!process.env?.AUTH_GOOGLE_ID,
-      hasGoogleSecret: typeof process !== "undefined" && !!process.env?.AUTH_GOOGLE_SECRET,
-      googleIdPrefix: typeof process !== "undefined" ? process.env?.AUTH_GOOGLE_ID?.substring(0, 12) ?? "MISSING" : "NO_PROCESS",
-      hasConvexSiteUrl: typeof process !== "undefined" && !!process.env?.CONVEX_SITE_URL,
-      envKeyCount: typeof process !== "undefined" ? Object.keys(process.env ?? {}).length : -1,
-    };
-
     return {
-      initTime: initTimeEnv,
-      runtime: runtimeEnv,
+      initGoogleId,
+      initEnvKeys,
+      runtimeGoogleId: process.env.AUTH_GOOGLE_ID?.substring(0, 12) ?? "MISSING",
+      runtimeEnvKeys: Object.keys(process.env).length,
     };
   },
 });
