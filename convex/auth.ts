@@ -1,5 +1,3 @@
-"use node";
-
 import { convexAuth } from "@convex-dev/auth/server";
 import Google from "@auth/core/providers/google";
 
