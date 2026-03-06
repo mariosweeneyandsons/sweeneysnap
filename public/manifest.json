@@ -1,7 +1,7 @@
 {
   "name": "SweeneySnap",
   "short_name": "SweeneySnap",
-  "description": "Live event selfie wall — upload, display, celebrate",
+  "description": "Live event selfie wall. Upload, display, celebrate.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

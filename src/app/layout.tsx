@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: "SweeneySnap",
-  description: "Live event selfie wall — upload, display, celebrate",
+  description: "Live event selfie wall. Upload, display, celebrate.",
   manifest: "/manifest.json",
   themeColor: "#000000",
   appleWebApp: {
