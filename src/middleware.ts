@@ -10,6 +10,7 @@ const APP_DOMAINS = [
 
 export default convexAuthNextjsMiddleware(
   (request, { event, convexAuth }) => {
+    console.log(`[middleware] ${request.method} ${request.nextUrl.pathname}${request.nextUrl.search}`);
     const hostname = (
       request.headers.get("host")?.split(":")[0] ?? ""
     ).toLowerCase();
@@ -22,7 +23,8 @@ export default convexAuthNextjsMiddleware(
     }
 
     return NextResponse.next();
-  }
+  },
+  { verbose: true }
 );
 
 export const config = {
