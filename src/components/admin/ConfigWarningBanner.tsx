@@ -8,7 +8,6 @@ export function ConfigWarningBanner() {
   const getConfigStatus = useAction(api.systemHealth.getConfigStatus);
   const [status, setStatus] = useState<{
     email: boolean;
-    sms: boolean;
     aiModeration: boolean;
   } | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -21,7 +20,6 @@ export function ConfigWarningBanner() {
 
   const missing: string[] = [];
   if (!status.email) missing.push("Email delivery (Resend)");
-  if (!status.sms) missing.push("SMS delivery (Twilio)");
   if (!status.aiModeration) missing.push("AI moderation (OpenAI)");
 
   if (missing.length === 0) return null;
