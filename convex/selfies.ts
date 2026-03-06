@@ -228,14 +228,6 @@ export const create = mutation({
             eventName: event.name,
           });
         }
-        if (args.phone) {
-          await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
-            selfieId,
-            phone: args.phone,
-            imageUrl,
-            eventName: event.name,
-          });
-        }
       }
     }
 
@@ -285,14 +277,6 @@ export const updateStatus = mutation({
                 email: selfie.email,
                 imageUrl,
                 displayName: selfie.displayName,
-                eventName: event.name,
-              });
-            }
-            if (selfie.phone) {
-              await ctx.scheduler.runAfter(0, internal.delivery.sendSms, {
-                selfieId: args.id,
-                phone: selfie.phone,
-                imageUrl,
                 eventName: event.name,
               });
             }

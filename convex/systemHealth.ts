@@ -15,10 +15,6 @@ export const getConfigStatus = action({
 
     return {
       email: !!process.env.RESEND_API_KEY,
-      sms:
-        !!process.env.TWILIO_ACCOUNT_SID &&
-        !!process.env.TWILIO_AUTH_TOKEN &&
-        !!process.env.TWILIO_PHONE_NUMBER,
       aiModeration: !!process.env.OPENAI_API_KEY,
     };
   },

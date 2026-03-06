@@ -33,8 +33,7 @@
     "react-dom": "19.2.3",
     "recharts": "^3.7.0",
     "resend": "^6.9.2",
-    "sharp": "^0.34.5",
-    "twilio": "^5.12.2"
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
