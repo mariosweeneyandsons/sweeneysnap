@@ -80,6 +80,8 @@ export const displayConfigValidator = v.object({
       v.literal("glow")
     )
   ),
+  // Layout template
+  layoutTemplateId: v.optional(v.string()),
 });
 
 export const brandAssetValidator = v.object({
@@ -89,7 +91,8 @@ export const brandAssetValidator = v.object({
     v.literal("background"),
     v.literal("overlay"),
     v.literal("frame"),
-    v.literal("sticker")
+    v.literal("sticker"),
+    v.literal("font")
   ),
   name: v.string(),
   storageId: v.optional(v.id("_storage")),

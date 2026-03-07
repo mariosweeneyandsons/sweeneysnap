@@ -76,11 +76,13 @@ export interface DisplayConfig {
   newSelfieSound?: "none" | "chime" | "shutter";
   // Celebration
   celebrationEffect?: "none" | "confetti" | "ripple" | "glow";
+  // Layout template
+  layoutTemplateId?: string;
 }
 
 export interface BrandAsset {
   url: string;
-  type: "logo" | "background" | "overlay" | "frame" | "sticker";
+  type: "logo" | "background" | "overlay" | "frame" | "sticker" | "font";
   name: string;
   storageId?: string;
 }

@@ -19,7 +19,8 @@ export const addToPreset = mutation({
       v.literal("background"),
       v.literal("overlay"),
       v.literal("frame"),
-      v.literal("sticker")
+      v.literal("sticker"),
+      v.literal("font")
     ),
     name: v.string(),
   },
@@ -54,7 +55,8 @@ export const addToEvent = mutation({
       v.literal("background"),
       v.literal("overlay"),
       v.literal("frame"),
-      v.literal("sticker")
+      v.literal("sticker"),
+      v.literal("font")
     ),
     name: v.string(),
   },
