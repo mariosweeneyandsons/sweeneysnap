@@ -2,7 +2,6 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
@@ -95,11 +94,9 @@ function LoginContent() {
   const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
   const errorCode = searchParams.get("error");
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] || "An error occurred." : null;
-  const { signIn } = useAuthActions();
   const showRequestAccess = errorCode === "no_admin_profile";
 
   useEffect(() => {
-    console.log("[auth-debug] state:", { authLoading, isAuthenticated, errorCode });
     if (!authLoading && isAuthenticated && !errorCode) {
       router.replace("/admin");
     }
@@ -108,10 +105,23 @@ function LoginContent() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const result = await signIn("google", { redirectTo: "/admin" });
-      console.log("[auth-debug] signIn result:", result);
+      const response = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "auth:signIn",
+          args: { provider: "google", params: { redirectTo: "/admin" } },
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      const result = await response.json();
+      if (result.redirect) {
+        window.location.href = result.redirect;
+      }
     } catch (error) {
-      console.error("[auth-debug] signIn error:", error);
+      console.error("[auth] signIn error:", error);
       setLoading(false);
     }
   };
