@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useClerk } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "motion/react";
 import { UserAvatar } from "./UserAvatar";
 
@@ -24,7 +24,7 @@ export function UserProfilePopover({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { signOut } = useAuthActions();
+  const { signOut } = useClerk();
 
   const handleSignOut = async () => {
     await signOut();

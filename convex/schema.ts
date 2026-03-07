@@ -1,6 +1,5 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { authTables } from "@convex-dev/auth/server";
 import {
   uploadConfigValidator,
   displayConfigValidator,
@@ -12,7 +11,48 @@ import {
 } from "./validators";
 
 export default defineSchema({
-  ...authTables,
+  // Legacy auth tables — kept for existing data compatibility.
+  // Auth is now handled by Clerk; these tables are no longer actively used.
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+  }),
+  authSessions: defineTable({
+    userId: v.id("users"),
+    expirationTime: v.number(),
+  }).index("userId", ["userId"]),
+  authRefreshTokens: defineTable({
+    sessionId: v.id("authSessions"),
+    expirationTime: v.number(),
+  }).index("sessionId", ["sessionId"]),
+  authAccountLinks: defineTable({
+    userId: v.id("users"),
+    provider: v.string(),
+    providerAccountId: v.string(),
+  })
+    .index("userId", ["userId"])
+    .index("accountLink", ["provider", "providerAccountId"]),
+  authRateLimits: defineTable({
+    identifier: v.string(),
+    lastAttemptTime: v.number(),
+    attemptsLeft: v.number(),
+  }).index("identifier", ["identifier"]),
+  authVerificationCodes: defineTable({
+    accountId: v.id("authAccountLinks"),
+    code: v.string(),
+    expirationTime: v.number(),
+    verifier: v.optional(v.string()),
+    emailVerified: v.optional(v.boolean()),
+  }).index("accountId", ["accountId"]),
+  authVerifiers: defineTable({
+    sessionId: v.optional(v.id("authSessions")),
+    signature: v.optional(v.string()),
+  }),
 
   adminProfiles: defineTable({
     userId: v.optional(v.id("users")),

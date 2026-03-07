@@ -1,15 +1,11 @@
 "use client";
 
-import { Suspense, useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
-import { ConvexHttpClient } from "convex/browser";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useSignIn, useAuth } from "@clerk/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
-
-const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL!;
-const STORAGE_NAMESPACE = CONVEX_URL.replace(/[^a-zA-Z0-9]/g, "");
 
 const ERROR_MESSAGES: Record<string, string> = {
   auth_failed: "Authentication failed. Please try again.",
@@ -94,101 +90,36 @@ function RequestAccessPanel() {
 
 function LoginContent() {
   const [loading, setLoading] = useState(false);
-  const [exchangingCode, setExchangingCode] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
+  const { isAuthenticated, isLoading: convexLoading } = useConvexAuth();
+  const { isSignedIn, isLoaded: clerkLoaded } = useAuth();
+  const { signIn } = useSignIn();
   const errorCode = searchParams.get("error");
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] || "An error occurred." : null;
   const showRequestAccess = errorCode === "no_admin_profile";
 
-  const { signIn } = useAuthActions();
-  const exchangeAttempted = useRef(false);
-
-  // Handle OAuth callback code exchange via HTTP (bypasses WebSocket auth state race)
+  // Redirect to admin dashboard once authenticated (covers already-signed-in users)
   useEffect(() => {
-    if (exchangeAttempted.current) return;
-    const code = new URLSearchParams(window.location.search).get("code");
-    if (!code) return;
-
-    exchangeAttempted.current = true;
-    setExchangingCode(true);
-
-    // Strip code from URL immediately
-    const url = new URL(window.location.href);
-    url.searchParams.delete("code");
-    window.history.replaceState({}, "", url.pathname + url.search);
-
-    // Read and consume the PKCE verifier (same as library's signIn does)
-    const verifierKey = `__convexAuthOAuthVerifier_${STORAGE_NAMESPACE}`;
-    const verifier = localStorage.getItem(verifierKey);
-    localStorage.removeItem(verifierKey);
-
-    if (!verifier) {
-      console.error("[auth] no OAuth verifier found in localStorage");
-      window.location.href = "/admin/login?error=auth_failed";
-      return;
-    }
-
-    // Use ConvexHttpClient for direct HTTP exchange — matches library's
-    // internal verifyCode path which is reliable on fresh page loads
-    const httpClient = new ConvexHttpClient(CONVEX_URL);
-    httpClient
-      .action(api.auth.signIn, { params: { code }, verifier })
-      .then((result) => {
-        const tokens = result?.tokens;
-        if (tokens) {
-          // Store tokens in localStorage (same keys the library reads on mount)
-          const jwtKey = `__convexAuthJWT_${STORAGE_NAMESPACE}`;
-          const refreshKey = `__convexAuthRefreshToken_${STORAGE_NAMESPACE}`;
-          localStorage.setItem(jwtKey, tokens.token);
-          localStorage.setItem(refreshKey, tokens.refreshToken);
-          // Full page reload — library picks up tokens via readStateFromStorage()
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/admin/login?error=auth_failed";
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("[auth] HTTP code exchange failed:", error);
-        window.location.href = "/admin/login?error=auth_failed";
-      });
-  }, []);
-
-  // Redirect to admin dashboard once authenticated (covers non-OAuth paths)
-  useEffect(() => {
-    if (!authLoading && isAuthenticated && !errorCode) {
+    if (clerkLoaded && isSignedIn && !convexLoading && isAuthenticated && !errorCode) {
       router.replace("/admin");
     }
-  }, [authLoading, isAuthenticated, errorCode, router]);
+  }, [clerkLoaded, isSignedIn, convexLoading, isAuthenticated, errorCode, router]);
 
   const handleGoogleLogin = async () => {
+    if (!signIn) return;
     setLoading(true);
-    // Clear any stale Convex auth verifiers from localStorage
     try {
-      for (const key of Object.keys(localStorage)) {
-        if (key.startsWith("__convexAuth")) {
-          localStorage.removeItem(key);
-        }
-      }
-    } catch {}
-    try {
-      await signIn("google", { redirectTo: "/admin/login" });
+      await signIn.sso({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectCallbackUrl: "/admin",
+      });
     } catch (error) {
       console.error("[auth] signIn failed:", error);
       setLoading(false);
     }
   };
-
-  // Show spinner while exchanging OAuth code
-  if (exchangingCode) {
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-border border-t-foreground-muted rounded-full animate-spin" />
-        <p className="text-foreground-muted text-sm">Completing sign-in...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-sm text-center">
