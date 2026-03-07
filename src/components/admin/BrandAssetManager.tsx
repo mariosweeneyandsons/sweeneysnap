@@ -7,16 +7,64 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { BrandAsset } from "@/types/database";
 import { Button } from "@/components/ui/Button";
 
-type AssetType = "logo" | "background" | "overlay" | "frame" | "sticker";
+type AssetType = BrandAsset["type"];
 
 interface BrandAssetManagerProps {
   target: { type: "preset"; id: string } | { type: "event"; id: string };
   assets: BrandAsset[];
+  filterTypes?: AssetType[];
 }
 
-export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
+interface AssetSection {
+  type: AssetType;
+  label: string;
+  description: string;
+  accept: string;
+  singular: boolean;
+}
+
+const SECTIONS: AssetSection[] = [
+  { type: "logo", label: "Logo", description: "Shown in the display overlay", accept: "image/*", singular: true },
+  { type: "background", label: "Background", description: "Full-screen display background image", accept: "image/*", singular: true },
+  { type: "overlay", label: "Overlay", description: "Rendered on top of the display", accept: "image/*", singular: false },
+  { type: "frame", label: "Frame", description: "Decorative frame around each selfie", accept: "image/*", singular: false },
+  { type: "sticker", label: "Sticker", description: "Fun stickers guests can add to selfies", accept: "image/*", singular: false },
+  { type: "font", label: "Custom Font", description: "Upload .ttf, .woff2, or .otf files", accept: ".ttf,.woff2,.otf,font/*", singular: false },
+];
+
+export function BrandAssetManager({ target, assets, filterTypes }: BrandAssetManagerProps) {
+  const sections = filterTypes
+    ? SECTIONS.filter((s) => filterTypes.includes(s.type))
+    : SECTIONS;
+
+  return (
+    <div className="space-y-6">
+      <h3 className="font-semibold">Brand Assets</h3>
+      {sections.map((section) => (
+        <AssetSectionPanel
+          key={section.type}
+          section={section}
+          target={target}
+          assets={assets.filter((a) => a.type === section.type)}
+          allAssets={assets}
+        />
+      ))}
+    </div>
+  );
+}
+
+function AssetSectionPanel({
+  section,
+  target,
+  assets,
+  allAssets,
+}: {
+  section: AssetSection;
+  target: BrandAssetManagerProps["target"];
+  assets: BrandAsset[];
+  allAssets: BrandAsset[];
+}) {
   const [uploading, setUploading] = useState(false);
-  const [selectedType, setSelectedType] = useState<AssetType>("logo");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const generateUploadUrl = useMutation(api.brandAssets.generateUploadUrl);
@@ -39,18 +87,30 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
       });
       const { storageId } = await res.json();
 
+      // For singular types, remove existing asset first
+      if (section.singular && assets.length > 0) {
+        const existingIndex = allAssets.findIndex((a) => a.type === section.type);
+        if (existingIndex !== -1) {
+          if (target.type === "preset") {
+            await removeFromPreset({ presetId: target.id as Id<"presets">, assetIndex: existingIndex });
+          } else {
+            await removeFromEvent({ eventId: target.id as Id<"events">, assetIndex: existingIndex });
+          }
+        }
+      }
+
       if (target.type === "preset") {
         await addToPreset({
           presetId: target.id as Id<"presets">,
           storageId,
-          type: selectedType,
+          type: section.type,
           name: file.name,
         });
       } else {
         await addToEvent({
           eventId: target.id as Id<"events">,
           storageId,
-          type: selectedType,
+          type: section.type,
           name: file.name,
         });
       }
@@ -62,8 +122,10 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
     }
   };
 
-  const handleRemove = async (index: number) => {
+  const handleRemove = async (asset: BrandAsset) => {
     if (!confirm("Remove this asset?")) return;
+    const index = allAssets.indexOf(asset);
+    if (index === -1) return;
     if (target.type === "preset") {
       await removeFromPreset({ presetId: target.id as Id<"presets">, assetIndex: index });
     } else {
@@ -71,36 +133,20 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
     }
   };
 
-  const assetTypes: { value: AssetType; label: string }[] = [
-    { value: "logo", label: "Logo" },
-    { value: "background", label: "Background" },
-    { value: "overlay", label: "Overlay" },
-    { value: "frame", label: "Frame" },
-    { value: "sticker", label: "Sticker" },
-  ];
+  const isFont = section.type === "font";
 
   return (
-    <div className="space-y-4">
-      <h3 className="font-semibold">Brand Assets</h3>
-
-      <div className="flex items-end gap-3">
+    <div className="border border-border rounded-xs p-4">
+      <div className="flex items-start justify-between mb-3">
         <div>
-          <label className="block text-sm font-medium text-foreground-muted mb-1">Asset Type</label>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value as AssetType)}
-            className="rounded-xs border border-border bg-input-bg px-3 py-2 text-foreground text-sm"
-          >
-            {assetTypes.map((t) => (
-              <option key={t.value} value={t.value} className="bg-surface">{t.label}</option>
-            ))}
-          </select>
+          <h4 className="text-sm font-semibold text-foreground">{section.label}</h4>
+          <p className="text-xs text-foreground-faint">{section.description}</p>
         </div>
-        <div className="flex-1">
+        <div>
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept={section.accept}
             onChange={handleUpload}
             className="hidden"
           />
@@ -111,37 +157,63 @@ export function BrandAssetManager({ target, assets }: BrandAssetManagerProps) {
             onClick={() => fileRef.current?.click()}
             loading={uploading}
           >
-            Upload Asset
+            {section.singular && assets.length > 0 ? "Replace" : "Upload"}
           </Button>
         </div>
       </div>
 
-      {assets.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+      {assets.length > 0 ? (
+        <div className={isFont ? "flex flex-col gap-2" : "grid grid-cols-3 sm:grid-cols-4 gap-3"}>
           {assets.map((asset, i) => (
-            <div key={i} className="relative group rounded-xs border border-border overflow-hidden bg-surface">
-              <img
-                src={asset.url}
-                alt={asset.name}
-                className="w-full aspect-square object-contain p-2"
-              />
-              <div className="absolute inset-0 bg-surface-overlay opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                <span className="text-xs text-foreground px-1 text-center truncate w-full">{asset.name}</span>
-                <span className="text-[10px] uppercase tracking-wider text-foreground-faint">{asset.type}</span>
-                <button
-                  onClick={() => handleRemove(i)}
-                  className="mt-1 text-xs text-destructive hover:text-destructive/80"
-                >
-                  Remove
-                </button>
-              </div>
+            <div
+              key={i}
+              className={
+                isFont
+                  ? "flex items-center justify-between gap-3 rounded-xs border border-border p-2 bg-surface"
+                  : "relative group rounded-xs border border-border overflow-hidden bg-surface"
+              }
+            >
+              {isFont ? (
+                <>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <svg className="w-4 h-4 shrink-0 text-foreground-faint" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+                    </svg>
+                    <span className="text-sm text-foreground truncate">{asset.name}</span>
+                  </div>
+                  <button
+                    onClick={() => handleRemove(asset)}
+                    className="text-xs text-destructive hover:text-destructive/80 shrink-0"
+                  >
+                    Remove
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={asset.url}
+                    alt={asset.name}
+                    className="w-full aspect-square object-contain p-2"
+                  />
+                  <div className="absolute inset-0 bg-surface-overlay opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                    <span className="text-xs text-foreground px-1 text-center truncate w-full">{asset.name}</span>
+                    <button
+                      onClick={() => handleRemove(asset)}
+                      className="mt-1 text-xs text-destructive hover:text-destructive/80"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
-      )}
-
-      {assets.length === 0 && (
-        <p className="text-sm text-foreground-faint">No assets uploaded yet.</p>
+      ) : (
+        <p className="text-xs text-foreground-faint">
+          {section.singular ? `No ${section.label.toLowerCase()} uploaded.` : `No ${section.label.toLowerCase()}s uploaded yet.`}
+        </p>
       )}
     </div>
   );
