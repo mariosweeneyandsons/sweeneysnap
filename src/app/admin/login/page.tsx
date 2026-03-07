@@ -99,36 +99,6 @@ function LoginContent() {
 
   const { signIn } = useAuthActions();
 
-  // Capture code from URL before anything strips it
-  const [codeFromUrl] = useState(() => {
-    if (typeof window === "undefined") return null;
-    return new URLSearchParams(window.location.search).get("code");
-  });
-
-  // Handle OAuth callback code exchange
-  useEffect(() => {
-    if (!codeFromUrl) return;
-
-    // Strip code from URL immediately
-    const url = new URL(window.location.href);
-    url.searchParams.delete("code");
-    window.history.replaceState({}, "", url.pathname + url.search);
-
-    // Exchange the code for tokens
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signIn as any)(undefined, { code: codeFromUrl })
-      .then((result: { signingIn: boolean }) => {
-        if (!result.signingIn) {
-          console.error("[auth] code exchange returned no session");
-          window.location.href = "/admin/login?error=auth_failed";
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("[auth] code exchange failed:", error);
-        window.location.href = "/admin/login?error=auth_failed";
-      });
-  }, [codeFromUrl, signIn]);
-
   // Redirect to admin dashboard once authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated && !errorCode) {
@@ -153,16 +123,6 @@ function LoginContent() {
       setLoading(false);
     }
   };
-
-  // Show spinner while exchanging OAuth code
-  if (codeFromUrl) {
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-border border-t-foreground-muted rounded-full animate-spin" />
-        <p className="text-foreground-muted text-sm">Completing sign-in...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-sm text-center">
