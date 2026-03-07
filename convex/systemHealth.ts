@@ -14,7 +14,7 @@ export const getConfigStatus = action({
 
     return {
       email: !!process.env.RESEND_API_KEY,
-      aiModeration: !!process.env.OPENAI_API_KEY,
+      aiModeration: !!process.env.ANTHROPIC_API_KEY,
     };
   },
 });
