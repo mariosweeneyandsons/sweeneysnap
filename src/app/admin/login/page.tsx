@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
-import { useSignIn, useAuth } from "@clerk/nextjs";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
 
@@ -89,12 +89,10 @@ function RequestAccessPanel() {
 }
 
 function LoginContent() {
-  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isAuthenticated, isLoading: convexLoading } = useConvexAuth();
   const { isSignedIn, isLoaded: clerkLoaded } = useAuth();
-  const { signIn } = useSignIn();
   const errorCode = searchParams.get("error");
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] || "An error occurred." : null;
   const showRequestAccess = errorCode === "no_admin_profile";
@@ -105,21 +103,6 @@ function LoginContent() {
       router.replace("/admin");
     }
   }, [clerkLoaded, isSignedIn, convexLoading, isAuthenticated, errorCode, router]);
-
-  const handleGoogleLogin = async () => {
-    if (!signIn) return;
-    setLoading(true);
-    try {
-      await signIn.sso({
-        strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectCallbackUrl: "/admin",
-      });
-    } catch (error) {
-      console.error("[auth] signIn failed:", error);
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="w-full max-w-sm text-center">
@@ -138,14 +121,11 @@ function LoginContent() {
         </div>
       )}
 
-      <Button
-        onClick={handleGoogleLogin}
-        loading={loading}
-        size="lg"
-        className="w-full"
-      >
-        Sign in with Google
-      </Button>
+      <SignInButton mode="modal" forceRedirectUrl="/admin">
+        <Button size="lg" className="w-full">
+          Sign in with Google
+        </Button>
+      </SignInButton>
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const APP_DOMAINS = [
   "localhost",
@@ -7,20 +8,27 @@ const APP_DOMAINS = [
   "sweeneysnap.vercel.app",
 ];
 
-export function proxy(request: NextRequest) {
-  const hostname = (request.headers.get("host")?.split(":")[0] ?? "").toLowerCase();
+export default clerkMiddleware(async (auth, request) => {
+  const hostname = (
+    request.headers.get("host")?.split(":")[0] ?? ""
+  ).toLowerCase();
 
-  // Skip for app's own domains
+  // Skip custom domain rewriting for app's own domains
   if (APP_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
-    return NextResponse.next();
+    return;
   }
 
   // Rewrite custom domain to internal route
   const url = request.nextUrl.clone();
   url.pathname = `/_custom-domain/${hostname}${url.pathname === "/" ? "" : url.pathname}`;
   return NextResponse.rewrite(url);
-}
+});
 
 export const config = {
-  matcher: ["/((?!_next|_static|favicon.ico|icons|manifest.json|sw.js|api).*)"],
+  matcher: [
+    // Skip Next.js internals and static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };
