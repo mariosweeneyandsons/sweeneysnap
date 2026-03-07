@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { useAuthActions } from "@convex-dev/auth/react";
@@ -90,6 +90,7 @@ function RequestAccessPanel() {
 
 function LoginContent() {
   const [loading, setLoading] = useState(false);
+  const [exchangingCode, setExchangingCode] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
@@ -98,8 +99,41 @@ function LoginContent() {
   const showRequestAccess = errorCode === "no_admin_profile";
 
   const { signIn } = useAuthActions();
+  const exchangeAttempted = useRef(false);
 
-  // Redirect to admin dashboard once authenticated
+  // Handle OAuth callback code exchange
+  useEffect(() => {
+    if (exchangeAttempted.current) return;
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (!code) return;
+
+    exchangeAttempted.current = true;
+    setExchangingCode(true);
+
+    // Strip code from URL immediately
+    const url = new URL(window.location.href);
+    url.searchParams.delete("code");
+    window.history.replaceState({}, "", url.pathname + url.search);
+
+    // Exchange the code — use full page navigation after to avoid
+    // React state propagation issues with setToken
+    // @ts-expect-error — internal API accepts undefined provider for code exchange
+    signIn(undefined, { code })
+      .then((result: { signingIn: boolean }) => {
+        if (result.signingIn) {
+          // Tokens stored in localStorage — full reload picks them up cleanly
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/admin/login?error=auth_failed";
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("[auth] code exchange failed:", error);
+        window.location.href = "/admin/login?error=auth_failed";
+      });
+  }, [signIn]);
+
+  // Redirect to admin dashboard once authenticated (covers non-OAuth paths)
   useEffect(() => {
     if (!authLoading && isAuthenticated && !errorCode) {
       router.replace("/admin");
@@ -123,6 +157,16 @@ function LoginContent() {
       setLoading(false);
     }
   };
+
+  // Show spinner while exchanging OAuth code
+  if (exchangingCode) {
+    return (
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-border border-t-foreground-muted rounded-full animate-spin" />
+        <p className="text-foreground-muted text-sm">Completing sign-in...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-sm text-center">
