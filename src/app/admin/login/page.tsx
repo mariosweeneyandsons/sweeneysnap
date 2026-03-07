@@ -3,9 +3,13 @@
 import { Suspense, useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
+import { ConvexHttpClient } from "convex/browser";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
+
+const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL!;
+const STORAGE_NAMESPACE = CONVEX_URL.replace(/[^a-zA-Z0-9]/g, "");
 
 const ERROR_MESSAGES: Record<string, string> = {
   auth_failed: "Authentication failed. Please try again.",
@@ -101,7 +105,7 @@ function LoginContent() {
   const { signIn } = useAuthActions();
   const exchangeAttempted = useRef(false);
 
-  // Handle OAuth callback code exchange
+  // Handle OAuth callback code exchange via HTTP (bypasses WebSocket auth state race)
   useEffect(() => {
     if (exchangeAttempted.current) return;
     const code = new URLSearchParams(window.location.search).get("code");
@@ -115,23 +119,41 @@ function LoginContent() {
     url.searchParams.delete("code");
     window.history.replaceState({}, "", url.pathname + url.search);
 
-    // Exchange the code — use full page navigation after to avoid
-    // React state propagation issues with setToken
-    // @ts-expect-error — internal API accepts undefined provider for code exchange
-    signIn(undefined, { code })
-      .then((result: { signingIn: boolean }) => {
-        if (result.signingIn) {
-          // Tokens stored in localStorage — full reload picks them up cleanly
+    // Read and consume the PKCE verifier (same as library's signIn does)
+    const verifierKey = `__convexAuthOAuthVerifier_${STORAGE_NAMESPACE}`;
+    const verifier = localStorage.getItem(verifierKey);
+    localStorage.removeItem(verifierKey);
+
+    if (!verifier) {
+      console.error("[auth] no OAuth verifier found in localStorage");
+      window.location.href = "/admin/login?error=auth_failed";
+      return;
+    }
+
+    // Use ConvexHttpClient for direct HTTP exchange — matches library's
+    // internal verifyCode path which is reliable on fresh page loads
+    const httpClient = new ConvexHttpClient(CONVEX_URL);
+    httpClient
+      .action(api.auth.signIn, { params: { code }, verifier })
+      .then((result) => {
+        const tokens = result?.tokens;
+        if (tokens) {
+          // Store tokens in localStorage (same keys the library reads on mount)
+          const jwtKey = `__convexAuthJWT_${STORAGE_NAMESPACE}`;
+          const refreshKey = `__convexAuthRefreshToken_${STORAGE_NAMESPACE}`;
+          localStorage.setItem(jwtKey, tokens.token);
+          localStorage.setItem(refreshKey, tokens.refreshToken);
+          // Full page reload — library picks up tokens via readStateFromStorage()
           window.location.href = "/admin";
         } else {
           window.location.href = "/admin/login?error=auth_failed";
         }
       })
       .catch((error: unknown) => {
-        console.error("[auth] code exchange failed:", error);
+        console.error("[auth] HTTP code exchange failed:", error);
         window.location.href = "/admin/login?error=auth_failed";
       });
-  }, [signIn]);
+  }, []);
 
   // Redirect to admin dashboard once authenticated (covers non-OAuth paths)
   useEffect(() => {
