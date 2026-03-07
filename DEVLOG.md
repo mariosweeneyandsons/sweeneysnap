@@ -3,9 +3,98 @@
 A live event selfie wall app by Sweeney and Sons. Attendees scan a QR code, take a selfie, and it appears on the big screen in real time.
 
 **Stack**: Next.js 16 (App Router) + Convex + Tailwind CSS v4 + Motion
-**Auth**: Convex Auth + Google OAuth
+**Auth**: Clerk + Google OAuth
 **Hosting**: Vercel + Convex Cloud
 **GitHub**: mariosweeneyandsons/sweeneysnap
+
+---
+
+## Day 6 — 2026-03-06 (Thursday)
+**Summary:** Epic OAuth battle: migrated from @convex-dev/auth to Clerk after hours of debugging Google sign-in, then switched AI moderation to Claude and redesigned the homepage.
+
+### The Story
+Mario started the afternoon with a clean homepage redesign, applying the blueprint theme and stripping out em dashes (`dc1f4e8`). Then came the rename of `middleware.ts` to `proxy.ts` for Next.js 16 compatibility, and a cleanup removing the Twilio dependency since SMS delivery was no longer needed.
+
+What followed was one of the most grueling debugging sessions in the project's history. Google OAuth with @convex-dev/auth simply would not work in production. Mario tried everything: explicitly passing credentials (`ca6bf13`), toggling "use node" on auth.ts, adding verbose logging, switching to server-side integration, using `window.location` instead of `useSearchParams`, preventing redirect race conditions, fixing infinite redirect loops for users without admin profiles, switching to in-memory storage to prevent stale localStorage verifiers, bypassing the AuthProvider's signIn method, reverting to client-side ConvexAuthProvider, manual code exchange, reverting that, trying full-page navigation, and finally using an HTTP client for OAuth code exchange to bypass the WebSocket auth race condition. After nearly 20 commits of OAuth whack-a-mole, Mario made the decisive call: rip out @convex-dev/auth entirely and migrate to Clerk (`f03cc8f`). With Clerk's middleware in keyless mode, the SignInButton component, and a custom Google sign-in button that skips the Clerk modal, auth finally worked cleanly.
+
+The session wrapped up with two more wins: switching AI moderation from OpenAI to Claude Haiku 4.5 (`8c6f614`) and building a custom Google sign-in button that bypasses Clerk's default modal flow (`704b476`).
+
+### Battles
+- [Won] **Google OAuth with @convex-dev/auth** -- After ~15 fix attempts spanning verifier bugs, redirect loops, race conditions, and WebSocket timing issues, the library was abandoned in favor of Clerk
+- [Won] **Next.js 16 middleware rename** -- `middleware.ts` needed to become `proxy.ts` for compatibility
+- [Dodged] **Clerk modal flow** -- Custom Google sign-in button skips the generic Clerk modal, keeping the UX clean
+
+### What Got Done
+- Homepage redesigned with blueprint theme (`dc1f4e8`)
+- Auth migrated from @convex-dev/auth to Clerk (`f03cc8f`)
+- Custom Google sign-in button, no Clerk modal or sign-up flow (`704b476`)
+- AI moderation switched from OpenAI to Claude Haiku 4.5 (`8c6f614`)
+- Twilio dependency removed, middleware renamed for Next.js 16
+
+### Commits
+- `dc1f4e8` -- style: redesign homepage with blueprint theme
+- `954cca8` -- fix: rename middleware.ts to proxy.ts for Next.js 16
+- `01ca810` -- chore: remove twilio dependency and SMS delivery
+- `ca6bf13` -- fix: explicitly pass Google OAuth credentials
+- `534127b` -- fix: break infinite redirect loop
+- `97f7112` through `e936fe3` -- ~15 OAuth debugging commits
+- `f03cc8f` -- feat: migrate auth from @convex-dev/auth to Clerk
+- `fbf32fe` -- fix: use clerkMiddleware in proxy.ts, keyless mode
+- `8c6f614` -- feat: switch AI moderation to Claude Haiku 4.5
+- `704b476` -- feat: custom Google sign-in button
+
+### Notes
+The @convex-dev/auth library has a fundamental issue with OAuth code exchange over WebSocket connections in production. The verifier stored in localStorage gets stale across redirects, and the timing between the OAuth callback and the WebSocket connection is unreliable. Clerk solved this cleanly with its own token management. The auth stack is now Clerk (frontend) with Convex verifying Clerk JWTs on the backend.
+
+---
+
+## Day 5 — 2026-02-26 (Wednesday)
+**Summary:** Massive code quality sprint -- 55 commits covering security fixes, design token migration, test infrastructure, and platform hardening from midnight to 6 AM.
+
+### The Story
+This was the cleanup session. After the feature marathon of Day 4, Mario turned to code quality and shipped a relentless stream of improvements in a single overnight burst.
+
+It started just after midnight with print station integration (`111099b`) and multi-event display pages (`de57c30`), followed by a public selfie gallery with masonry grid and lightbox (`21d47be`). Then came the CLAUDE.md devlog instructions and the blueprint design token migration -- a systematic sweep through every layer of the app: admin nav, skeleton components, UI primitives, admin grids, gallery components, upload components, display pages, public pages, accounts, and crew pages. Each got its own commit, each consistently applying the blueprint theme's rounded-xs corners and semantic color tokens.
+
+Around 12:30 AM, Mario shifted to hardening. Resource leaks in the booth kiosk and offline queue got patched (`88755ec`). Delivery, AI moderation, and social sharing received fixes (`01cdb7c`). Custom domain matching was normalized to lowercase. A stray hardcoded hover color in GalleryGrid was replaced. Then the refactoring wave: duplicate components got consolidated (CountdownOverlay, webhook trigger validators, color utilities, config helpers), magic numbers moved to a centralized defaults file, and dead code got removed.
+
+The security sweep at 12:51 AM was a turning point -- `12690e8` closed security holes, fixed root-cause TypeScript errors, and most importantly, removed the `ignoreBuildErrors` flag that had been a pragmatic but risky escape hatch since Day 4. After that, access requests got a self-serve flow, admin warning banners appeared for missing API keys, and admin profile management got a remove function.
+
+The final push from 5:30-6 AM was all testing: vitest infrastructure, 93 utility tests, convex-test suites for presets and crew activity, 88 component tests, and 6 full Convex test suites -- all passing after fixing "Write outside of transaction" errors in the test runner.
+
+### Battles
+- [Won] **ignoreBuildErrors removal** -- Fixed the underlying TS errors properly instead of bypassing them, then removed the escape hatch (`12690e8`)
+- [Won] **"Write outside of transaction" in convex tests** -- Resolved by restructuring test helpers (`654dae9`)
+- [Won] **OAuth redirect after login** -- Fixed to properly redirect to /admin after Google OAuth (`38b59e7`)
+
+### What Got Done
+- Full blueprint design token migration across ~15 component groups
+- Security hardening: closed holes, removed ignoreBuildErrors
+- Print station integration with queue and HTTP polling API
+- Multi-event display pages and admin management
+- Public selfie gallery with masonry grid and lightbox
+- Self-serve access request flow for admin login
+- Admin accounts management (add/remove)
+- Test infrastructure: vitest + RTL + convex-test with 270+ tests
+- Code quality: 10+ refactoring commits consolidating duplicates
+- Design token pipeline (overlay, shadow, opacity, blur, z-index tokens)
+- DEVLOG narrative journal system added to CLAUDE.md
+
+### Commits
+- `111099b` -- feat: print station integration
+- `de57c30` -- feat: multi-event display pages
+- `21d47be` -- feat: public selfie gallery with masonry grid
+- `49b683c` -- feat: add CLAUDE.md with devlog instructions
+- `895ac44` through `b7b3f80` -- 14 design token migration commits
+- `88755ec` -- fix: resource leaks in booth kiosk
+- `12690e8` -- fix: close security holes, remove ignoreBuildErrors
+- `9b93191` -- feat: self-serve access request flow
+- `7ba8989` -- feat: test infrastructure with vitest
+- `92e467f` -- test: 93 utility tests
+- `1d95c9a` -- test: 6 convex test suites
+
+### Notes
+With ignoreBuildErrors removed, every future commit must pass TypeScript checks. The test suite now provides a safety net for backend mutations. The blueprint design token migration is complete across all existing components -- new components should use the semantic token pipeline from the start.
 
 ---
 
