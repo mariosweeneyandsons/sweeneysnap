@@ -55,8 +55,8 @@ export function LivePreviewPanel({ eventId, config, className }: LivePreviewPane
           <div
             className="grid gap-1 w-full h-full p-1"
             style={{
-              gridTemplateColumns: `repeat(${columns}, 1fr)`,
-              gridTemplateRows: `repeat(${columns}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${columns}, minmax(0, 1fr))`,
               backgroundColor: config.backgroundColor || "#000000",
             }}
           >
