@@ -1,6 +1,7 @@
 "use client";
 
 import { getContrastColor, getGoogleFontUrl } from "@/lib/theme";
+import { getLayoutTemplate } from "@/lib/layoutTemplates";
 import { useEffect } from "react";
 
 interface PresetPreviewProps {
@@ -10,10 +11,11 @@ interface PresetPreviewProps {
   gridColumns: number;
   showNames: boolean;
   logoUrl?: string;
+  layoutTemplateId?: string;
 }
 
-const PLACEHOLDER_NAMES = ["Alex", "Jamie", "Sam", "Taylor", "Morgan", "Jordan"];
-const PLACEHOLDER_COLORS = ["#6366f1", "#ec4899", "#14b8a6", "#f59e0b", "#8b5cf6", "#ef4444"];
+const PLACEHOLDER_NAMES = ["Alex", "Jamie", "Sam", "Taylor", "Morgan", "Jordan", "Riley", "Casey", "Quinn"];
+const PLACEHOLDER_COLORS = ["#6366f1", "#ec4899", "#14b8a6", "#f59e0b", "#8b5cf6", "#ef4444", "#06b6d4", "#f97316", "#22c55e"];
 
 export function PresetPreview({
   primaryColor,
@@ -22,6 +24,7 @@ export function PresetPreview({
   gridColumns,
   showNames,
   logoUrl,
+  layoutTemplateId,
 }: PresetPreviewProps) {
   const contrast = getContrastColor(primaryColor);
   const fontUrl = getGoogleFontUrl(fontFamily);
@@ -41,7 +44,7 @@ export function PresetPreview({
     }
   }, [fontUrl]);
 
-  const cells = Array.from({ length: gridColumns * gridColumns }, (_, i) => i);
+  const template = layoutTemplateId ? getLayoutTemplate(layoutTemplateId) : null;
 
   return (
     <div>
@@ -69,41 +72,77 @@ export function PresetPreview({
         </div>
 
         {/* Mini grid */}
-        <div
-          className="px-2 pb-2 gap-1"
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-          }}
-        >
-          {cells.map((i) => (
-            <div
-              key={i}
-              className="aspect-square rounded-sm overflow-hidden relative"
-              style={{
-                backgroundColor: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] + "30",
-                border: `1px solid rgba(255,255,255,0.1)`,
-              }}
-            >
+        {template ? (
+          <div
+            className="px-2 pb-2 gap-0.5"
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${template.columns}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${template.rows}, minmax(0, 1fr))`,
+              flex: 1,
+            }}
+          >
+            {template.slots.map((slot, i) => (
               <div
-                className="absolute inset-0"
+                key={i}
+                className="rounded-sm overflow-hidden relative min-h-0"
                 style={{
-                  background: `linear-gradient(135deg, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}40, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}20)`,
+                  gridColumn: `${slot.colStart} / span ${slot.colSpan}`,
+                  gridRow: `${slot.rowStart} / span ${slot.rowSpan}`,
+                  backgroundColor: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] + "30",
+                  border: `1px solid rgba(255,255,255,0.1)`,
                 }}
-              />
-              {showNames && (
-                <div className="absolute bottom-0 left-0 right-0 p-0.5 bg-gradient-to-t from-black/60 to-transparent">
-                  <p
-                    className="text-[6px] font-medium truncate"
-                    style={{ color: primaryColor }}
-                  >
-                    {PLACEHOLDER_NAMES[i % PLACEHOLDER_NAMES.length]}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}40, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}20)`,
+                  }}
+                />
+                {showNames && (
+                  <div className="absolute bottom-0 left-0 right-0 p-0.5 bg-gradient-to-t from-black/60 to-transparent">
+                    <p className="text-[6px] font-medium truncate" style={{ color: primaryColor }}>
+                      {PLACEHOLDER_NAMES[i % PLACEHOLDER_NAMES.length]}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div
+            className="px-2 pb-2 gap-1"
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+            }}
+          >
+            {Array.from({ length: gridColumns * gridColumns }, (_, i) => (
+              <div
+                key={i}
+                className="aspect-square rounded-sm overflow-hidden relative"
+                style={{
+                  backgroundColor: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] + "30",
+                  border: `1px solid rgba(255,255,255,0.1)`,
+                }}
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}40, ${PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]}20)`,
+                  }}
+                />
+                {showNames && (
+                  <div className="absolute bottom-0 left-0 right-0 p-0.5 bg-gradient-to-t from-black/60 to-transparent">
+                    <p className="text-[6px] font-medium truncate" style={{ color: primaryColor }}>
+                      {PLACEHOLDER_NAMES[i % PLACEHOLDER_NAMES.length]}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

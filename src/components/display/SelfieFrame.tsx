@@ -36,7 +36,7 @@ export function SelfieFrame({ selfie, config, index, showEventBadge }: SelfieFra
 
   return (
     <div
-      className="selfie-frame relative w-full aspect-square overflow-hidden rounded-lg bg-white/5"
+      className="selfie-frame relative w-full h-full overflow-hidden rounded-lg bg-white/5"
       style={{
         border: `${borderWidth}px solid ${borderColor}`,
       }}

@@ -3,6 +3,7 @@
 import { SelfieGrid } from "./SelfieGrid";
 import { SlideshowView } from "./SlideshowView";
 import { MosaicView } from "./MosaicView";
+import { TemplateLayoutView } from "./TemplateLayoutView";
 import { EmptyState } from "./EmptyState";
 import { DisplayOverlay } from "./DisplayOverlay";
 import { AnimatedBackground } from "./AnimatedBackground";
@@ -49,6 +50,10 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
     if (selfies.length === 0) {
       return <EmptyState event={event} />;
     }
+    // Template-based layout takes priority when set
+    if (config.layoutTemplateId) {
+      return <TemplateLayoutView selfies={selfies} config={config} />;
+    }
     switch (layoutMode) {
       case "slideshow":
         return <SlideshowView selfies={selfies} config={config} />;
@@ -58,6 +63,26 @@ export function DisplayWall({ event, selfies, backgroundImageUrl, backgroundVide
         return <SelfieGrid selfies={selfies} config={config} />;
     }
   };
+
+  // Custom font injection via @font-face
+  const customFontAsset = (event.assets || []).find(
+    (a) => a.type === "font" && a.name === event.fontFamily
+  );
+
+  useEffect(() => {
+    if (!customFontAsset) return;
+    const styleId = "ss-custom-font";
+    let style = document.getElementById(styleId) as HTMLStyleElement | null;
+    const css = `@font-face { font-family: "${customFontAsset.name}"; src: url("${customFontAsset.url}"); font-display: swap; }`;
+    if (style) {
+      style.textContent = css;
+    } else {
+      style = document.createElement("style");
+      style.id = styleId;
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+  }, [customFontAsset]);
 
   // Find background asset from brand assets
   const bgAsset = (event.assets || []).find((a) => a.type === "background");

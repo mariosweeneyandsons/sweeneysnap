@@ -8,8 +8,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { BrandAssetManager } from "@/components/admin/BrandAssetManager";
+import { FontPicker } from "@/components/admin/FontPicker";
+import { CustomFontUpload } from "@/components/admin/CustomFontUpload";
 
 export default function EventBrandingPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -21,13 +22,16 @@ export default function EventBrandingPage() {
   const [customCss, setCustomCss] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [cssOpen, setCssOpen] = useState(false);
+  const [fontUploadOpen, setFontUploadOpen] = useState(false);
 
   if (event === undefined) return <div className="text-center py-12 text-foreground-faint">Loading...</div>;
   if (!event) return <div className="text-center py-12 text-foreground-faint">Event not found</div>;
 
   const currentColor = primaryColor ?? event.primaryColor;
-  const currentFont = fontFamily ?? event.fontFamily ?? "";
+  const currentFont = fontFamily ?? event.fontFamily ?? "Inter";
   const currentCss = customCss ?? event.customCss ?? "";
+  const eventAssets = event.assets || [];
+  const customFonts = eventAssets.filter((a) => a.type === "font");
 
   const handleSave = async () => {
     setSaving(true);
@@ -83,11 +87,11 @@ export default function EventBrandingPage() {
               <span className="text-foreground-faint font-mono text-sm">{currentColor}</span>
             </div>
           </div>
-          <Input
-            label="Font Family"
+          <FontPicker
             value={currentFont}
-            onChange={(e) => setFontFamily(e.target.value)}
-            placeholder="e.g. Inter, Roboto, Playfair Display"
+            onChange={(f) => setFontFamily(f)}
+            customFonts={customFonts}
+            onUploadCustomFont={() => setFontUploadOpen(true)}
           />
         </div>
 
@@ -120,9 +124,16 @@ export default function EventBrandingPage() {
       <Card>
         <BrandAssetManager
           target={{ type: "event", id: eventId }}
-          assets={event.assets || []}
+          assets={eventAssets}
         />
       </Card>
+
+      <CustomFontUpload
+        target={{ type: "event", id: eventId }}
+        open={fontUploadOpen}
+        onClose={() => setFontUploadOpen(false)}
+        onUploaded={(name) => setFontFamily(name)}
+      />
     </div>
   );
 }
