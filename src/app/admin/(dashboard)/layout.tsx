@@ -38,6 +38,16 @@ export default function AdminLayout({
     }
   }, [isLoading, isAuthenticated, router]);
 
+  // Safety net: if auth stays loading >8s after OAuth redirect, reload to retry code exchange
+  useEffect(() => {
+    if (isLoading && typeof window !== "undefined" && window.location.search.includes("code=")) {
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
   useEffect(() => {
     if (adminProfile === null) {
       router.push("/admin/login?error=no_admin_profile");

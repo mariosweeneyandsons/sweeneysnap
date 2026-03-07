@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConvexAuth, useQuery, useMutation } from "convex/react";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/Button";
 
@@ -102,28 +103,19 @@ function LoginContent() {
     }
   }, [authLoading, isAuthenticated, errorCode, router]);
 
+  const { signIn } = useAuthActions();
+
   const handleGoogleLogin = async () => {
     setLoading(true);
+    // Clear any stale Convex auth verifiers from localStorage
     try {
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "auth:signIn",
-          args: { provider: "google", params: { redirectTo: "/admin" } },
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(await response.text());
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith("__convexAuthOAuth")) {
+          localStorage.removeItem(key);
+        }
       }
-      const result = await response.json();
-      if (result.redirect) {
-        window.location.href = result.redirect;
-      }
-    } catch (error) {
-      console.error("[auth] signIn error:", error);
-      setLoading(false);
-    }
+    } catch {}
+    await signIn("google", { redirectTo: "/admin" });
   };
 
   return (
