@@ -1,6 +1,7 @@
 "use client";
 
 import { useConvexAuth, useQuery } from "convex/react";
+import { useAuth } from "@clerk/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isSignedIn, isLoaded: clerkLoaded } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,10 +35,11 @@ export default function AdminLayout({
   );
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    // Only redirect when BOTH Clerk and Convex confirm no session
+    if (!isLoading && !isAuthenticated && clerkLoaded && !isSignedIn) {
       router.push("/admin/login");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, clerkLoaded, isSignedIn, router]);
 
   useEffect(() => {
     if (adminProfile === null) {

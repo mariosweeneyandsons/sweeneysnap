@@ -1,8 +1,22 @@
 "use client";
 
-import { AuthenticateWithRedirectCallback } from "@clerk/nextjs";
+import { AuthenticateWithRedirectCallback, useAuth } from "@clerk/nextjs";
+import { useConvexAuth } from "convex/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SSOCallbackPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { isAuthenticated } = useConvexAuth();
+  const router = useRouter();
+
+  // Fallback redirect once both auth systems confirm session
+  useEffect(() => {
+    if (isLoaded && isSignedIn && isAuthenticated) {
+      router.replace("/admin");
+    }
+  }, [isLoaded, isSignedIn, isAuthenticated, router]);
+
   return (
     <main className="min-h-dvh bg-background-elevated flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
