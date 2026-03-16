@@ -214,18 +214,44 @@ export function CopyLink({ label, url }: { label: string; url: string }) {
   );
 }
 
+// ---- CompactCopyLink ----
+export function CompactCopyLink({ label, url }: { label: string; url: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="flex items-center gap-2 min-w-0">
+      <span className="text-label-caps opacity-50 !text-[9px] shrink-0">{label}</span>
+      <span className="text-xs font-mono text-foreground-emphasis truncate min-w-0">{url}</span>
+      <button
+        type="button"
+        onClick={() => {
+          navigator.clipboard.writeText(url);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        }}
+        className="shrink-0 border border-border-strong rounded-xs px-2 py-0.5 text-[10px] text-label-caps text-foreground-emphasis hover:bg-secondary transition"
+      >
+        {copied ? "done" : "copy"}
+      </button>
+    </div>
+  );
+}
+
 // ---- SectionCard ----
 export function SectionCard({
   title,
   id,
   children,
   delay = 0,
+  defaultOpen = true,
 }: {
   title: string;
   id: string;
   children: React.ReactNode;
   delay?: number;
+  defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
     <motion.div
       id={id}
@@ -235,13 +261,16 @@ export function SectionCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay, ease: "easeOut" }}
     >
-      <h3
-        className="text-sm text-foreground-emphasis mb-4 pb-2 border-b border-border-separator"
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between text-sm text-foreground-emphasis pb-2 border-b border-border-separator text-left ${open ? "mb-4" : ""}`}
         style={{ fontVariant: "small-caps", letterSpacing: "0.08em" }}
       >
-        {title}
-      </h3>
-      {children}
+        <span>{title}</span>
+        <span className="font-mono text-xs opacity-50">{open ? "\u2212" : "+"}</span>
+      </button>
+      {open && children}
     </motion.div>
   );
 }

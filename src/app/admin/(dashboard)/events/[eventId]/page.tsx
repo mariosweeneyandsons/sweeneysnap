@@ -21,6 +21,7 @@ import {
   SaveButton,
   DateInput,
   SectionNav,
+  CompactCopyLink,
 } from "@/components/blueprint/BlueprintForm";
 import { useEventFormState } from "@/hooks/useEventFormState";
 import { getSiteUrl } from "@/lib/config";
@@ -173,6 +174,15 @@ export default function EventDetailPage() {
             onNavigate={scrollTo}
           />
         </div>
+
+        {/* URL bar */}
+        <div className="py-2 border-t border-border-separator flex items-center gap-6 overflow-x-auto">
+          <CompactCopyLink label="upload" url={uploadUrl} />
+          <div className="w-px h-4 bg-border-separator shrink-0" />
+          <CompactCopyLink label="display" url={displayUrl} />
+          <div className="w-px h-4 bg-border-separator shrink-0" />
+          <CompactCopyLink label="crew" url={crewUrl} />
+        </div>
       </div>
 
       {/* Two-panel layout: sticky preview + scrollable form */}
@@ -238,7 +248,7 @@ export default function EventDetailPage() {
                 </div>
               </SectionCard>
 
-              <SectionCard title="Upload Config" id="upload" delay={0.1}>
+              <SectionCard title="Upload Config" id="upload" delay={0.1} defaultOpen={false}>
                 <Field label="welcome text">
                   <TextArea
                     value={upload.welcomeText}
@@ -288,7 +298,7 @@ export default function EventDetailPage() {
                 </Field>
               </SectionCard>
 
-              <SectionCard title="Camera & Editor" id="camera" delay={0.15}>
+              <SectionCard title="Camera & Editor" id="camera" delay={0.15} defaultOpen={false}>
                 <Field label="max uploads per session">
                   <NumberInput
                     value={upload.maxUploadsPerSession}
@@ -351,7 +361,7 @@ export default function EventDetailPage() {
 
             {/* Column 2: Display Config + Effects + Branding */}
             <div>
-              <SectionCard title="Display Config" id="display" delay={0.15}>
+              <SectionCard title="Display Config" id="display" delay={0.15} defaultOpen={false}>
                 <Field label="layout mode">
                   <SelectInput
                     value={display.layoutMode}
@@ -423,7 +433,7 @@ export default function EventDetailPage() {
                 </div>
               </SectionCard>
 
-              <SectionCard title="Effects & Sound" id="effects" delay={0.2}>
+              <SectionCard title="Effects & Sound" id="effects" delay={0.2} defaultOpen={false}>
                 <Field label="spotlight">
                   <CrosshairToggle
                     checked={effects.spotlightEnabled}
@@ -506,7 +516,7 @@ export default function EventDetailPage() {
                 </Field>
               </SectionCard>
 
-              <SectionCard title="Branding" id="branding" delay={0.25}>
+              <SectionCard title="Branding" id="branding" delay={0.25} defaultOpen={false}>
                 <Field label="primary color">
                   <ColorInput
                     value={branding.primaryColor}
