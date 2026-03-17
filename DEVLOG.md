@@ -9,6 +9,45 @@ A live event selfie wall app by Sweeney and Sons. Attendees scan a QR code, take
 
 ---
 
+## Day 7 — 2026-03-07 (Friday)
+**Summary:** Late-night continuation of the Day 6 session -- fixed live preview grid cutoff, built layout templates with creative arrangements, added font picker with Google Fonts integration, and overhauled the display settings UI.
+
+### The Story
+This was really the tail end of the Day 6 marathon. The clock had already ticked past midnight when Mario pivoted from the OAuth war (now resolved via Clerk) to the display settings overhaul he'd been wanting to tackle. The auth was finally working, the admin panel was loading, and there was just one more bug to squash before moving on: a `useToast must be used within <ToastProvider>` error that surfaced during auth state transitions. A one-line fix -- making `useToast` gracefully degrade instead of throwing -- and it was done (`5a492da`).
+
+But the real work of the session started when Mario opened the event settings page and started rattling off feedback. The live preview was cutting off -- a 3x3 grid only showed one and a half rows because CSS `1fr` wasn't constrained properly. That got a quick `minmax(0, 1fr)` fix (`3d48f6d`). Then came the bigger vision: the grid column picker was too rigid. Mario wanted creative layouts -- not just boring NxN grids, but arrangements like "one big image with small ones around it," side-by-side hero shots, and other fun asymmetric compositions meant for a party wall. This spawned the layout templates system (`3fc77cb`), a new `layoutTemplateId` field in the schema, and a set of predefined templates with names like "Classic Grid," "Hero Spotlight," "Magazine," and "Mosaic" that went beyond simple row/column counts.
+
+The font situation needed work too. Mario wanted a massive dropdown of font families with hover previews, plus the ability to upload custom fonts directly. This led to the Google Fonts integration (`src/lib/googleFonts.ts`), a full FontPicker component with search and preview, a CustomFontUpload component, and a new "font" asset type in the brand assets system (`7609cd8`). The LayoutPicker got a visual card-based selector showing miniature previews of each template. A new TemplateLayoutView component handled rendering selfies in the non-grid arrangements, and a `useSelfieSwap` hook added periodic rotation of displayed selfies for the live preview.
+
+The final push integrated everything into the actual settings forms (`5bfff62`). The DisplaySettingsFields got extracted into their own component, the PresetForm was restructured to use the new pickers, the LivePreviewPanel got proper aspect ratio handling, and the branding page was updated to pull it all together. Over 1,500 lines of new code landed in about 10 minutes of commits. Mario also took a moment to backfill the devlog for Days 5 and 6 (`bc70ca1`) before wrapping the session.
+
+### Battles
+- [Won] **Live preview grid cutoff** -- CSS `1fr` was allowing grid rows to overflow; fixed with `minmax(0, 1fr)` to constrain rows within the container (`3d48f6d`)
+- [Won] **useToast outside ToastProvider** -- Auth state transitions could render components outside the provider; made the hook return a no-op instead of throwing (`5a492da`)
+- [Dodged] **Rigid grid-only layouts** -- Instead of just offering NxN grids, built a template system with creative asymmetric arrangements that better suit a party wall
+
+### What Got Done
+- Fixed live preview grid cutoff with `minmax(0, 1fr)` (`3d48f6d`)
+- Built layout templates system with creative arrangements: Hero Spotlight, Magazine, Mosaic, etc. (`3fc77cb`)
+- Added Google Fonts integration with search, hover preview, and custom font upload (`7609cd8`)
+- Created LayoutPicker, FontPicker, CustomFontUpload, and TemplateLayoutView components (`7609cd8`)
+- Overhauled display settings: extracted DisplaySettingsFields, restructured PresetForm, improved LivePreviewPanel (`5bfff62`)
+- Backfilled devlog entries for Day 5 and Day 6 (`bc70ca1`)
+- Fixed useToast graceful degradation outside ToastProvider (`5a492da`)
+
+### Commits
+- `3d48f6d` -- fix: use minmax(0, 1fr) in grid rows/cols to prevent preview cutoff
+- `3fc77cb` -- feat: add layout templates, layoutTemplateId field, and font asset type
+- `7609cd8` -- feat: add core UI components for settings overhaul
+- `5bfff62` -- feat: integrate layout picker, font picker, and full display settings
+- `bc70ca1` -- docs: backfill devlog entries for Day 5 (Feb 26) and Day 6 (Mar 6)
+- `5a492da` -- fix: gracefully degrade useToast outside ToastProvider
+
+### Notes
+All six commits landed between 00:03 and 00:14 AM, making this effectively the final chapter of the Day 6 session that ran well past midnight. The settings overhaul was driven by Mario's feedback that the existing controls were too rigid and basic -- font family as a text input instead of a rich picker, grid layouts limited to simple NxN, and brand assets not organized by section. The layout templates system is designed to be extensible, so new creative arrangements can be added without touching the picker UI. The font picker pulls from Google Fonts for a massive selection while still allowing direct upload of custom .woff2/.ttf files.
+
+---
+
 ## Day 6 — 2026-03-06 (Thursday)
 **Summary:** Epic OAuth battle: migrated from @convex-dev/auth to Clerk after hours of debugging Google sign-in, then switched AI moderation to Claude and redesigned the homepage.
 
