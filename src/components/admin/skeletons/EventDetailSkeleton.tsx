@@ -2,9 +2,9 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export function EventDetailSkeleton() {
   return (
-    <div className="bp-grid -mx-6 -mt-4 px-6 pt-4 min-h-screen">
+    <div className="bp-grid -mt-4 pt-4 min-h-screen">
       {/* Header skeleton */}
-      <div className="border-b-2 border-border -mx-6 px-6 py-3">
+      <div className="border-b-2 border-border py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Skeleton className="h-4 w-16 rounded-xs" />

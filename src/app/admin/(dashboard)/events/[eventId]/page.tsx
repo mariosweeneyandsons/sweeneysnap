@@ -71,9 +71,9 @@ export default function EventDetailPage() {
   const crewUrl = `${siteUrl}/crew/${event.crewToken}`;
 
   return (
-    <div className="bp-grid -mx-6 -mt-4 px-6 pt-4 min-h-screen">
+    <div className="bp-grid -mt-4 pt-4 min-h-screen">
       {/* Header bar */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b-2 border-border -mx-6 px-6">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b-2 border-border">
         <div className="py-3 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link
