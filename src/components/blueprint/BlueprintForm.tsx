@@ -44,7 +44,7 @@ export function TextInput({
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
       placeholder={placeholder}
-      className="w-full bg-background border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition disabled:opacity-50"
+      className="w-full bg-surface border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition disabled:opacity-50"
     />
   );
 }
@@ -67,7 +67,7 @@ export function TextArea({
       onChange={(e) => onChange(e.target.value)}
       rows={rows}
       placeholder={placeholder}
-      className="w-full bg-background border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition resize-none"
+      className="w-full bg-surface border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition resize-none"
       style={{
         backgroundImage:
           "repeating-linear-gradient(0deg, transparent, transparent 23px, var(--line-faint) 23px, var(--line-faint) 24px)",
@@ -100,7 +100,7 @@ export function NumberInput({
         onChange={(e) => onChange(Number(e.target.value))}
         min={min}
         max={max}
-        className="w-20 bg-background border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition"
+        className="w-20 bg-surface border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition"
       />
       {suffix && (
         <span className="text-label-caps opacity-60">{suffix}</span>
@@ -123,7 +123,7 @@ export function SelectInput({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-background border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition appearance-none"
+      className="w-full bg-surface border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition appearance-none"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
@@ -149,7 +149,7 @@ export function CrosshairToggle({
       className={`w-6 h-6 rounded-xs border flex items-center justify-center text-sm font-mono transition ${
         checked
           ? "border-border-focus bg-secondary text-foreground-emphasis"
-          : "border-border-strong bg-transparent text-line-faint"
+          : "border-border-strong bg-surface text-line-faint"
       }`}
     >
       +
@@ -180,7 +180,7 @@ export function ColorInput({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-24 bg-background border border-border-strong rounded-xs px-2 py-1 text-xs font-mono text-foreground focus:outline-none focus:border-border-focus transition"
+        className="w-24 bg-surface border border-border-strong rounded-xs px-2 py-1 text-xs font-mono text-foreground focus:outline-none focus:border-border-focus transition"
       />
     </div>
   );
@@ -196,7 +196,7 @@ export function CopyLink({ label, url }: { label: string; url: string }) {
           type="text"
           value={url}
           readOnly
-          className="flex-1 bg-background border border-border-strong rounded-xs px-3 py-2 text-xs font-mono text-label focus:outline-none focus:border-border-focus transition"
+          className="flex-1 bg-surface border border-border-strong rounded-xs px-3 py-2 text-xs font-mono text-label focus:outline-none focus:border-border-focus transition"
         />
         <button
           type="button"
@@ -205,7 +205,7 @@ export function CopyLink({ label, url }: { label: string; url: string }) {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}
-          className="border border-border-strong rounded-xs px-3 py-2 text-label-caps text-foreground-emphasis hover:bg-secondary transition"
+          className="bg-surface border border-border-strong rounded-xs px-3 py-2 text-label-caps text-foreground-emphasis hover:bg-secondary transition"
         >
           {copied ? "done" : "copy"}
         </button>
@@ -228,7 +228,7 @@ export function CompactCopyLink({ label, url }: { label: string; url: string }) 
           setCopied(true);
           setTimeout(() => setCopied(false), 1500);
         }}
-        className="shrink-0 border border-border-strong rounded-xs px-2 py-0.5 text-[10px] text-label-caps text-foreground-emphasis hover:bg-secondary transition"
+        className="shrink-0 bg-surface border border-border-strong rounded-xs px-2 py-0.5 text-[10px] text-label-caps text-foreground-emphasis hover:bg-secondary transition"
       >
         {copied ? "done" : "copy"}
       </button>
@@ -290,7 +290,7 @@ export function SaveButton({
       type="button"
       onClick={onClick}
       disabled={loading}
-      className="border-2 border-secondary rounded-xs px-6 py-2.5 text-sm text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
+      className="bg-surface border-2 border-secondary rounded-xs px-6 py-2.5 text-sm text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
       style={{ fontVariant: "small-caps", letterSpacing: "0.05em" }}
     >
       {loading ? "saving..." : label}
@@ -311,7 +311,7 @@ export function DateInput({
       type="datetime-local"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-background border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition [color-scheme:dark]"
+      className="w-full bg-surface border border-border-strong rounded-xs px-3 py-2 text-sm text-foreground focus:outline-none focus:border-border-focus transition [color-scheme:dark]"
     />
   );
 }

@@ -126,7 +126,7 @@ export default function EventDetailPage() {
             {(event.archived || (event.endsAt && event.endsAt < Date.now())) && (
               <Link
                 href={`/admin/events/${event._id}/summary`}
-                className="border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition"
+                className="bg-surface border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition"
               >
                 summary
               </Link>
@@ -147,7 +147,7 @@ export default function EventDetailPage() {
               type="button"
               onClick={actions.handleDuplicate}
               disabled={ui.duplicating}
-              className="border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
+              className="bg-surface border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
             >
               {ui.duplicating ? "..." : "duplicate"}
             </button>
@@ -155,7 +155,7 @@ export default function EventDetailPage() {
               type="button"
               onClick={actions.handleArchive}
               disabled={ui.archiving}
-              className="border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
+              className="bg-surface border border-border-strong rounded-xs px-3 py-1.5 text-label-caps text-foreground-emphasis hover:bg-secondary transition disabled:opacity-50"
             >
               {ui.archiving
                 ? "..."
