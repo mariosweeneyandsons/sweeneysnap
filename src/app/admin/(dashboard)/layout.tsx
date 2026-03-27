@@ -4,7 +4,7 @@ import { useConvexAuth, useQuery } from "convex/react";
 import { useAuth } from "@clerk/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminBreadcrumbs } from "@/components/admin/AdminBreadcrumbs";
 import { ThemeProvider } from "@/components/admin/ThemeProvider";
@@ -12,6 +12,8 @@ import { ShortcutHelpModal } from "@/components/admin/ShortcutHelpModal";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ConfigWarningBanner } from "@/components/admin/ConfigWarningBanner";
 import { useHotkeys, useTwoStrokeHotkeys } from "@/hooks/useHotkeys";
+
+const SIDEBAR_COLLAPSED_KEY = "sweeneysnap-sidebar-collapsed";
 
 export default function AdminLayout({
   children,
@@ -24,6 +26,21 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shortcutHelpOpen, setShortcutHelpOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Hydrate collapsed state from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+    if (stored === "true") setSidebarCollapsed(true);
+  }, []);
+
+  const toggleSidebarCollapse = useCallback(() => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next));
+      return next;
+    });
+  }, []);
 
   const adminProfile = useQuery(
     api.adminProfiles.getByCurrentUser,
@@ -101,6 +118,8 @@ export default function AdminLayout({
             userIdentity={userIdentity}
             open={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={toggleSidebarCollapse}
           />
 
           {/* Mobile header bar */}
@@ -116,7 +135,9 @@ export default function AdminLayout({
             <span className="font-bold text-foreground">SweeneySnap</span>
           </div>
 
-          <main className="flex-1 p-4 lg:p-6 ml-0 lg:ml-64 mt-14 lg:mt-0">
+          <main className={`flex-1 p-4 lg:p-6 ml-0 mt-14 lg:mt-0 overflow-x-hidden transition-all duration-200 ${
+            sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+          }`}>
             <AdminBreadcrumbs />
             <ConfigWarningBanner />
             {children}

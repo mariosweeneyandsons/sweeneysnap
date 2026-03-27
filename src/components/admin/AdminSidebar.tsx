@@ -17,6 +17,8 @@ interface AdminSidebarProps {
   userIdentity?: UserIdentity | null;
   open?: boolean;
   onClose?: () => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 const navItems = [
@@ -25,20 +27,23 @@ const navItems = [
   { href: "/admin/accounts", label: "Accounts", icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" },
 ];
 
-export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSidebarProps) {
+export function AdminSidebar({ profile, userIdentity, open, onClose, collapsed, onToggleCollapse }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
     <aside
-      className={`fixed left-0 top-0 bottom-0 w-64 bg-secondary border-r border-border flex flex-col p-4 z-40 transition-transform duration-200 ${
-        open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      }`}
+      className={`fixed left-0 top-0 bottom-0 bg-sidebar-bg border-r border-border flex flex-col p-4 z-40 transition-all duration-200 ${
+        collapsed ? "lg:w-16" : "lg:w-64"
+      } ${open ? "w-64 translate-x-0" : "w-64 -translate-x-full lg:translate-x-0"}`}
     >
       <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-lg font-bold text-foreground">SweeneySnap</h2>
-          <p className="text-foreground-muted text-sm">Admin Panel</p>
-        </div>
+        {!collapsed && (
+          <div>
+            <h2 className="text-lg font-bold text-foreground">SweeneySnap</h2>
+            <p className="text-foreground-muted text-sm">Admin Panel</p>
+          </div>
+        )}
+        {/* Mobile close button */}
         {onClose && (
           <button
             onClick={onClose}
@@ -46,6 +51,24 @@ export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSide
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+        {/* Desktop collapse toggle */}
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className={`hidden lg:flex p-1 rounded-xs text-foreground-muted hover:text-foreground hover:bg-surface transition-colors ${
+              collapsed ? "mx-auto" : ""
+            }`}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              {collapsed ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              )}
             </svg>
           </button>
         )}
@@ -58,7 +81,8 @@ export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSide
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xs text-sm transition-colors ${
+              title={collapsed ? item.label : undefined}
+              className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2 rounded-xs text-sm transition-colors ${
                 isActive
                   ? "bg-surface text-foreground-emphasis"
                   : "text-foreground-muted hover:text-foreground hover:bg-surface"
@@ -67,23 +91,25 @@ export function AdminSidebar({ profile, userIdentity, open, onClose }: AdminSide
               <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
               </svg>
-              {item.label}
+              {!collapsed && item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-border pt-4 mt-4 flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          {userIdentity ? (
-            <UserProfilePopover
-              identity={userIdentity}
-              displayName={profile.displayName}
-            />
-          ) : (
-            <p className="text-sm text-foreground-muted">{profile.displayName}</p>
-          )}
-        </div>
+      <div className={`border-t border-border pt-4 mt-4 flex items-center ${collapsed ? "justify-center" : "justify-between"}`}>
+        {!collapsed && (
+          <div className="flex-1 min-w-0">
+            {userIdentity ? (
+              <UserProfilePopover
+                identity={userIdentity}
+                displayName={profile.displayName}
+              />
+            ) : (
+              <p className="text-sm text-foreground-muted">{profile.displayName}</p>
+            )}
+          </div>
+        )}
         <ThemeToggle />
       </div>
     </aside>

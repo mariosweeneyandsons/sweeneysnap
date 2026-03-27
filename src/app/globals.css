@@ -134,6 +134,9 @@
   --card-border: color-mix(in srgb, var(--bp-line-500) 30%, transparent);
   --label-color: var(--bp-label-ice);
 
+  /* Sidebar */
+  --sidebar-bg: var(--bp-navy-950);
+
   /* Overlays & Scrims */
   --scrim: color-mix(in srgb, #000000 60%, transparent);
   --scrim-heavy: color-mix(in srgb, #000000 80%, transparent);
@@ -200,6 +203,9 @@
   --card-border: rgba(26, 39, 68, 0.12);
   --label-color: var(--bp-navy-700);
 
+  /* Sidebar */
+  --sidebar-bg: #e8ecf2;
+
   /* Overlays & Scrims */
   --scrim: rgba(0, 0, 0, 0.40);
   --scrim-heavy: rgba(0, 0, 0, 0.60);
@@ -259,6 +265,7 @@
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
   --color-label: var(--label-color);
+  --color-sidebar-bg: var(--sidebar-bg);
 
   /* Radii */
   --radius-xs: var(--bp-radius-xs);
