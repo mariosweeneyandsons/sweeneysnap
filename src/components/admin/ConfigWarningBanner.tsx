@@ -20,7 +20,7 @@ export function ConfigWarningBanner() {
 
   const missing: string[] = [];
   if (!status.email) missing.push("Email delivery (Resend)");
-  if (!status.aiModeration) missing.push("AI moderation (OpenAI)");
+  if (!status.aiModeration) missing.push("AI moderation (Anthropic)");
 
   if (missing.length === 0) return null;
 
