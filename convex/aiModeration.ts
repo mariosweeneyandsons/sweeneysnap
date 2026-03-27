@@ -18,6 +18,17 @@ export const moderateWithAi = internalAction({
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       console.error("ANTHROPIC_API_KEY not set, skipping AI moderation");
+      await ctx.runMutation(internal.selfies.updateAiModeration, {
+        selfieId: args.selfieId,
+        aiModeration: {
+          flagged: false,
+          categories: [],
+          confidence: 0,
+          autoRejected: false,
+          analyzedAt: Date.now(),
+          skipped: "missing_api_key",
+        },
+      });
       return;
     }
 
@@ -108,7 +119,18 @@ export const moderateWithAi = internalAction({
         },
       });
     } catch (error) {
-      console.error("AI moderation failed:", error);
+      console.error("AI moderation failed, selfie will remain in manual queue:", error);
+      await ctx.runMutation(internal.selfies.updateAiModeration, {
+        selfieId: args.selfieId,
+        aiModeration: {
+          flagged: false,
+          categories: [],
+          confidence: 0,
+          autoRejected: false,
+          analyzedAt: Date.now(),
+          skipped: "api_error",
+        },
+      });
     }
   },
 });

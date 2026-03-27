@@ -84,6 +84,7 @@ export default defineSchema(
           confidence: v.number(),
           autoRejected: v.boolean(),
           analyzedAt: v.number(),
+          skipped: v.optional(v.string()),
         })
       ),
       thumbnailStorageId: v.optional(v.id("_storage")),

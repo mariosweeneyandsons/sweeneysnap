@@ -9,6 +9,7 @@ export interface AiModeration {
   confidence: number;
   autoRejected: boolean;
   analyzedAt: number;
+  skipped?: string;
 }
 
 export interface UploadConfig {

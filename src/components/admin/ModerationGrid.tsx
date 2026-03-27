@@ -292,6 +292,14 @@ export function ModerationGrid({ eventId, mode, crewToken, crewMemberId }: Moder
                     AI Flagged
                   </span>
                 )}
+                {selfie.aiModeration?.skipped && (
+                  <span
+                    className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-xs text-xs font-medium bg-foreground-muted/80 text-background"
+                    title={`AI moderation skipped: ${selfie.aiModeration.skipped === "missing_api_key" ? "API key not configured" : "API error — review manually"}`}
+                  >
+                    AI Skipped
+                  </span>
+                )}
 
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
