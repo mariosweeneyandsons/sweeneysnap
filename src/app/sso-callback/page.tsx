@@ -23,7 +23,7 @@ export default function SSOCallbackPage() {
         <div className="w-8 h-8 border-2 border-border border-t-foreground-muted rounded-full animate-spin" />
         <p className="text-foreground-muted text-sm">Completing sign-in...</p>
       </div>
-      <AuthenticateWithRedirectCallback />
+      <AuthenticateWithRedirectCallback signInForceRedirectUrl="/admin" signUpForceRedirectUrl="/admin" />
     </main>
   );
 }

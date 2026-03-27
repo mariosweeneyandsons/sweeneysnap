@@ -124,7 +124,6 @@ function LoginContent() {
       await signIn.sso({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        redirectCallbackUrl: "/admin",
       });
     } catch (err) {
       console.error("[auth] Google sign-in failed:", err);
