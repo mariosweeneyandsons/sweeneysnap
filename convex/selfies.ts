@@ -437,6 +437,7 @@ export const updateAiModeration = internalMutation({
       confidence: v.number(),
       autoRejected: v.boolean(),
       analyzedAt: v.number(),
+      skipped: v.optional(v.string()),
     }),
   },
   handler: async (ctx, args) => {
