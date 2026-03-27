@@ -9,6 +9,35 @@ A live event selfie wall app by Sweeney and Sons. Attendees scan a QR code, take
 
 ---
 
+## Day 8 — 2026-03-16 (Monday)
+**Summary:** Quick session to fix a post-login auth race condition and improve the event detail page UX with a URL bar and collapsible sections.
+
+### The Story
+After a nine-day break, Mario returned to SweeneySnap on a Monday afternoon to knock out a couple of polish items. The first issue was an auth race condition that had been lurking since the Clerk migration — the dashboard layout was bouncing users back to the login page before Convex had finished syncing the Clerk JWT. The fix was straightforward: the layout now waits for both Clerk and Convex to confirm there's no active session before redirecting, and the SSO callback page got a fallback redirect to ensure users land on `/admin` once both auth systems are ready (`9c03d2b`).
+
+With auth behaving, Mario turned to the event detail page. The event URLs (upload, display, crew) were buried in the form and hard to find at a glance. A new compact URL bar was added to the sticky header, making the links visible on all screen sizes without scrolling (`d6fd0dc`). The SectionCard component also gained a `defaultOpen` prop — now only "Event Basics" starts expanded, cutting down the scroll-to-find-anything problem on load.
+
+The session wrapped up with a devlog backfill for Day 7 (`eb77cb3`), documenting the late-night display settings overhaul from March 7.
+
+### Battles
+- [Won] **Post-login redirect race** — Clerk authenticated before Convex synced the JWT, causing a redirect loop to `/admin/login`. Fixed by requiring both auth systems to confirm no session before redirecting (`9c03d2b`)
+
+### What Got Done
+- Fixed auth redirect race between Clerk and Convex on dashboard layout and SSO callback (`9c03d2b`)
+- Added URL bar to sticky header on event detail page (`d6fd0dc`)
+- Made SectionCard collapsible with `defaultOpen` prop, reducing scroll on load (`d6fd0dc`)
+- Backfilled devlog entry for Day 7 (`eb77cb3`)
+
+### Commits
+- `9c03d2b` — fix: resolve post-login redirect race between Clerk and Convex auth
+- `d6fd0dc` — feat: add URL bar to sticky header and collapsible section cards
+- `eb77cb3` — docs: backfill devlog entry for Day 7 (Mar 7)
+
+### Notes
+First session back after a week-plus break. Short and focused — auth fix plus UX polish. No new features or major architecture changes.
+
+---
+
 ## Day 7 — 2026-03-07 (Friday)
 **Summary:** Late-night continuation of the Day 6 session -- fixed live preview grid cutoff, built layout templates with creative arrangements, added font picker with Google Fonts integration, and overhauled the display settings UI.
 
