@@ -338,7 +338,7 @@ export function SectionNav({
             className={`transition ${
               activeSection === s.id
                 ? "text-foreground-emphasis underline underline-offset-4"
-                : "text-label-caps opacity-60 hover:text-foreground-emphasis"
+                : "text-label-caps opacity-60 hover:opacity-100 hover:text-foreground-emphasis cursor-pointer"
             }`}
             style={{ fontVariant: "small-caps" }}
           >
