@@ -9,6 +9,54 @@ A live event selfie wall app by Sweeney and Sons. Attendees scan a QR code, take
 
 ---
 
+## Day 9 — 2026-03-27 (Thursday)
+**Summary:** Multi-terminal blitz to fix UI transparency issues, nail down the login redirect, and polish the admin panel with a collapsible sidebar.
+
+### The Story
+Mario came back after an eleven-day break and immediately spun up six terminal sessions in parallel — a characteristic move that turned a Thursday afternoon into a concentrated burst of visual polish and bug squashing. The session kicked off with Mario noticing that form inputs and buttons across the admin panel were nearly invisible: blueprint-themed components were using `bg-background` (the same color as the page), making them disappear except for their borders. Buttons were outline-only with no fill. The fix was methodical — swapping `bg-background` to `bg-surface` across `BlueprintForm` and the event detail pages, giving every input and button a solid, readable background (`1e20637`).
+
+Meanwhile, another terminal was tackling the login redirect — a recurring headache. Mario asked to check the git history to make sure they weren't going in circles, and the investigation revealed something interesting: four prior redirect fixes had each solved real race conditions between Clerk and Convex auth, but none had actually addressed the redirect *destination*. The `redirectCallbackUrl: "/admin"` parameter wasn't being honored by Clerk's SSO flow. With the root cause finally identified, the fix landed cleanly (`a32783e`), along with a missing `redirectCallbackUrl` prop that was causing a build error (`26ea32a`).
+
+The admin sidebar got a full overhaul next. It was translucent and prone to horizontal overflow — not great on the blueprint theme's busy background. A new `--sidebar-bg` CSS token (`#111d35` dark / `#e8ecf4` light) gave it an opaque backdrop, `overflow-x-hidden` killed the horizontal scroll, and a collapse/expand toggle with localStorage persistence made the whole thing feel tighter (`6b47766`). Mario also wanted the SectionNav breadcrumbs (Spec > Event > Upload > Display > Branding) to look clickable, so hover brightness and pointer cursor were added (`78550ec`), and the SweeneySnap header text became a link back to `/admin` (`24dd8b5`).
+
+A stale UI label caught Mario's eye too — the `ConfigWarningBanner` still said "OpenAI" even though AI moderation had been migrated to Anthropic Claude Haiku back on Day 6. A quick rename fixed that (`468bf7d`). The AI moderation system also got a graceful fallback for when the API key isn't configured, so missing keys no longer crash the upload flow (`4e3d7bd`), plus a missing `skipped` field in the validator was patched (`32b773e`).
+
+The session wrapped with a devlog backfill for Day 8 (`dbafbc3`) before Mario signed off.
+
+### Battles
+- [Won] **Login redirect destination ignored** — Four prior fixes solved auth race conditions, but none fixed the actual redirect target. Root cause: `redirectCallbackUrl` wasn't being passed through Clerk's SSO flow (`a32783e`, `26ea32a`)
+- [Won] **Invisible form inputs and buttons** — Blueprint theme components used `bg-background` (same as page color), making them disappear. Switched to `bg-surface` for solid fills (`1e20637`)
+- [Won] **Translucent sidebar + horizontal overflow** — Added opaque `--sidebar-bg` token and `overflow-x-hidden` to the admin layout (`6b47766`)
+- [Won] **Stale "OpenAI" label** — AI moderation had migrated to Anthropic but the warning banner still referenced OpenAI (`468bf7d`)
+
+### What Got Done
+- Fixed form input and button transparency across blueprint-themed admin pages (`1e20637`)
+- Resolved login redirect to actually land on `/admin` after Google OAuth (`a32783e`, `26ea32a`)
+- Built collapsible opaque sidebar with localStorage-persisted state (`6b47766`)
+- Added hover effects and pointer cursor to SectionNav breadcrumbs (`78550ec`)
+- Made SweeneySnap header a clickable link to `/admin` dashboard (`24dd8b5`)
+- Updated stale "OpenAI" label to "Anthropic" in ConfigWarningBanner (`468bf7d`)
+- Added graceful fallback when AI moderation API key is missing (`4e3d7bd`)
+- Fixed missing `skipped` field in `updateAiModeration` validator (`32b773e`)
+- Backfilled devlog for Day 8 (`dbafbc3`)
+
+### Commits
+- `32b773e` — fix: commit missing skipped field in updateAiModeration validator
+- `26ea32a` — fix: add missing redirectCallbackUrl to fix Clerk SSO build error + remove -mx-6 overflow
+- `24dd8b5` — feat: make SweeneySnap header a link to /admin dashboard
+- `4e3d7bd` — feat: graceful fallback when AI moderation API is unavailable
+- `78550ec` — fix: add hover brightness + pointer cursor to SectionNav breadcrumbs
+- `6b47766` — feat: collapsible opaque sidebar + fix horizontal overflow
+- `a32783e` — fix: redirect to /admin after Google OAuth login
+- `1e20637` — fix: add solid bg-surface backgrounds to blueprint inputs and buttons
+- `468bf7d` — fix: update stale "OpenAI" label to "Anthropic" in ConfigWarningBanner
+- `dbafbc3` — docs: backfill devlog entry for Day 8 (Mar 16)
+
+### Notes
+Six parallel terminals in a single session — the heaviest multi-terminal coordination so far. The login redirect saga appears to be fully resolved now after five cumulative fixes across Days 5–9. The blueprint theme's visual identity is tightening up with solid backgrounds and the sidebar overhaul.
+
+---
+
 ## Day 8 — 2026-03-16 (Monday)
 **Summary:** Quick session to fix a post-login auth race condition and improve the event detail page UX with a URL bar and collapsible sections.
 
